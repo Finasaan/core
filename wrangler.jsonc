@@ -5,11 +5,16 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "my-next-app",
-	"compatibility_date": "2025-06-14",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-03-01",
 	"compatibility_flags": [
-		"nodejs_compat"
+		"nodejs_compat",
+		"global_fetch_strictly_public"
 	],
-	"pages_build_output_dir": ".vercel/output/static",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".open-next/assets"
+	},
 	"observability": {
 		"enabled": true
 	}
