@@ -19,5 +19,11 @@
   "placement": {
     "mode": "smart"
   },
-  "preview_urls": true
+
+  // preview environment
+  "env": {
+    "preview": {
+      "name": "core-preview"
+    }
+  }
 }
