@@ -19,14 +19,5 @@
   "placement": {
     "mode": "smart"
   },
-
-  // environment specific configuration
-  "env": {
-    "preview": {
-      "preview_urls": true
-    }
-    // "production" : {
-
-    // }
-  }
+  "preview_urls": true
 }
