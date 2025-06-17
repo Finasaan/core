@@ -1,5 +1,9 @@
 name: Deploy to Cloudflare
 
+# Version Configuration
+env:
+  MAJOR_VERSION: "0"
+
 on:
   push:
     branches:
@@ -15,7 +19,7 @@ permissions:
 
 jobs:
   buildAndTest:
-    name: Build Core
+    name: Build and Test Core
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -44,7 +48,7 @@ jobs:
         run: npm run build:cf
 
   buildAndDeployPreview:
-    name: Build Core
+    name: Preview Build and Deploy Core
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_name == 'main'
     outputs:
@@ -100,9 +104,30 @@ jobs:
       - name: Generate release version
         id: generate_version
         run: |
-          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-          echo "version=preview-${TIMESTAMP}" >> $GITHUB_OUTPUT
+          # Determine environment prefix
+          PREFIX="preview-v${{ env.MAJOR_VERSION }}."
+          
+          # Get latest release with this prefix using GitHub API
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            jq -r --arg prefix "$PREFIX" '[.[] | select(.tag_name | startswith($prefix)) | .tag_name] | sort | last // empty')
+          
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            # No previous releases found, start with .1
+            MINOR_VERSION="1"
+          else
+            # Extract minor version and increment
+            CURRENT_MINOR=$(echo "$LATEST_RELEASE" | sed "s/${PREFIX}//")
+            MINOR_VERSION=$((CURRENT_MINOR + 1))
+          fi
+          
+          # Create new version
+          NEW_VERSION="${PREFIX}${MINOR_VERSION}"
+          
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+          
+          echo "🏷️ Generated version: ${NEW_VERSION}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -124,7 +149,7 @@ jobs:
           make_latest: false
 
   buildAndDeployProduction:
-    name: Build Core
+    name: Prod Build and Deploy Core
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     outputs:
@@ -175,9 +200,30 @@ jobs:
       - name: Generate release version
         id: generate_version
         run: |
-          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-          echo "version=prod-${TIMESTAMP}" >> $GITHUB_OUTPUT
+          # Determine environment prefix
+          PREFIX="prod-v${{ env.MAJOR_VERSION }}."
+          
+          # Get latest release with this prefix using GitHub API
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            jq -r --arg prefix "$PREFIX" '[.[] | select(.tag_name | startswith($prefix)) | .tag_name] | sort | last // empty')
+          
+          if [[ -z "$LATEST_RELEASE" || "$LATEST_RELEASE" == "null" ]]; then
+            # No previous releases found, start with .1
+            MINOR_VERSION="1"
+          else
+            # Extract minor version and increment
+            CURRENT_MINOR=$(echo "$LATEST_RELEASE" | sed "s/${PREFIX}//")
+            MINOR_VERSION=$((CURRENT_MINOR + 1))
+          fi
+          
+          # Create new version
+          NEW_VERSION="${PREFIX}${MINOR_VERSION}"
+          
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+          
+          echo "🏷️ Generated version: ${NEW_VERSION}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
