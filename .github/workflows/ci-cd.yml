@@ -28,7 +28,7 @@ jobs:
         with:
           path: |
             ~/.npm
-            ${{ github.workspace }}/.next/cache
+            ${{ github.workspace }}/.open-next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Build application
-        run: npm run build
+        run: npm run build:cf
 
       - name: Deploy to cloudflare
         id: deployPreview
