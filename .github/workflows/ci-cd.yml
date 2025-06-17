@@ -34,7 +34,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: run deploy --env preview
+          command: deploy --env preview
 
   CreatePreviewRelease:
     name: Create Preview Release
