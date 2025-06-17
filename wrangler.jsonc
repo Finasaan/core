@@ -18,15 +18,15 @@
   "keep_vars": false,
   "placement": {
     "mode": "smart"
-  }
+  },
 
   // environment specific configuration
-  // "env": {
-  //   "preview": {
-  //     "preview_urls": true
-  //   }
-  // "production" : {
+  "env": {
+    "preview": {
+      "preview_urls": true
+    }
+    // "production" : {
 
-  // }
-  //}
+    // }
+  }
 }
