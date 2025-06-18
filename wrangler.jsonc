@@ -20,12 +20,18 @@
   "placement": {
     "mode": "smart"
   },
+  "vars": {
+    "ENVIRONMENT": "production"
+  },
 
   // preview environment
   "env": {
     "preview": {
       "name": "core-preview",
-      "routes": ["finasaan.com/preview/*", "www.finasaan.com/preview/*"]
+      "routes": ["finasaan.com/preview/*", "www.finasaan.com/preview/*"],
+      "vars": {
+        "ENVIRONMENT": "preview"
+      }
     }
   }
 }
