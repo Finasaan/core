@@ -24,7 +24,8 @@
   // preview environment
   "env": {
     "preview": {
-      "name": "core-preview"
+      "name": "core-preview",
+      "routes": ["finasaan.com/preview/*", "www.finasaan.com/preview/*"]
     }
   }
 }
