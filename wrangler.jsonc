@@ -13,6 +13,12 @@
     "binding": "ASSETS",
     "directory": ".open-next/assets"
   },
+  "services": [
+    {
+      "binding": "SPINE",
+      "service": "spine"
+    }
+  ],
   "observability": {
     "enabled": true
   },
@@ -23,12 +29,22 @@
   "vars": {
     "ENVIRONMENT": "production"
   },
+  "dev": {
+    "port": 3000,
+    "local_protocol": "http"
+  },
 
   // preview environment
   "env": {
     "preview": {
       "name": "core-preview",
       "routes": ["finasaan.com/preview*", "www.finasaan.com/preview*"],
+      "services": [
+        {
+          "binding": "SPINE",
+          "service": "spine-preview"
+        }
+      ],
       "vars": {
         "ENVIRONMENT": "preview"
       }
