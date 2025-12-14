@@ -7,3 +7,5 @@ export { Logo } from "./Logo";
 export { ProfileIcon } from "./ProfileIcon";
 export { GoogleIcon } from "./GoogleIcon";
 export { ArrowLeftIcon } from "./ArrowLeftIcon";
+export { ClockIcon } from "./ClockIcon";
+export { OtpInput } from "./OtpInput";
