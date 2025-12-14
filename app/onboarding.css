@@ -682,3 +682,86 @@
 .chip-selected:hover {
     background: #128b56;
 }
+
+/* ========================================
+   Choice Card Component (Complete Page)
+   ======================================== */
+
+.choice-cards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.choice-card {
+    box-sizing: border-box;
+    width: 517px;
+    height: 390px;
+    background: #06211A;
+    border: 2px solid #CBD5E1;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 32px 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.choice-card:hover {
+    border-color: rgba(21, 159, 99, 0.5);
+}
+
+.choice-card-selected {
+    background: linear-gradient(214.23deg, rgba(21, 159, 99, 0.2) 1.47%, rgba(21, 159, 99, 0.07) 97.9%);
+    border: 2px solid #159F63;
+}
+
+.choice-card-icon {
+    width: 254px;
+    height: 172px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.choice-card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.choice-card-title {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 43px;
+    text-align: center;
+    letter-spacing: -0.05em;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.choice-card-description {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.05em;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+/* Override onboarding-content width for complete page */
+.onboarding-content:has(.choice-cards) {
+    max-width: 1074px;
+    gap: 48px;
+}
