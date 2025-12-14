@@ -202,6 +202,10 @@
   color: #121212;
 }
 
+.auth-form-title-primary {
+  color: #159F63;
+}
+
 /* Form Fields */
 .auth-form-fields {
   display: flex;
