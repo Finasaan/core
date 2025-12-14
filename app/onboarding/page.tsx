@@ -11,9 +11,9 @@ export default function OnboardingStartPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (name.trim()) {
-            // Store name and proceed to next step
+            // Store name and proceed to loading screen
             // TODO: Save to state/context
-            router.push("/onboarding/step-1");
+            router.push("/onboarding/loading");
         }
     };
 

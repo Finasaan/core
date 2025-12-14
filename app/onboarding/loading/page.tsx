@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { OnboardingLayout } from "@/components/onboarding";
 
@@ -14,6 +15,19 @@ const facts = [
 export default function OnboardingLoadingPage() {
     const [currentFact, setCurrentFact] = useState(0);
     const [isFading, setIsFading] = useState(false);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Get destination from query param, default to step-1
+    const nextPage = searchParams.get("next") || "/onboarding/step-1";
+
+    // Auto-redirect after 3.5 seconds
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            router.push(nextPage);
+        }, 3500);
+        return () => clearTimeout(timer);
+    }, [router, nextPage]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -53,3 +67,4 @@ export default function OnboardingLoadingPage() {
         </OnboardingLayout>
     );
 }
+
