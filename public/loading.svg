@@ -1,22 +1,19 @@
-<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="48" height="48" fill="url(#pattern0_382_503)"/>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_382_503)">
-<circle cx="24" cy="24" r="15" stroke="#141414" stroke-width="2"/>
+<circle cx="24" cy="24" r="15" stroke="#FFFFFF" stroke-width="2"/>
 <mask id="mask0_382_503" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="12" y="12" width="24" height="24">
 <circle cx="24" cy="24" r="12" fill="#141414"/>
 </mask>
 <g mask="url(#mask0_382_503)">
+<g class="water-wave">
 <path opacity="0.5" d="M8 21C9.9289 21 11.787 21.7265 13.2044 23.0348L15.1894 24.8672C17.718 27.2012 21.6154 27.2012 24.1439 24.8672C26.5502 22.646 30.2212 22.5248 32.7687 24.5824L34.6662 26.115C36.1763 27.3347 38.0588 28 40 28V36H8V21Z" fill="#159F63"/>
 <path d="M8 26H8.63809C10.1942 26 11.7317 25.6623 13.1445 25.0102L15.4583 23.9423C18.0058 22.7665 21.0108 23.2407 23.0724 25.1438C25.9509 27.8008 30.4568 27.5499 33.0224 24.5896L35.0352 22.2671C36.2831 20.8272 38.0946 20 40 20V36H8V26Z" fill="#159F63"/>
 </g>
 </g>
+</g>
 <defs>
-<pattern id="pattern0_382_503" patternContentUnits="objectBoundingBox" width="1" height="1">
-<use xlink:href="#image0_382_503"/>
-</pattern>
 <clipPath id="clip0_382_503">
 <rect width="32" height="32" fill="white" transform="translate(8 8)"/>
 </clipPath>
-<image id="image0_382_503" width="1" height="1" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAQSURBVHgBAQUA+v8AAAAAAAAFAAFkeJU4AAAAAElFTkSuQmCC"/>
 </defs>
 </svg>

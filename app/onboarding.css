@@ -308,18 +308,22 @@
 }
 
 .loading-icon {
-    animation: loading-wave 2s ease-in-out infinite;
+    animation: water-slosh 2.5s ease-in-out infinite;
 }
 
-@keyframes loading-wave {
+@keyframes water-slosh {
 
     0%,
     100% {
-        transform: translateY(0);
+        transform: rotate(0deg);
     }
 
-    50% {
-        transform: translateY(-8px);
+    25% {
+        transform: rotate(8deg);
+    }
+
+    75% {
+        transform: rotate(-8deg);
     }
 }
 
