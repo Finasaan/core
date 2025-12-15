@@ -1,4 +1,7 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
     AuthLayout,
@@ -6,13 +9,63 @@ import {
     SocialLoginButton,
     AuthDivider,
 } from "@/components/auth";
-
-export const metadata: Metadata = {
-    title: "Sign Up",
-    description: "Create your Finasaan account and start your financial literacy journey.",
-};
+import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
+    const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const supabase = createClient();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        // Validate password length
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    // Redirect URL after email verification
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                },
+            });
+
+            if (signUpError) {
+                setError(signUpError.message);
+                return;
+            }
+
+            // Store email in sessionStorage for the verify page
+            sessionStorage.setItem("signup_email", email);
+
+            // Redirect to verify page
+            router.push("/signup/verify");
+        } catch (err) {
+            setError("An unexpected error occurred. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <AuthLayout
             headerPrompt="Already have an account?"
@@ -28,7 +81,13 @@ export default function SignupPage() {
                 </p>
             </header>
 
-            <form className="auth-form-fields">
+            <form className="auth-form-fields" onSubmit={handleSubmit}>
+                {error && (
+                    <div className="auth-error-message" role="alert">
+                        {error}
+                    </div>
+                )}
+
                 <FormInput
                     label="Email"
                     type="email"
@@ -36,6 +95,9 @@ export default function SignupPage() {
                     placeholder="Enter Email Address"
                     autoComplete="email"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
                 />
 
                 <FormInput
@@ -45,6 +107,9 @@ export default function SignupPage() {
                     placeholder="Create Password"
                     autoComplete="new-password"
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
                 />
 
                 <FormInput
@@ -54,10 +119,17 @@ export default function SignupPage() {
                     placeholder="Re-enter Password"
                     autoComplete="new-password"
                     required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
                 />
 
-                <button type="submit" className="auth-primary-button">
-                    Continue
+                <button
+                    type="submit"
+                    className="auth-primary-button"
+                    disabled={loading}
+                >
+                    {loading ? "Creating Account..." : "Continue"}
                 </button>
             </form>
 

@@ -1,11 +1,17 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
+import { createClient } from "@/lib/supabase/client";
 
 interface SocialLoginButtonProps {
     provider: "google";
-    onClick?: () => void;
 }
 
-export function SocialLoginButton({ provider, onClick }: SocialLoginButtonProps) {
+export function SocialLoginButton({ provider }: SocialLoginButtonProps) {
+    const router = useRouter();
+    const supabase = createClient();
+
     const getProviderInfo = () => {
         switch (provider) {
             case "google":
@@ -21,13 +27,26 @@ export function SocialLoginButton({ provider, onClick }: SocialLoginButtonProps)
         }
     };
 
+    const handleOAuthSignIn = async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+
+        if (error) {
+            console.error("OAuth error:", error.message);
+        }
+    };
+
     const { icon, text } = getProviderInfo();
 
     return (
         <button
             type="button"
             className="auth-social-button"
-            onClick={onClick}
+            onClick={handleOAuthSignIn}
             aria-label={text}
         >
             {icon}

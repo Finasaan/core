@@ -1,4 +1,7 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
     AuthLayout,
@@ -6,13 +9,45 @@ import {
     SocialLoginButton,
     AuthDivider,
 } from "@/components/auth";
-
-export const metadata: Metadata = {
-    title: "Login",
-    description: "Sign in to your Finasaan account and continue your financial literacy journey.",
-};
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const supabase = createClient();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+
+        try {
+            const { data, error: signInError } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (signInError) {
+                setError(signInError.message);
+                return;
+            }
+
+            // Redirect to the originally requested page or dashboard
+            const redirectTo = searchParams.get("redirect") || "/dashboard";
+            router.push(redirectTo);
+            router.refresh();
+        } catch (err) {
+            setError("An unexpected error occurred. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <AuthLayout
             headerPrompt="Don't have an account?"
@@ -26,7 +61,13 @@ export default function LoginPage() {
                 </p>
             </header>
 
-            <form className="auth-form-fields">
+            <form className="auth-form-fields" onSubmit={handleSubmit}>
+                {error && (
+                    <div className="auth-error-message" role="alert">
+                        {error}
+                    </div>
+                )}
+
                 <FormInput
                     label="Email"
                     type="email"
@@ -34,6 +75,9 @@ export default function LoginPage() {
                     placeholder="Enter Email Address"
                     autoComplete="email"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
                 />
 
                 <div className="auth-password-wrapper">
@@ -47,11 +91,18 @@ export default function LoginPage() {
                         placeholder="Enter Password"
                         autoComplete="current-password"
                         required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={loading}
                     />
                 </div>
 
-                <button type="submit" className="auth-primary-button">
-                    Login
+                <button
+                    type="submit"
+                    className="auth-primary-button"
+                    disabled={loading}
+                >
+                    {loading ? "Signing in..." : "Login"}
                 </button>
             </form>
 
