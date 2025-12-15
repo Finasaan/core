@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/auth";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [email, setEmail] = useState("");
@@ -49,11 +49,7 @@ export default function LoginPage() {
     };
 
     return (
-        <AuthLayout
-            headerPrompt="Don't have an account?"
-            headerLinkText="Sign Up"
-            headerLinkHref="/signup"
-        >
+        <>
             <header className="auth-form-header">
                 <h1 className="auth-form-title">Welcome <span className="auth-form-title-dark">Back</span></h1>
                 <p className="auth-form-subtitle">
@@ -115,6 +111,20 @@ export default function LoginPage() {
             <AuthDivider />
 
             <SocialLoginButton provider="google" />
+        </>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <AuthLayout
+            headerPrompt="Don't have an account?"
+            headerLinkText="Sign Up"
+            headerLinkHref="/signup"
+        >
+            <Suspense fallback={<div className="auth-loading">Loading...</div>}>
+                <LoginForm />
+            </Suspense>
         </AuthLayout>
     );
 }
