@@ -90,7 +90,7 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
                 }),
             });
 
-            const result = await response.json();
+            const result = await response.json() as { error?: string };
 
             if (!response.ok) {
                 return { success: false, error: result.error || "Failed to save profile" };
