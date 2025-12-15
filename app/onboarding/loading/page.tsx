@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { OnboardingLayout } from "@/components/onboarding";
@@ -12,7 +12,7 @@ const facts = [
     "Only 8-10% of the population has insurance coverage. finasaan teaches you how to protect yourself and your family financially.",
 ];
 
-export default function OnboardingLoadingPage() {
+function LoadingContent() {
     const [currentFact, setCurrentFact] = useState(0);
     const [isFading, setIsFading] = useState(false);
     const router = useRouter();
@@ -44,7 +44,7 @@ export default function OnboardingLoadingPage() {
     }, []);
 
     return (
-        <OnboardingLayout>
+        <>
             <div className="loading-container">
                 <div className="loading-spinner">
                     <Image
@@ -64,7 +64,32 @@ export default function OnboardingLoadingPage() {
                     {facts[currentFact]}
                 </p>
             </div>
+        </>
+    );
+}
+
+export default function OnboardingLoadingPage() {
+    return (
+        <OnboardingLayout>
+            <Suspense fallback={
+                <div className="loading-container">
+                    <div className="loading-spinner">
+                        <Image
+                            src="/loading.svg"
+                            alt="Loading"
+                            width={96}
+                            height={96}
+                            className="loading-icon"
+                            priority
+                        />
+                    </div>
+                    <p className="loading-text">Please Wait...</p>
+                </div>
+            }>
+                <LoadingContent />
+            </Suspense>
         </OnboardingLayout>
     );
 }
+
 
