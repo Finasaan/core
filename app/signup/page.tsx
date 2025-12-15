@@ -1,5 +1,8 @@
 "use client";
 
+// Skip static generation - requires runtime env vars for Supabase
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
