@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { OnboardingLayout } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 const facts = [
     "Only 21% of Pakistani adults have access to financial services. With finasaan, you can learn to make the most of what's available to you.",
@@ -15,19 +16,35 @@ const facts = [
 function LoadingContent() {
     const [currentFact, setCurrentFact] = useState(0);
     const [isFading, setIsFading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const { submitProfile } = useOnboarding();
+    const hasSubmitted = useRef(false);
 
-    // Get destination from query param, default to step-1
-    const nextPage = searchParams.get("next") || "/onboarding/step-1";
-
-    // Auto-redirect after 3.5 seconds
+    // Submit profile on mount and redirect after completion
     useEffect(() => {
-        const timer = setTimeout(() => {
-            router.push(nextPage);
-        }, 3500);
-        return () => clearTimeout(timer);
-    }, [router, nextPage]);
+        if (hasSubmitted.current) return;
+        hasSubmitted.current = true;
+
+        const submit = async () => {
+            const result = await submitProfile();
+
+            if (result.success) {
+                // Redirect to complete page after a brief delay
+                setTimeout(() => {
+                    router.push("/onboarding/complete");
+                }, 2000);
+            } else {
+                setError(result.error || "Failed to save profile");
+                // Still redirect after error, user can update profile later
+                setTimeout(() => {
+                    router.push("/onboarding/complete");
+                }, 3000);
+            }
+        };
+
+        submit();
+    }, [submitProfile, router]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -56,7 +73,9 @@ function LoadingContent() {
                         priority
                     />
                 </div>
-                <p className="loading-text">Please Wait...</p>
+                <p className="loading-text">
+                    {error ? "Something went wrong, but we'll continue..." : "Setting up your profile..."}
+                </p>
             </div>
 
             <div className="loading-fact-card">
@@ -91,5 +110,3 @@ export default function OnboardingLoadingPage() {
         </OnboardingLayout>
     );
 }
-
-

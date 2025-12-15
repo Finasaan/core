@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 interface OnboardingLayoutProps {
     children: React.ReactNode;
@@ -7,6 +11,16 @@ interface OnboardingLayoutProps {
 }
 
 export function OnboardingLayout({ children, showSkip = false }: OnboardingLayoutProps) {
+    const router = useRouter();
+    const { submitProfile, isSubmitting } = useOnboarding();
+
+    const handleSkip = async () => {
+        // Submit whatever data we have so far
+        await submitProfile();
+        // Navigate to complete page
+        router.push("/onboarding/complete");
+    };
+
     return (
         <div className="onboarding-layout">
             {/* Grid Background */}
@@ -43,9 +57,13 @@ export function OnboardingLayout({ children, showSkip = false }: OnboardingLayou
                     priority
                 />
                 {showSkip && (
-                    <Link href="/dashboard" className="onboarding-skip-link">
-                        Skip for now
-                    </Link>
+                    <button
+                        onClick={handleSkip}
+                        disabled={isSubmitting}
+                        className="onboarding-skip-link"
+                    >
+                        {isSubmitting ? "Saving..." : "Skip for now"}
+                    </button>
                 )}
             </header>
 
