@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout, OnboardingSelect } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 const professionOptions = [
     { value: "student", label: "Student" },
@@ -16,11 +17,14 @@ const professionOptions = [
 export default function OnboardingStep2Page() {
     const [selected, setSelected] = useState<string | null>(null);
     const router = useRouter();
+    const { setOccupation } = useOnboarding();
 
     const handleContinue = () => {
         if (selected) {
-            // TODO: Save selection to state/context
-            router.push("/onboarding/loading?next=/onboarding/step-3");
+            // Save selection to context
+            setOccupation(selected);
+            // Navigate directly to step-3
+            router.push("/onboarding/step-3");
         }
     };
 

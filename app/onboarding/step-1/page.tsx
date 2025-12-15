@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout, SelectionCard } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 type KnowledgeLevel = "beginner" | "intermediate" | "advanced" | null;
 
@@ -30,11 +31,14 @@ const knowledgeLevels = [
 export default function OnboardingStep1Page() {
     const [selected, setSelected] = useState<KnowledgeLevel>(null);
     const router = useRouter();
+    const { setFinancialKnowledge } = useOnboarding();
 
     const handleContinue = () => {
         if (selected) {
-            // TODO: Save selection to state/context
-            router.push("/onboarding/loading?next=/onboarding/step-2");
+            // Save selection to context
+            setFinancialKnowledge(selected);
+            // Navigate directly to step-2
+            router.push("/onboarding/step-2");
         }
     };
 

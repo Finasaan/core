@@ -3,17 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 export default function OnboardingStartPage() {
     const [name, setName] = useState("");
     const router = useRouter();
+    const { setDisplayName } = useOnboarding();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (name.trim()) {
-            // Store name and proceed to loading screen
-            // TODO: Save to state/context
-            router.push("/onboarding/loading");
+            // Save name to context
+            setDisplayName(name.trim());
+            // Proceed to step 1
+            router.push("/onboarding/step-1");
         }
     };
 

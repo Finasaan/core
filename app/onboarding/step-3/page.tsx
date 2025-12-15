@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout, ChipSelect } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 const topicOptions = [
     { value: "stock_market", label: "Stock Market" },
@@ -18,11 +19,14 @@ const topicOptions = [
 export default function OnboardingStep3Page() {
     const [selected, setSelected] = useState<string[]>([]);
     const router = useRouter();
+    const { setInterests } = useOnboarding();
 
     const handleContinue = () => {
         if (selected.length > 0) {
-            // TODO: Save selection to state/context
-            router.push("/onboarding/loading?next=/onboarding/complete");
+            // Save selection to context
+            setInterests(selected);
+            // Navigate to loading page for final submission
+            router.push("/onboarding/loading");
         }
     };
 

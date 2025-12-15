@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout, ChoiceCard } from "@/components/onboarding";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 type Choice = "guided" | "explore" | null;
 
@@ -28,9 +29,10 @@ const choices = [
 export default function OnboardingCompletePage() {
     const [selected, setSelected] = useState<Choice>(null);
     const router = useRouter();
+    const { data } = useOnboarding();
 
-    // TODO: Get user name from context/state
-    const userName = "User";
+    // Get user name from context, fallback to "there" if not set
+    const userName = data.displayName || "there";
 
     const handleContinue = () => {
         if (selected === "guided") {
