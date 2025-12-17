@@ -582,3 +582,169 @@
         display: none;
     }
 }
+
+/* ===================================
+   Stocks Page Styles
+   =================================== */
+
+/* Stocks Search Bar */
+.stocks-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 2px solid #CBD5E1;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.stocks-search-icon {
+    flex-shrink: 0;
+}
+
+.stocks-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 16px;
+    color: #121212;
+    outline: none;
+}
+
+.stocks-search-input::placeholder {
+    color: #708090;
+}
+
+.stocks-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #708090;
+    transition: color 0.15s ease;
+}
+
+.stocks-search-clear:hover {
+    color: #121212;
+}
+
+/* Stocks List Container */
+.stocks-list-container {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stocks-list-count {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #F0F0F0;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #708090;
+    text-align: center;
+}
+
+/* ===================================
+   Pagination Styles
+   =================================== */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #F0F0F0;
+}
+
+.pagination-info {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #708090;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #121212;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #F8F8F8;
+    border-color: #121212;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-size label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #708090;
+}
+
+.pagination-select {
+    padding: 8px 12px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #121212;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+}
+
+.pagination-select:focus {
+    border-color: #159F63;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-info {
+        order: 3;
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
+}
