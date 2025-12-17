@@ -2,6 +2,15 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -20,6 +29,12 @@ interface MutualFund {
 interface NavData {
     nav_date: string;
     nav_price: number;
+}
+
+interface ChartDataPoint {
+    date: string;
+    nav: number;
+    displayDate: string;
 }
 
 interface FundDetailProps {
@@ -66,58 +81,71 @@ const TIME_RANGES: { key: TimeRange; label: string; days: number }[] = [
     { key: "5Y", label: "5Y", days: 1825 },
 ];
 
-// Simple SVG Line Chart Component
-function NavChart({ data, height = 300 }: { data: NavData[]; height?: number }) {
-    const width = 800;
-    const padding = { top: 20, right: 20, bottom: 40, left: 60 };
+// NAV History interval options (shows NAV at regular intervals)
+type HistoryInterval = "1D" | "1W" | "1M" | "3M" | "6M";
 
-    const chartData = useMemo(() => {
-        if (data.length === 0) return null;
+const HISTORY_INTERVALS: { key: HistoryInterval; label: string; daysApart: number }[] = [
+    { key: "1D", label: "Daily", daysApart: 1 },
+    { key: "1W", label: "Weekly", daysApart: 7 },
+    { key: "1M", label: "Monthly", daysApart: 30 },
+    { key: "3M", label: "Quarterly", daysApart: 90 },
+    { key: "6M", label: "Half-Yearly", daysApart: 180 },
+];
 
-        const sorted = [...data].sort((a, b) =>
-            new Date(a.nav_date).getTime() - new Date(b.nav_date).getTime()
+// Helper to sample data at intervals
+function sampleAtIntervals(data: NavData[], daysApart: number): NavData[] {
+    if (data.length === 0) return [];
+
+    // Data is sorted newest first
+    const result: NavData[] = [];
+    let lastDate: Date | null = null;
+
+    for (const nav of data) {
+        const navDate = new Date(nav.nav_date);
+
+        if (!lastDate) {
+            result.push(nav);
+            lastDate = navDate;
+        } else {
+            const daysDiff = Math.floor((lastDate.getTime() - navDate.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysDiff >= daysApart) {
+                result.push(nav);
+                lastDate = navDate;
+            }
+        }
+    }
+
+    return result;
+}
+
+// Custom Tooltip Component
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: ChartDataPoint }> }) {
+    if (active && payload && payload.length) {
+        return (
+            <div className="chart-tooltip">
+                <p className="tooltip-date">{payload[0].payload.displayDate}</p>
+                <p className="tooltip-value">{formatPrice(payload[0].value)}</p>
+            </div>
         );
+    }
+    return null;
+}
 
-        const prices = sorted.map(d => d.nav_price);
-        const minPrice = Math.min(...prices);
-        const maxPrice = Math.max(...prices);
-        const priceRange = maxPrice - minPrice || 1;
+// Recharts Area Chart Component
+function NavChart({ data, isPositive }: { data: NavData[]; isPositive: boolean }) {
+    const chartData: ChartDataPoint[] = useMemo(() => {
+        if (data.length === 0) return [];
 
-        const chartWidth = width - padding.left - padding.right;
-        const chartHeight = height - padding.top - padding.bottom;
+        return [...data]
+            .sort((a, b) => new Date(a.nav_date).getTime() - new Date(b.nav_date).getTime())
+            .map(d => ({
+                date: d.nav_date,
+                nav: d.nav_price,
+                displayDate: formatDate(d.nav_date),
+            }));
+    }, [data]);
 
-        const points = sorted.map((d, i) => ({
-            x: padding.left + (i / (sorted.length - 1 || 1)) * chartWidth,
-            y: padding.top + chartHeight - ((d.nav_price - minPrice) / priceRange) * chartHeight,
-            date: d.nav_date,
-            price: d.nav_price,
-        }));
-
-        const pathD = points.map((p, i) =>
-            `${i === 0 ? "M" : "L"} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`
-        ).join(" ");
-
-        // Create gradient area path
-        const areaD = `${pathD} L ${points[points.length - 1].x.toFixed(2)} ${height - padding.bottom} L ${padding.left} ${height - padding.bottom} Z`;
-
-        const startPrice = sorted[0].nav_price;
-        const endPrice = sorted[sorted.length - 1].nav_price;
-        const isPositive = endPrice >= startPrice;
-
-        return {
-            points,
-            pathD,
-            areaD,
-            minPrice,
-            maxPrice,
-            startPrice,
-            endPrice,
-            isPositive,
-            sorted,
-        };
-    }, [data, height]);
-
-    if (!chartData) {
+    if (chartData.length === 0) {
         return (
             <div className="nav-chart-empty">
                 No NAV data available
@@ -125,84 +153,49 @@ function NavChart({ data, height = 300 }: { data: NavData[]; height?: number }) 
         );
     }
 
-    const { pathD, areaD, minPrice, maxPrice, isPositive, sorted } = chartData;
     const color = isPositive ? "#16A34A" : "#DC2626";
-    const gradientId = `nav-gradient-${isPositive ? "up" : "down"}`;
-
-    // Y-axis labels
-    const yLabels = [minPrice, (minPrice + maxPrice) / 2, maxPrice].map(v => ({
-        value: v,
-        y: padding.top + (height - padding.top - padding.bottom) - ((v - minPrice) / (maxPrice - minPrice || 1)) * (height - padding.top - padding.bottom),
-    }));
-
-    // X-axis labels (first, middle, last dates)
-    const xLabels = [
-        { date: sorted[0].nav_date, x: padding.left },
-        { date: sorted[Math.floor(sorted.length / 2)]?.nav_date, x: width / 2 },
-        { date: sorted[sorted.length - 1].nav_date, x: width - padding.right },
-    ].filter(l => l.date);
+    const gradientId = isPositive ? "navGradientUp" : "navGradientDown";
 
     return (
-        <svg viewBox={`0 0 ${width} ${height}`} className="nav-chart" preserveAspectRatio="xMidYMid meet">
-            <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={color} stopOpacity="0.02" />
-                </linearGradient>
-            </defs>
-
-            {/* Grid lines */}
-            {yLabels.map((l, i) => (
-                <line
-                    key={i}
-                    x1={padding.left}
-                    y1={l.y}
-                    x2={width - padding.right}
-                    y2={l.y}
-                    stroke="#E5E7EB"
-                    strokeDasharray="4,4"
+        <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                    <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={color} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={color} stopOpacity={0.02} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                <XAxis
+                    dataKey="date"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString("en-PK", { month: "short", year: "2-digit" })}
+                    stroke="#9CA3AF"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    interval="preserveStartEnd"
+                    minTickGap={50}
                 />
-            ))}
-
-            {/* Area fill */}
-            <path d={areaD} fill={`url(#${gradientId})`} />
-
-            {/* Line */}
-            <path
-                d={pathD}
-                fill="none"
-                stroke={color}
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-
-            {/* Y-axis labels */}
-            {yLabels.map((l, i) => (
-                <text
-                    key={i}
-                    x={padding.left - 10}
-                    y={l.y + 4}
-                    textAnchor="end"
-                    className="chart-axis-label"
-                >
-                    {l.value.toFixed(2)}
-                </text>
-            ))}
-
-            {/* X-axis labels */}
-            {xLabels.map((l, i) => (
-                <text
-                    key={i}
-                    x={l.x}
-                    y={height - 10}
-                    textAnchor={i === 0 ? "start" : i === 2 ? "end" : "middle"}
-                    className="chart-axis-label"
-                >
-                    {new Date(l.date).toLocaleDateString("en-PK", { month: "short", year: "2-digit" })}
-                </text>
-            ))}
-        </svg>
+                <YAxis
+                    domain={["auto", "auto"]}
+                    tickFormatter={(value) => value.toFixed(1)}
+                    stroke="#9CA3AF"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    width={50}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                    type="monotone"
+                    dataKey="nav"
+                    stroke={color}
+                    strokeWidth={2}
+                    fill={`url(#${gradientId})`}
+                    activeDot={{ r: 6, fill: color, strokeWidth: 2, stroke: "#fff" }}
+                />
+            </AreaChart>
+        </ResponsiveContainer>
     );
 }
 
@@ -212,6 +205,7 @@ export function FundDetail({ fundId }: FundDetailProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
+    const [historyInterval, setHistoryInterval] = useState<HistoryInterval>("1M");
 
     useEffect(() => {
         async function fetchData() {
@@ -374,7 +368,10 @@ export function FundDetail({ fundId }: FundDetailProps) {
                     )}
 
                     <div className="fund-chart-container">
-                        <NavChart data={filteredNavData} />
+                        <NavChart
+                            data={filteredNavData}
+                            isPositive={periodPerformance ? periodPerformance.percentChange >= 0 : true}
+                        />
                     </div>
                 </div>
             )}
@@ -413,10 +410,6 @@ export function FundDetail({ fundId }: FundDetailProps) {
                                 {formatPrice(Math.min(...navHistory.slice(0, 260).map(n => n.nav_price)))}
                             </span>
                         </div>
-                        <div className="stock-stat-card">
-                            <span className="stock-stat-label">Data Points</span>
-                            <span className="stock-stat-value">{navHistory.length}</span>
-                        </div>
                     </>
                 )}
             </div>
@@ -431,32 +424,50 @@ export function FundDetail({ fundId }: FundDetailProps) {
                 </div>
             )}
 
-            {/* Recent NAV Table */}
+            {/* NAV History Table */}
             {navHistory.length > 0 && (
                 <div className="stock-trades-card">
-                    <h3 className="stock-section-title">Recent NAV History</h3>
+                    <div className="fund-chart-header">
+                        <h3 className="stock-section-title">NAV History</h3>
+                        <div className="fund-time-range">
+                            {HISTORY_INTERVALS.map(interval => (
+                                <button
+                                    key={interval.key}
+                                    className={`time-range-btn ${historyInterval === interval.key ? "active" : ""}`}
+                                    onClick={() => setHistoryInterval(interval.key)}
+                                >
+                                    {interval.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                     <div className="stock-trades-table">
                         <div className="fund-nav-header">
                             <span>Date</span>
                             <span>NAV</span>
                             <span>Change</span>
                         </div>
-                        {navHistory.slice(0, 10).map((nav, i) => {
-                            const prevNav = navHistory[i + 1];
-                            const change = prevNav ? nav.nav_price - prevNav.nav_price : 0;
-                            const percentChange = prevNav ? ((change / prevNav.nav_price) * 100) : 0;
-                            const isUp = change >= 0;
+                        {(() => {
+                            const interval = HISTORY_INTERVALS.find(i => i.key === historyInterval);
+                            const sampledData = sampleAtIntervals(navHistory, interval?.daysApart || 30);
 
-                            return (
-                                <div key={nav.nav_date} className={`fund-nav-row ${isUp ? "row-up" : "row-down"}`}>
-                                    <span>{formatDate(nav.nav_date)}</span>
-                                    <span>{formatPrice(nav.nav_price)}</span>
-                                    <span className={isUp ? "highlight-up" : "highlight-down"}>
-                                        {isUp ? "↑" : "↓"} {formatPercent(percentChange)}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                            return sampledData.slice(0, 20).map((nav, i) => {
+                                const prevNav = sampledData[i + 1];
+                                const change = prevNav ? nav.nav_price - prevNav.nav_price : 0;
+                                const percentChange = prevNav ? ((change / prevNav.nav_price) * 100) : 0;
+                                const isUp = change >= 0;
+
+                                return (
+                                    <div key={nav.nav_date} className={`fund-nav-row ${isUp ? "row-up" : "row-down"}`}>
+                                        <span>{formatDate(nav.nav_date)}</span>
+                                        <span>{formatPrice(nav.nav_price)}</span>
+                                        <span className={isUp ? "highlight-up" : "highlight-down"}>
+                                            {prevNav ? (isUp ? "↑" : "↓") : "–"} {prevNav ? formatPercent(percentChange) : ""}
+                                        </span>
+                                    </div>
+                                );
+                            });
+                        })()}
                     </div>
                 </div>
             )}

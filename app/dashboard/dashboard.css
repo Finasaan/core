@@ -1484,3 +1484,27 @@
         gap: 12px;
     }
 }
+
+/* Chart Tooltip */
+.chart-tooltip {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-date {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 12px;
+    color: #6B7280;
+    margin: 0 0 4px 0;
+}
+
+.tooltip-value {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #121212;
+    margin: 0;
+}
