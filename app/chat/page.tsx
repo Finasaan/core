@@ -499,7 +499,7 @@ export default function ChatPage() {
     try {
       const res = await fetch(`${API_BASE}/chatbot/chats`);
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { chats?: ChatSession[] };
         setSessions(data.chats || []);
       }
     } catch {
@@ -511,7 +511,7 @@ export default function ChatPage() {
     try {
       const res = await fetch(`${API_BASE}/chatbot/chats/${chatId}`);
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { messages?: ChatMessage[] };
         setMessages(
           (data.messages || []).map((m: ChatMessage, i: number) => ({
             ...m,
@@ -599,10 +599,17 @@ export default function ChatPage() {
         throw new Error(`Request failed: ${res.status}`);
       }
 
-      const data = await res.json();
+      const data = (await res.json()) as {
+        error?: boolean;
+        message?: string;
+        chat_id?: string;
+        answer: string;
+        sources?: ChatMessage["sources"];
+        metadata?: { model?: string };
+      };
 
       if (data.error) {
-        throw new Error(data.message || data.error);
+        throw new Error(data.message || "Unknown error");
       }
 
       // Update chat ID if new
