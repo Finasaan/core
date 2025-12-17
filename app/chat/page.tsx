@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Send,
   Bot,
@@ -87,9 +89,8 @@ function ModelSelector({
                   onChange(model.id);
                   setOpen(false);
                 }}
-                className={`w-full px-4 py-2.5 text-left text-sm hover:bg-accent transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                  value === model.id ? "bg-accent font-medium" : ""
-                }`}
+                className={`w-full px-4 py-2.5 text-left text-sm hover:bg-accent transition-colors first:rounded-t-lg last:rounded-b-lg ${value === model.id ? "bg-accent font-medium" : ""
+                  }`}
               >
                 {model.name}
               </button>
@@ -219,13 +220,12 @@ function UploadModal({
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-              isDragOver
-                ? "border-primary bg-primary/5"
-                : file
+            className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${isDragOver
+              ? "border-primary bg-primary/5"
+              : file
                 ? "border-green-500 bg-green-500/5"
                 : "border-border hover:border-muted-foreground"
-            }`}
+              }`}
           >
             <input
               ref={fileInputRef}
@@ -355,20 +355,18 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   return (
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-          isUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-muted-foreground"
-        }`}
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isUser
+          ? "bg-primary text-primary-foreground"
+          : "bg-muted text-muted-foreground"
+          }`}
       >
         {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
       </div>
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-          isUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-foreground"
-        }`}
+        className={`max-w-[80%] rounded-2xl px-4 py-3 ${isUser
+          ? "bg-primary text-primary-foreground"
+          : "bg-muted text-foreground"
+          }`}
       >
         <div className="whitespace-pre-wrap text-sm leading-relaxed">
           {message.content}
@@ -424,7 +422,16 @@ function ChatSidebar({
 }) {
   return (
     <div className="w-64 border-r border-border bg-card/50 flex flex-col">
-      <div className="p-4 border-b border-border space-y-2">
+      <div className="p-4 border-b border-border space-y-4">
+        <Link href="/dashboard" className="flex justify-center">
+          <Image
+            src="/logodark.svg"
+            alt="Finasaan"
+            width={100}
+            height={28}
+            priority
+          />
+        </Link>
         <button
           onClick={onNew}
           className="w-full flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
@@ -451,11 +458,10 @@ function ChatSidebar({
               <button
                 key={session.id}
                 onClick={() => onSelect(session.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  currentId === session.id
-                    ? "bg-accent font-medium"
-                    : "hover:bg-accent/50"
-                }`}
+                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${currentId === session.id
+                  ? "bg-accent font-medium"
+                  : "hover:bg-accent/50"
+                  }`}
               >
                 <div className="truncate">{session.title}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">
