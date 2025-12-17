@@ -2,8 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Updates the Supabase session in middleware
- * This refreshes the session and updates cookies on each request
+ * Updates the Supabase session for middleware requests.
+ * This handles cookie-based authentication for SSR.
  */
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -33,8 +33,7 @@ export async function updateSession(request: NextRequest) {
         }
     );
 
-    // IMPORTANT: Do NOT use supabase.auth.getSession() here as it doesn't
-    // validate the session. Use getUser() which validates the JWT.
+    // Refresh session if expired - required for Server Components
     const {
         data: { user },
     } = await supabase.auth.getUser();

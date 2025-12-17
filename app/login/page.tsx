@@ -57,7 +57,7 @@ function LoginForm() {
                 </p>
             </header>
 
-            <form className="auth-form-fields" onSubmit={handleSubmit}>
+            <form className="auth-form-fields" method="POST" onSubmit={handleSubmit}>
                 {error && (
                     <div className="auth-error-message" role="alert">
                         {error}

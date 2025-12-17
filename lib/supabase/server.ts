@@ -1,9 +1,9 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 /**
- * Creates a Supabase client for use in Server Components/Actions
- * Reads session from cookies and handles token refresh
+ * Creates a Supabase client for use in Server Components and Route Handlers.
+ * This client handles cookie-based session management for SSR.
  */
 export async function createClient() {
     const cookieStore = await cookies();
