@@ -19,14 +19,16 @@ const topicOptions = [
 export default function OnboardingStep3Page() {
     const [selected, setSelected] = useState<string[]>([]);
     const router = useRouter();
-    const { setInterests } = useOnboarding();
+    const { setInterests, isSaving } = useOnboarding();
 
-    const handleContinue = () => {
-        if (selected.length > 0) {
-            // Save selection to context
-            setInterests(selected);
-            // Navigate to loading page for final submission
-            router.push("/onboarding/loading");
+    const handleContinue = async () => {
+        if (selected.length > 0 && !isSaving) {
+            // Save selection to context AND persist to spine
+            const success = await setInterests(selected);
+            if (success) {
+                // Navigate to loading page for final submission
+                router.push("/onboarding/loading");
+            }
         }
     };
 

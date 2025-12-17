@@ -17,14 +17,15 @@ const professionOptions = [
 export default function OnboardingStep2Page() {
     const [selected, setSelected] = useState<string | null>(null);
     const router = useRouter();
-    const { setOccupation } = useOnboarding();
+    const { setOccupation, isSaving } = useOnboarding();
 
-    const handleContinue = () => {
-        if (selected) {
-            // Save selection to context
-            setOccupation(selected);
-            // Navigate directly to step-3
-            router.push("/onboarding/step-3");
+    const handleContinue = async () => {
+        if (selected && !isSaving) {
+            // Save selection to context AND persist to spine
+            const success = await setOccupation(selected);
+            if (success) {
+                router.push("/onboarding/step-3");
+            }
         }
     };
 

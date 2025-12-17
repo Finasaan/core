@@ -31,14 +31,15 @@ const knowledgeLevels = [
 export default function OnboardingStep1Page() {
     const [selected, setSelected] = useState<KnowledgeLevel>(null);
     const router = useRouter();
-    const { setFinancialKnowledge } = useOnboarding();
+    const { setFinancialKnowledge, isSaving } = useOnboarding();
 
-    const handleContinue = () => {
-        if (selected) {
-            // Save selection to context
-            setFinancialKnowledge(selected);
-            // Navigate directly to step-2
-            router.push("/onboarding/step-2");
+    const handleContinue = async () => {
+        if (selected && !isSaving) {
+            // Save selection to context AND persist to spine
+            const success = await setFinancialKnowledge(selected);
+            if (success) {
+                router.push("/onboarding/step-2");
+            }
         }
     };
 

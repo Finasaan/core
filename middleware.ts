@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
+// Spine API base URL
+const SPINE_API_URL = process.env.SPINE_API_URL || "http://localhost:8787";
+
 // Routes that require authentication
 const protectedRoutes = ["/dashboard", "/onboarding", "/profile", "/settings"];
 
+// Routes where we should check onboarding completion (excludes onboarding routes)
+const requiresOnboardingCheck = ["/dashboard", "/profile", "/settings"];
+
 // Routes that should redirect to dashboard if already authenticated
 const authRoutes = ["/login", "/signup"];
+
+// Onboarding routes (user can access these even without completing onboarding)
+const onboardingRoutes = ["/onboarding"];
 
 export async function middleware(request: NextRequest) {
   // Check if this is the preview environment
@@ -31,13 +40,20 @@ export async function middleware(request: NextRequest) {
   const { user, supabaseResponse } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
-  // Check if current path matches protected routes
+  // Check route types
   const isProtectedRoute = protectedRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   );
 
-  // Check if current path matches auth routes
   const isAuthRoute = authRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+
+  const isOnboardingRoute = onboardingRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+
+  const needsOnboardingCheck = requiresOnboardingCheck.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   );
 
@@ -48,7 +64,37 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
+  // For authenticated users on routes that require onboarding check
+  if (user && needsOnboardingCheck) {
+    try {
+      // Call spine to check if user has completed onboarding
+      const statusResponse = await fetch(
+        `${SPINE_API_URL}/api/auth/onboarding-status/${user.id}`,
+        {
+          // Short timeout to avoid blocking requests
+          signal: AbortSignal.timeout(3000)
+        }
+      );
+
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json() as {
+          success: boolean;
+          data?: { hasCompletedOnboarding: boolean };
+        };
+
+        // If user hasn't completed onboarding, redirect them
+        if (!statusData.data?.hasCompletedOnboarding) {
+          return NextResponse.redirect(new URL("/onboarding", request.url));
+        }
+      }
+    } catch (error) {
+      // If spine call fails, log but don't block the request
+      console.error("Failed to check onboarding status:", error);
+    }
+  }
+
   // Redirect authenticated users from auth routes to dashboard
+  // But only if they've completed onboarding (checked above for dashboard)
   if (isAuthRoute && user) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
@@ -69,3 +115,4 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
+
