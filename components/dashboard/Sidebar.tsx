@@ -27,8 +27,8 @@ const learnItems: SidebarItem[] = [
 const infoItems: SidebarItem[] = [
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
+    { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
     { label: "Insurance", href: "#", icon: "shield", comingSoon: true },
-    { label: "Taxation", href: "/dashboard/taxation", icon: "money" },
 ];
 
 interface SidebarNavItemProps {
@@ -115,6 +115,12 @@ function getIcon(name: string): React.ReactElement {
                 <path d="M2 8.5c0-2.21 1.79-4 4-4h12c2.21 0 4 1.79 4 4v7c0 2.21-1.79 4-4 4H6c-2.21 0-4-1.79-4-4v-7z" />
                 <circle cx="12" cy="12" r="2.5" />
                 <path d="M5.5 12h.01M18.5 12h.01" />
+            </svg>
+        ),
+        calculator: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="4" y="2" width="16" height="20" rx="2" />
+                <path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2" />
             </svg>
         ),
     };
