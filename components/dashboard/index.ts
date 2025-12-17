@@ -7,4 +7,5 @@ export { Pagination } from "./Pagination";
 export { StocksList } from "./StocksList";
 export { FundsList } from "./FundsList";
 export { StockDetail } from "./StockDetail";
+export { FundDetail } from "./FundDetail";
 export type { AssetItem } from "./AssetList";
