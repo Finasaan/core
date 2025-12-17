@@ -1,6 +1,29 @@
-import { DashboardPanel } from "@/components/dashboard";
+"use client";
+
+import { useState, useEffect } from "react";
+import { FundsList } from "@/components/dashboard";
+
+// Custom debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
 
 export default function FundsPage() {
+    const [searchInput, setSearchInput] = useState("");
+    const debouncedSearch = useDebounce(searchInput, 300);
+
     return (
         <>
             <header className="dashboard-header">
@@ -8,10 +31,33 @@ export default function FundsPage() {
                 <p className="dashboard-date">Pakistan Mutual Fund Market</p>
             </header>
 
-            <DashboardPanel title="All Mutual Funds" className="coming-soon-panel">
-                <span className="coming-soon-icon">💰</span>
-                <p className="coming-soon-text">Full mutual fund listing coming soon</p>
-            </DashboardPanel>
+            {/* Search Bar */}
+            <div className="stocks-search-bar">
+                <svg className="stocks-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#708090" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input
+                    type="text"
+                    className="stocks-search-input"
+                    placeholder="Search mutual funds by symbol or name..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                />
+                {searchInput && (
+                    <button
+                        className="stocks-search-clear"
+                        onClick={() => setSearchInput("")}
+                        aria-label="Clear search"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                )}
+            </div>
+
+            <FundsList searchQuery={debouncedSearch} />
         </>
     );
 }
