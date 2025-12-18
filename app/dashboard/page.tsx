@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DashboardPanel, AssetList, AssetItem } from "@/components/dashboard";
+import { createClient } from "@/lib/supabase/client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -10,6 +11,8 @@ export default function DashboardPage() {
     const [funds, setFunds] = useState<AssetItem[]>([]);
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingFunds, setLoadingFunds] = useState(true);
+    const [userName, setUserName] = useState("");
+    const supabase = createClient();
 
     useEffect(() => {
         // Fetch top stocks
@@ -33,7 +36,31 @@ export default function DashboardPage() {
             })
             .catch(console.error)
             .finally(() => setLoadingFunds(false));
-    }, []);
+
+        // Fetch user profile for name
+        const fetchProfile = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session?.access_token) return;
+
+                const response = await fetch(`${API_URL}/api/profile`, {
+                    headers: {
+                        Authorization: `Bearer ${session.access_token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const result = await response.json() as { success: boolean; data?: { display_name?: string } };
+                    if (result.success && result.data?.display_name) {
+                        setUserName(result.data.display_name.split(" ")[0]); // First name only
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch profile:", error);
+            }
+        };
+        fetchProfile();
+    }, [supabase.auth]);
 
     const today = new Date().toLocaleDateString("en-US", {
         weekday: "long",
@@ -45,7 +72,10 @@ export default function DashboardPage() {
     return (
         <>
             <header className="dashboard-header">
-                <h1 className="dashboard-greeting">Good morning</h1>
+                <h1 className="dashboard-greeting">
+                    <span className="greeting-green">Welcome back</span>
+                    {userName && <>, <span className="greeting-dark">{userName}</span></>}
+                </h1>
                 <p className="dashboard-date">{today}</p>
             </header>
 

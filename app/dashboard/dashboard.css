@@ -379,6 +379,14 @@
     margin: 0 0 8px 0;
 }
 
+.greeting-green {
+    color: #159F63;
+}
+
+.greeting-dark {
+    color: #121212;
+}
+
 .dashboard-date {
     font-family: 'Satoshi', sans-serif;
     font-size: 16px;
@@ -395,10 +403,15 @@
 
 /* Dashboard Panel */
 .dashboard-panel {
-    background: #FFFFFF;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-panel:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .dashboard-panel-title {
@@ -406,7 +419,18 @@
     font-size: 18px;
     font-weight: 600;
     color: #121212;
-    margin: 0 0 16px 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-panel-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #159F63 0%, #10B981 100%);
+    border-radius: 2px;
 }
 
 /* Asset List */
@@ -420,8 +444,8 @@
 }
 
 .asset-list-item {
-    border-bottom: 1px solid #F0F0F0;
-    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    padding-bottom: 4px;
 }
 
 .asset-list-item:last-child {
@@ -434,13 +458,15 @@
     align-items: center;
     gap: 12px;
     text-decoration: none;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background-color 0.15s ease;
+    padding: 12px 14px;
+    border-radius: 12px;
+    transition: all 0.15s ease;
+    background: transparent;
 }
 
 .asset-list-link:hover {
-    background: rgba(0, 0, 0, 0.02);
+    background: linear-gradient(135deg, rgba(21, 159, 99, 0.04) 0%, rgba(16, 185, 129, 0.02) 100%);
+    transform: translateX(4px);
 }
 
 .asset-symbol {
@@ -592,15 +618,23 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    background: #FFFFFF;
-    border: 2px solid #CBD5E1;
-    border-radius: 12px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border: 1px solid rgba(21, 159, 99, 0.12);
+    border-radius: 16px;
     margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stocks-search-bar:focus-within {
+    border-color: #159F63;
+    box-shadow: 0 0 0 3px rgba(21, 159, 99, 0.08);
 }
 
 .stocks-search-icon {
     flex-shrink: 0;
+    color: #9CA3AF;
 }
 
 .stocks-search-input {
@@ -614,43 +648,44 @@
 }
 
 .stocks-search-input::placeholder {
-    color: #708090;
+    color: #9CA3AF;
 }
 
 .stocks-search-clear {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     padding: 0;
-    background: transparent;
+    background: #F3F4F6;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    color: #708090;
-    transition: color 0.15s ease;
+    color: #6B7280;
+    transition: all 0.15s ease;
 }
 
 .stocks-search-clear:hover {
-    color: #121212;
+    background: #E5E7EB;
+    color: #374151;
 }
 
 /* Stocks List Container */
 .stocks-list-container {
-    background: #FFFFFF;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .stocks-list-count {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #F0F0F0;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
     font-family: 'Satoshi', sans-serif;
     font-size: 14px;
-    color: #708090;
+    color: #9CA3AF;
     text-align: center;
 }
 
