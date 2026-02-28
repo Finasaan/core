@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { WatchlistToggle } from "./WatchlistToggle";
 import {
     AreaChart,
     Area,
@@ -306,15 +307,18 @@ export function FundDetail({ fundId }: FundDetailProps) {
                         {fund.symbol && <div className="stock-symbol-badge">{fund.symbol}</div>}
                         <h1 className="fund-name">{fund.name}</h1>
                     </div>
-                    <div className="fund-badges">
-                        {fund.risk_profile && (
-                            <span className={`fund-badge risk-${fund.risk_profile.toLowerCase()}`}>
-                                {fund.risk_profile}
-                            </span>
-                        )}
-                        {fund.is_shariah_compliant && (
-                            <span className="fund-badge shariah">Shariah</span>
-                        )}
+                    <div className="fund-header-right">
+                        <div className="fund-badges">
+                            {fund.risk_profile && (
+                                <span className={`fund-badge risk-${fund.risk_profile.toLowerCase()}`}>
+                                    {fund.risk_profile}
+                                </span>
+                            )}
+                            {fund.is_shariah_compliant && (
+                                <span className="fund-badge shariah">Shariah</span>
+                            )}
+                        </div>
+                        <WatchlistToggle assetId={fund.id} type="fund" />
                     </div>
                 </div>
 

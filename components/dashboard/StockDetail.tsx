@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { WatchlistToggle } from "./WatchlistToggle";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -147,8 +148,11 @@ export function StockDetail({ symbol }: StockDetailProps) {
             {/* Main Price Card */}
             <div className="stock-price-card">
                 <div className="stock-price-header">
-                    <div className="stock-symbol-badge">{company.symbol}</div>
-                    <h1 className="stock-company-name">{company.company_name || company.symbol}</h1>
+                    <div className="stock-price-header-left">
+                        <div className="stock-symbol-badge">{company.symbol}</div>
+                        <h1 className="stock-company-name">{company.company_name || company.symbol}</h1>
+                    </div>
+                    <WatchlistToggle assetId={company.id} type="stock" />
                 </div>
 
                 {latestPrice ? (
