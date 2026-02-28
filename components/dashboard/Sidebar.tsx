@@ -27,6 +27,7 @@ const learnItems: SidebarItem[] = [
 const infoItems: SidebarItem[] = [
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
+    { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
     { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
     { label: "Insurance", href: "#", icon: "shield", comingSoon: true },
 ];
@@ -117,6 +118,12 @@ function getIcon(name: string): React.ReactElement {
                 <path d="M5.5 12h.01M18.5 12h.01" />
             </svg>
         ),
+        portfolio: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5z" />
+                <path d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" />
+            </svg>
+        ),
         calculator: (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="4" y="2" width="16" height="20" rx="2" />
@@ -145,7 +152,7 @@ function SidebarSection({ title, items, pathname }: SidebarSectionProps) {
                     <SidebarNavItem
                         key={item.label}
                         item={item}
-                        isActive={pathname === item.href}
+                        isActive={pathname === item.href || (item.href !== "#" && item.href !== "/dashboard" && pathname.startsWith(item.href + "/"))}
                     />
                 ))}
             </div>

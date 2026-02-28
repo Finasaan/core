@@ -1915,3 +1915,1038 @@
     margin: 16px 0 0 0;
     font-style: italic;
 }
+
+/* ========================================================================
+   PORTFOLIO STYLES (P-1 through P-5)
+   ======================================================================== */
+
+/* ---- Dialog Overlay & Base ---- */
+
+.pf-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.pf-dialog {
+    background: #FFFFFF;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    animation: pf-dialog-in 0.2s ease-out;
+}
+
+.pf-dialog-sm {
+    max-width: 380px;
+}
+
+.pf-dialog-md {
+    max-width: 520px;
+}
+
+@keyframes pf-dialog-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.pf-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 0;
+}
+
+.pf-dialog-title {
+    font-family: 'Satoshi', -apple-system, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #121212;
+    margin: 0;
+}
+
+.pf-dialog-close {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pf-dialog-close:hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+.pf-dialog-form {
+    padding: 20px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pf-dialog-text {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #6B7280;
+    padding: 16px 28px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.pf-dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 4px;
+}
+
+/* ---- Form inputs ---- */
+
+.pf-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pf-input-label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.pf-input-optional {
+    font-weight: 400;
+    color: #9CA3AF;
+}
+
+.pf-input {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #121212;
+    background: #FAFBFC;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pf-input:focus {
+    border-color: #159F63;
+    box-shadow: 0 0 0 3px rgba(21, 159, 99, 0.1);
+}
+
+.pf-input::placeholder {
+    color: #9CA3AF;
+}
+
+.pf-input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ---- Buttons ---- */
+
+.pf-btn-primary {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: #159F63;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.pf-btn-primary:hover:not(:disabled) {
+    background: #128A55;
+}
+
+.pf-btn-primary:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.pf-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pf-btn-secondary {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    background: #F3F4F6;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.pf-btn-secondary:hover:not(:disabled) {
+    background: #E5E7EB;
+}
+
+.pf-btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pf-btn-danger {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: #DC2626;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.pf-btn-danger:hover:not(:disabled) {
+    background: #B91C1C;
+}
+
+.pf-btn-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- Error text ---- */
+
+.pf-error {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    color: #DC2626;
+    margin: 0;
+}
+
+/* ---- Portfolio Grid (list page) ---- */
+
+.pf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.pf-card {
+    position: relative;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.pf-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.pf-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pf-card-top {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.pf-card-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: rgba(21, 159, 99, 0.08);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pf-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pf-card-name {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #121212;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pf-card-desc {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    color: #708090;
+    margin: 4px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pf-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pf-card-holdings,
+.pf-card-date {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+.pf-card-holdings {
+    color: #159F63;
+    font-weight: 600;
+}
+
+.pf-card-delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #D1D5DB;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    opacity: 0;
+}
+
+.pf-card:hover .pf-card-delete {
+    opacity: 1;
+}
+
+.pf-card-delete:hover {
+    color: #DC2626;
+    background: rgba(220, 38, 38, 0.06);
+}
+
+/* Add new portfolio card */
+
+.pf-card-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed #E5E7EB;
+    background: transparent;
+    cursor: pointer;
+    min-height: 120px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.pf-card-add:hover {
+    border-color: #159F63;
+    background: rgba(21, 159, 99, 0.02);
+    box-shadow: none;
+    transform: none;
+}
+
+.pf-card-add-text {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #9CA3AF;
+    font-weight: 500;
+}
+
+/* Skeleton loading */
+
+.pf-card-skeleton {
+    pointer-events: none;
+}
+
+.skeleton-line {
+    background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+
+.w-32 { width: 128px; }
+.w-48 { width: 192px; }
+.h-4 { height: 16px; }
+.h-6 { height: 24px; }
+.mt-2 { margin-top: 8px; }
+
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ---- Empty state ---- */
+
+.pf-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.pf-empty-icon {
+    margin-bottom: 16px;
+}
+
+.pf-empty-title {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 8px;
+}
+
+.pf-empty-text {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #9CA3AF;
+    margin: 0 0 24px;
+    max-width: 340px;
+}
+
+/* ---- Toggle group (stock/fund) ---- */
+
+.pf-toggle-group {
+    display: flex;
+    background: #F3F4F6;
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.pf-toggle-btn {
+    flex: 1;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B7280;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pf-toggle-btn:hover {
+    color: #374151;
+}
+
+.pf-toggle-active {
+    background: #FFFFFF;
+    color: #121212;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Asset Picker (search dropdown) ---- */
+
+.pf-asset-picker {
+    position: relative;
+}
+
+.pf-asset-spinner {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #E5E7EB;
+    border-top-color: #159F63;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+.pf-asset-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.pf-asset-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.1s;
+}
+
+.pf-asset-option:hover {
+    background: #F3F4F6;
+}
+
+.pf-asset-option-symbol {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #121212;
+    min-width: 70px;
+}
+
+.pf-asset-option-name {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    color: #708090;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pf-asset-no-results {
+    padding: 16px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    color: #9CA3AF;
+    text-align: center;
+}
+
+/* Selected asset chip */
+
+.pf-asset-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(21, 159, 99, 0.06);
+    border: 1px solid rgba(21, 159, 99, 0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.pf-asset-selected-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pf-asset-selected-symbol {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #159F63;
+}
+
+.pf-asset-selected-name {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    color: #708090;
+}
+
+.pf-asset-clear {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.pf-asset-clear:hover {
+    color: #DC2626;
+    background: rgba(220, 38, 38, 0.06);
+}
+
+/* ---- Portfolio Detail Header ---- */
+
+.pf-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.pf-detail-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pf-back-link {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #159F63;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+    transition: opacity 0.15s;
+}
+
+.pf-back-link:hover {
+    opacity: 0.8;
+}
+
+/* ---- Dashboard Stats ---- */
+
+.pf-dashboard {
+    margin-bottom: 24px;
+}
+
+.pf-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.pf-stat-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pf-stat-label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #708090;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pf-stat-value {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #121212;
+}
+
+.pf-stat-sub {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pf-stat-up .pf-stat-value,
+.pf-stat-up .pf-stat-sub {
+    color: #16A34A;
+}
+
+.pf-stat-down .pf-stat-value,
+.pf-stat-down .pf-stat-sub {
+    color: #DC2626;
+}
+
+/* ---- Allocation Chart ---- */
+
+.pf-allocation-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pf-chart-wrap {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.pf-chart-empty {
+    padding: 40px;
+    text-align: center;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #9CA3AF;
+}
+
+.pf-chart-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pf-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-chart-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.pf-chart-legend-label {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.pf-chart-legend-pct {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #708090;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+/* ---- Section title ---- */
+
+.pf-section {
+    margin-top: 24px;
+}
+
+.pf-section-title {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #121212;
+    margin: 0 0 16px;
+    padding-left: 14px;
+    position: relative;
+}
+
+.pf-section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    border-radius: 2px;
+    background: #159F63;
+}
+
+/* ---- Holdings Table ---- */
+
+.pf-holdings-wrap {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.pf-holdings-table-scroll {
+    overflow-x: auto;
+}
+
+.pf-holdings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Satoshi', sans-serif;
+}
+
+.pf-holdings-table thead tr {
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.pf-holdings-table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.pf-th-name {
+    text-align: left !important;
+}
+
+.pf-th-actions {
+    width: 40px;
+}
+
+.pf-holding-row {
+    border-bottom: 1px solid #F9FAFB;
+    transition: background 0.1s;
+}
+
+.pf-holding-row:hover {
+    background: rgba(21, 159, 99, 0.02);
+}
+
+.pf-holding-row td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #121212;
+}
+
+.pf-holding-name-cell {
+    text-align: left;
+}
+
+.pf-holding-name-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pf-holding-symbol {
+    font-weight: 700;
+    font-size: 14px;
+    color: #121212;
+}
+
+.pf-holding-name {
+    font-size: 12px;
+    color: #708090;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.pf-holding-lots-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #9CA3AF;
+    margin-top: 4px;
+}
+
+.pf-chevron {
+    transition: transform 0.2s;
+}
+
+.pf-chevron-up {
+    transform: rotate(180deg);
+}
+
+.pf-holding-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.pf-up {
+    color: #16A34A !important;
+}
+
+.pf-down {
+    color: #DC2626 !important;
+}
+
+.pf-pl-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.pf-pl-pct {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.pf-holding-actions {
+    text-align: center;
+    width: 40px;
+}
+
+.pf-lot-delete {
+    background: none;
+    border: none;
+    color: #D1D5DB;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+    opacity: 0;
+}
+
+.pf-holding-row:hover .pf-lot-delete,
+.pf-lot-row:hover .pf-lot-delete {
+    opacity: 1;
+}
+
+.pf-lot-delete:hover {
+    color: #DC2626;
+    background: rgba(220, 38, 38, 0.06);
+}
+
+.pf-lot-delete:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Lot sub-rows */
+
+.pf-lot-row {
+    background: #FAFBFC;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.pf-lot-row td {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.pf-lot-date {
+    text-align: left;
+    padding-left: 32px !important;
+    font-style: italic;
+}
+
+/* Holdings empty */
+
+.pf-holdings-empty {
+    padding: 48px 24px;
+    text-align: center;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #9CA3AF;
+}
+
+/* ---- Loading / Error states ---- */
+
+.pf-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    gap: 16px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #9CA3AF;
+}
+
+.pf-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #E5E7EB;
+    border-top-color: #159F63;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.pf-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    gap: 16px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    color: #DC2626;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 1024px) {
+    .pf-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .pf-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-chart-wrap {
+        flex-direction: column;
+    }
+
+    .pf-detail-header {
+        flex-direction: column;
+    }
+
+    .pf-input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-holdings-table th,
+    .pf-holdings-table td {
+        padding: 10px 10px;
+        font-size: 12px;
+    }
+
+    .pf-stat-value {
+        font-size: 18px;
+    }
+}
