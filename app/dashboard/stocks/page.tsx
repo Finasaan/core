@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { StocksList } from "@/components/dashboard";
+import type { Sector } from "@/lib/sectors";
+import { getSectors } from "@/lib/sectors";
+
+// Bills & bonds sector to exclude from filter
+const BILLS_BONDS_SECTOR_ID = "978757d6-3c54-4704-bf4b-5f0e489ab668";
 
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -23,6 +28,19 @@ function useDebounce<T>(value: T, delay: number): T {
 export default function StocksPage() {
     const [searchInput, setSearchInput] = useState("");
     const debouncedSearch = useDebounce(searchInput, 300);
+    const [sectors, setSectors] = useState<Sector[]>([]);
+    const [selectedSector, setSelectedSector] = useState("");
+
+    // Fetch sectors for filter chips
+    useEffect(() => {
+        getSectors().then((data) => {
+            setSectors(
+                data.filter(
+                    (s) => s.id !== BILLS_BONDS_SECTOR_ID && s.company_count > 0
+                )
+            );
+        });
+    }, []);
 
     return (
         <>
@@ -57,7 +75,31 @@ export default function StocksPage() {
                 )}
             </div>
 
-            <StocksList searchQuery={debouncedSearch} />
+            {/* Sector Filter Chips */}
+            {sectors.length > 0 && (
+                <div className="sector-filter-bar">
+                    <button
+                        className={`sector-chip ${selectedSector === "" ? "active" : ""}`}
+                        onClick={() => setSelectedSector("")}
+                    >
+                        All Sectors
+                    </button>
+                    {sectors.map((sector) => (
+                        <button
+                            key={sector.id}
+                            className={`sector-chip ${selectedSector === sector.id ? "active" : ""}`}
+                            onClick={() =>
+                                setSelectedSector(selectedSector === sector.id ? "" : sector.id)
+                            }
+                        >
+                            {sector.name}
+                            <span className="sector-chip-count">{sector.company_count}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            <StocksList searchQuery={debouncedSearch} sectorId={selectedSector} />
         </>
     );
 }

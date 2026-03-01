@@ -8,6 +8,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
 interface StocksListProps {
     searchQuery?: string;
+    sectorId?: string;
     initialPageSize?: number;
 }
 
@@ -21,7 +22,7 @@ interface ApiResponse {
     };
 }
 
-export function StocksList({ searchQuery = "", initialPageSize = 20 }: StocksListProps) {
+export function StocksList({ searchQuery = "", sectorId = "", initialPageSize = 20 }: StocksListProps) {
     const [stocks, setStocks] = useState<AssetItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -44,6 +45,10 @@ export function StocksList({ searchQuery = "", initialPageSize = 20 }: StocksLis
                 params.set("search", searchQuery.trim());
             }
 
+            if (sectorId.trim()) {
+                params.set("sector", sectorId.trim());
+            }
+
             const response = await fetch(`${API_URL}/api/psx/companies?${params}`);
             const data = await response.json() as ApiResponse;
 
@@ -57,17 +62,17 @@ export function StocksList({ searchQuery = "", initialPageSize = 20 }: StocksLis
         } finally {
             setLoading(false);
         }
-    }, [page, pageSize, searchQuery]);
+    }, [page, pageSize, searchQuery, sectorId]);
 
     // Fetch on mount and when params change
     useEffect(() => {
         fetchStocks();
     }, [fetchStocks]);
 
-    // Reset to page 1 when search or page size changes
+    // Reset to page 1 when search, sector, or page size changes
     useEffect(() => {
         setPage(1);
-    }, [searchQuery, pageSize]);
+    }, [searchQuery, sectorId, pageSize]);
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
@@ -88,7 +93,9 @@ export function StocksList({ searchQuery = "", initialPageSize = 20 }: StocksLis
                 emptyMessage={
                     searchQuery
                         ? `No stocks found for "${searchQuery}"`
-                        : "No stocks available"
+                        : sectorId
+                            ? "No stocks found in this sector"
+                            : "No stocks available"
                 }
             />
 

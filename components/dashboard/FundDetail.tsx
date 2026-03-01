@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { WatchlistToggle } from "./WatchlistToggle";
+import { AddToPortfolioButton } from "./AddToPortfolioButton";
 import {
     AreaChart,
     Area,
@@ -319,6 +320,12 @@ export function FundDetail({ fundId }: FundDetailProps) {
                             )}
                         </div>
                         <WatchlistToggle assetId={fund.id} type="fund" />
+                        <AddToPortfolioButton
+                            assetId={fund.id}
+                            symbol={fund.symbol || fund.name}
+                            assetType="fund"
+                            currentPrice={latestNav?.nav_price}
+                        />
                     </div>
                 </div>
 

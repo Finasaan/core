@@ -8,6 +8,8 @@ export { StocksList } from "./StocksList";
 export { FundsList } from "./FundsList";
 export { StockDetail } from "./StockDetail";
 export { FundDetail } from "./FundDetail";
+export { StockPriceChart } from "./StockPriceChart";
+export { AddToPortfolioButton } from "./AddToPortfolioButton";
 export { PortfolioList } from "./PortfolioList";
 export { PortfolioDashboard } from "./PortfolioDashboard";
 export { HoldingsTable } from "./HoldingsTable";

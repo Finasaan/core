@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { WatchlistToggle } from "./WatchlistToggle";
+import { StockPriceChart } from "./StockPriceChart";
+import { AddToPortfolioButton } from "./AddToPortfolioButton";
+import type { StockTimeRange, StockDayData } from "@/lib/stocks";
+import { STOCK_TIME_RANGES } from "@/lib/stocks";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -16,16 +20,6 @@ interface Company {
     logo_url?: string;
     founded_year?: number;
     ceo_name?: string;
-}
-
-interface StockData {
-    trade_date: string;
-    open_price: number;
-    high_price: number;
-    low_price: number;
-    close_price: number;
-    volume: number;
-    value_traded: number;
 }
 
 interface StockDetailProps {
@@ -70,17 +64,19 @@ function PriceChange({ current, previous }: { current: number; previous?: number
 
 export function StockDetail({ symbol }: StockDetailProps) {
     const [company, setCompany] = useState<Company | null>(null);
-    const [priceHistory, setPriceHistory] = useState<StockData[]>([]);
+    const [priceHistory, setPriceHistory] = useState<StockDayData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [chartLoading, setChartLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [timeRange, setTimeRange] = useState<StockTimeRange>("30D");
 
+    // Initial fetch: company + 30D data
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
             setError(null);
 
             try {
-                // Fetch company details
                 const companyRes = await fetch(`${API_URL}/api/psx/companies/symbol/${symbol}`);
                 const companyData = await companyRes.json() as { success: boolean; data?: Company; error?: string };
 
@@ -91,14 +87,17 @@ export function StockDetail({ symbol }: StockDetailProps) {
 
                 setCompany(companyData.data);
 
-                // Fetch price history
-                const priceRes = await fetch(`${API_URL}/api/psx/companies/${companyData.data.id}/stock-data?limit=30`);
-                const priceData = await priceRes.json() as { success: boolean; data?: StockData[] };
+                // Fetch initial 30D price history
+                const limit = STOCK_TIME_RANGES.find(r => r.key === "30D")!.limit;
+                const priceRes = await fetch(
+                    `${API_URL}/api/psx/companies/${companyData.data.id}/stock-data?limit=${limit}`
+                );
+                const priceData = await priceRes.json() as { success: boolean; data?: StockDayData[] };
 
                 if (priceData.success && priceData.data) {
                     setPriceHistory(priceData.data);
                 }
-            } catch (err) {
+            } catch {
                 setError("Failed to load stock data");
             } finally {
                 setLoading(false);
@@ -107,6 +106,32 @@ export function StockDetail({ symbol }: StockDetailProps) {
 
         fetchData();
     }, [symbol]);
+
+    // Re-fetch when time range changes (skip initial 30D which is already loaded)
+    const handleTimeRangeChange = useCallback(
+        async (range: StockTimeRange) => {
+            setTimeRange(range);
+            if (!company) return;
+
+            setChartLoading(true);
+            try {
+                const limit = STOCK_TIME_RANGES.find(r => r.key === range)!.limit;
+                const priceRes = await fetch(
+                    `${API_URL}/api/psx/companies/${company.id}/stock-data?limit=${limit}`
+                );
+                const priceData = await priceRes.json() as { success: boolean; data?: StockDayData[] };
+
+                if (priceData.success && priceData.data) {
+                    setPriceHistory(priceData.data);
+                }
+            } catch {
+                // Keep existing data on error
+            } finally {
+                setChartLoading(false);
+            }
+        },
+        [company]
+    );
 
     if (loading) {
         return <StockDetailSkeleton />;
@@ -127,10 +152,10 @@ export function StockDetail({ symbol }: StockDetailProps) {
 
     const latestPrice = priceHistory[0];
     const previousPrice = priceHistory[1];
-    const highestPrice = priceHistory.length > 0 ? Math.max(...priceHistory.map(p => p.high_price)) : 0;
-    const lowestPrice = priceHistory.length > 0 ? Math.min(...priceHistory.map(p => p.low_price)) : 0;
+    const highestPrice = priceHistory.length > 0 ? Math.max(...priceHistory.slice(0, 30).map(p => p.high_price)) : 0;
+    const lowestPrice = priceHistory.length > 0 ? Math.min(...priceHistory.slice(0, 30).map(p => p.low_price)) : 0;
     const avgVolume = priceHistory.length > 0
-        ? priceHistory.reduce((sum, p) => sum + p.volume, 0) / priceHistory.length
+        ? priceHistory.slice(0, 30).reduce((sum, p) => sum + p.volume, 0) / Math.min(priceHistory.length, 30)
         : 0;
 
     return (
@@ -152,7 +177,15 @@ export function StockDetail({ symbol }: StockDetailProps) {
                         <div className="stock-symbol-badge">{company.symbol}</div>
                         <h1 className="stock-company-name">{company.company_name || company.symbol}</h1>
                     </div>
-                    <WatchlistToggle assetId={company.id} type="stock" />
+                    <div className="stock-price-header-right">
+                        <WatchlistToggle assetId={company.id} type="stock" />
+                        <AddToPortfolioButton
+                            assetId={company.id}
+                            symbol={company.symbol}
+                            assetType="stock"
+                            currentPrice={latestPrice?.close_price}
+                        />
+                    </div>
                 </div>
 
                 {latestPrice ? (
@@ -167,6 +200,16 @@ export function StockDetail({ symbol }: StockDetailProps) {
                     </div>
                 )}
             </div>
+
+            {/* Price Chart (S-3) */}
+            {priceHistory.length > 1 && (
+                <StockPriceChart
+                    data={priceHistory}
+                    timeRange={timeRange}
+                    onTimeRangeChange={handleTimeRangeChange}
+                    loading={chartLoading}
+                />
+            )}
 
             {/* Stats Grid */}
             {latestPrice && (
@@ -217,7 +260,7 @@ export function StockDetail({ symbol }: StockDetailProps) {
                         </div>
                         <div className="stock-summary-item">
                             <span className="stock-summary-label">Trading Days</span>
-                            <span className="stock-summary-value">{priceHistory.length}</span>
+                            <span className="stock-summary-value">{Math.min(priceHistory.length, 30)}</span>
                         </div>
                     </div>
                 </div>
@@ -302,6 +345,7 @@ function StockDetailSkeleton() {
                 <div className="skeleton-line w-48 h-8 mt-2" />
                 <div className="skeleton-line w-32 h-10 mt-4" />
             </div>
+            <div className="fund-chart-card skeleton-card" style={{ height: 350 }} />
             <div className="stock-stats-grid">
                 {[...Array(6)].map((_, i) => (
                     <div key={i} className="stock-stat-card skeleton-card">

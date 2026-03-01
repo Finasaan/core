@@ -26,6 +26,7 @@ const learnItems: SidebarItem[] = [
 
 const infoItems: SidebarItem[] = [
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
+    { label: "Sectors", href: "/dashboard/sectors", icon: "sectors" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
     { label: "Watchlist", href: "/dashboard/watchlist", icon: "star" },
     { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
@@ -97,6 +98,14 @@ function getIcon(name: string): React.ReactElement {
         chart: (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M6.88 17.76v-2.03M12 17.76v-4.06M17.12 17.76v-6.1M6.88 12.7L10.47 8.1c.62-.78 1.74-.88 2.5-.24l1.49 1.3c.76.64 1.88.54 2.5-.24l3.05-3.82" />
+            </svg>
+        ),
+        sectors: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
             </svg>
         ),
         coin: (
