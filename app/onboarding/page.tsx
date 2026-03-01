@@ -29,13 +29,15 @@ export default function OnboardingStartPage() {
     return (
         <OnboardingLayout>
             <div className="onboarding-text-group">
-                <h1 className="onboarding-title">Welcome to finasaan,</h1>
+                <h1 className="onboarding-title">
+                    Welcome to <span className="onboarding-brand-fin">fin</span><span className="onboarding-brand-asaan">asaan</span>,
+                </h1>
                 <p className="onboarding-subtitle">
                     We will ask you a few questions to personalize your experience.
                 </p>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <form id="onboarding-start-form" onSubmit={handleSubmit} style={{ width: "100%" }}>
                 <input
                     type="text"
                     className="onboarding-input"
@@ -48,9 +50,14 @@ export default function OnboardingStartPage() {
                 />
             </form>
 
-            <p className="onboarding-tagline">
-                Start your financial literacy journey at finasaan.
-            </p>
+            <button
+                type="submit"
+                form="onboarding-start-form"
+                className={`step-button step-button-continue ${name.trim() ? "step-button-active" : ""}`}
+                disabled={!name.trim()}
+            >
+                Get Started →
+            </button>
         </OnboardingLayout>
     );
 }

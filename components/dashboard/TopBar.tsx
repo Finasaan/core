@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { logout } from "@/lib/auth/client";
 
 interface ProfileDropdownProps {
@@ -61,11 +62,16 @@ function ProfileDropdown({ userName, onClose }: ProfileDropdownProps) {
 
 interface TopBarProps {
     userName?: string;
+    isGuest?: boolean;
 }
 
-export function TopBar({ userName = "User" }: TopBarProps) {
+export function TopBar({ userName = "User", isGuest = false }: TopBarProps) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const pathname = usePathname();
     const userInitial = userName.charAt(0).toUpperCase();
+
+    // Redirect back to current page after login
+    const loginHref = `/login?redirect=${encodeURIComponent(pathname ?? "/dashboard")}`;
 
     return (
         <header className="topbar">
@@ -85,56 +91,71 @@ export function TopBar({ userName = "User" }: TopBarProps) {
 
             {/* Right side */}
             <div className="topbar-right">
-                {/* Learning Progress */}
-                <div className="topbar-progress">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#159F63">
-                        <path d="M11.1 2.55c.5-1.05 2-1.05 2.5 0l1.12 2.37 2.6.23c1.15.1 1.62 1.53.76 2.3l-1.98 1.77.58 2.54c.26 1.13-.97 2-2.01 1.44L12 11.83l-2.67 1.37c-1.04.54-2.27-.31-2.01-1.44l.58-2.54-1.98-1.77c-.86-.77-.39-2.2.76-2.3l2.6-.23 1.12-2.37z" />
-                    </svg>
-                    <span className="topbar-progress-count">25</span>
-                </div>
-
-                {/* Notifications */}
-                <button className="topbar-notification" aria-label="Notifications">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000020" strokeWidth="1.5">
-                        <path d="M12 6.44v3.33M12.02 2C8.34 2 5.36 4.98 5.36 8.66v1.76c0 .68-.28 1.7-.63 2.28l-1.27 2.12c-.78 1.3-.24 2.77 1.2 3.25a23.34 23.34 0 0014.68 0 2.22 2.22 0 001.2-3.25l-1.27-2.12c-.35-.58-.63-1.6-.63-2.28V8.66C18.64 5 15.64 2 12.02 2z" />
-                        <path d="M15.33 18.82c0 1.83-1.5 3.33-3.33 3.33a3.32 3.32 0 01-2.35-.98 3.32 3.32 0 01-.98-2.35" />
-                    </svg>
-                </button>
-
-                {/* User Profile */}
-                <div className="topbar-profile">
-                    <button
-                        className="topbar-profile-button"
-                        onClick={() => setDropdownOpen(!dropdownOpen)}
-                        aria-label="User menu"
-                    >
-                        <div className="topbar-avatar">
-                            <span>{userInitial}</span>
+                {isGuest ? (
+                    /* Guest — Sign In + Get Started */
+                    <div className="topbar-guest-actions">
+                        <Link href={loginHref} className="topbar-guest-signin">
+                            Sign In
+                        </Link>
+                        <Link href="/signup" className="topbar-guest-signup">
+                            Get Started
+                        </Link>
+                    </div>
+                ) : (
+                    /* Authenticated — progress / notifications / profile */
+                    <>
+                        {/* Learning Progress */}
+                        <div className="topbar-progress">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#159F63">
+                                <path d="M11.1 2.55c.5-1.05 2-1.05 2.5 0l1.12 2.37 2.6.23c1.15.1 1.62 1.53.76 2.3l-1.98 1.77.58 2.54c.26 1.13-.97 2-2.01 1.44L12 11.83l-2.67 1.37c-1.04.54-2.27-.31-2.01-1.44l.58-2.54-1.98-1.77c-.86-.77-.39-2.2.76-2.3l2.6-.23 1.12-2.37z" />
+                            </svg>
+                            <span className="topbar-progress-count">25</span>
                         </div>
-                        <div className="topbar-profile-info">
-                            <span className="topbar-profile-name">{userName}</span>
-                            <span className="topbar-profile-plan">Basic Plan</span>
-                        </div>
-                        <svg
-                            className={`topbar-profile-arrow ${dropdownOpen ? "open" : ""}`}
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#708090"
-                            strokeWidth="1.5"
-                        >
-                            <path d="M19.92 8.95l-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95" />
-                        </svg>
-                    </button>
 
-                    {dropdownOpen && (
-                        <ProfileDropdown
-                            userName={userName}
-                            onClose={() => setDropdownOpen(false)}
-                        />
-                    )}
-                </div>
+                        {/* Notifications */}
+                        <button className="topbar-notification" aria-label="Notifications">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000020" strokeWidth="1.5">
+                                <path d="M12 6.44v3.33M12.02 2C8.34 2 5.36 4.98 5.36 8.66v1.76c0 .68-.28 1.7-.63 2.28l-1.27 2.12c-.78 1.3-.24 2.77 1.2 3.25a23.34 23.34 0 0014.68 0 2.22 2.22 0 001.2-3.25l-1.27-2.12c-.35-.58-.63-1.6-.63-2.28V8.66C18.64 5 15.64 2 12.02 2z" />
+                                <path d="M15.33 18.82c0 1.83-1.5 3.33-3.33 3.33a3.32 3.32 0 01-2.35-.98 3.32 3.32 0 01-.98-2.35" />
+                            </svg>
+                        </button>
+
+                        {/* User Profile */}
+                        <div className="topbar-profile">
+                            <button
+                                className="topbar-profile-button"
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                aria-label="User menu"
+                            >
+                                <div className="topbar-avatar">
+                                    <span>{userInitial}</span>
+                                </div>
+                                <div className="topbar-profile-info">
+                                    <span className="topbar-profile-name">{userName}</span>
+                                    <span className="topbar-profile-plan">Basic Plan</span>
+                                </div>
+                                <svg
+                                    className={`topbar-profile-arrow ${dropdownOpen ? "open" : ""}`}
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#708090"
+                                    strokeWidth="1.5"
+                                >
+                                    <path d="M19.92 8.95l-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95" />
+                                </svg>
+                            </button>
+
+                            {dropdownOpen && (
+                                <ProfileDropdown
+                                    userName={userName}
+                                    onClose={() => setDropdownOpen(false)}
+                                />
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
         </header>
     );

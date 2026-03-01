@@ -12,7 +12,7 @@ export default function DashboardPage() {
     const [funds, setFunds] = useState<AssetItem[]>([]);
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingFunds, setLoadingFunds] = useState(true);
-    const [userName, setUserName] = useState("");
+    const [userName, setUserName] = useState<string | null>(null);
 
     useEffect(() => {
         // Fetch top stocks
@@ -50,6 +50,7 @@ export default function DashboardPage() {
                         setUserName(result.data.display_name.split(" ")[0]); // First name only
                     }
                 }
+                // If not ok (e.g. 401), userName stays null — guest greeting shown
             } catch (error) {
                 console.error("Failed to fetch profile:", error);
             }
@@ -71,8 +72,15 @@ export default function DashboardPage() {
 
             <header className="dashboard-header">
                 <h1 className="dashboard-greeting">
-                    <span className="greeting-green">Welcome back</span>
-                    {userName && <>, <span className="greeting-dark">{userName}</span></>}
+                    {userName ? (
+                        <>
+                            <span className="greeting-green">Welcome back</span>
+                            {", "}
+                            <span className="greeting-dark">{userName}</span>
+                        </>
+                    ) : (
+                        <span className="greeting-green">Welcome to finasaan</span>
+                    )}
                 </h1>
                 <p className="dashboard-date">{today}</p>
             </header>

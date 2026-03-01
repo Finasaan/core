@@ -144,21 +144,7 @@
     padding: 48px 40px;
 }
 
-.onboarding-skip-link {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 24px;
-    letter-spacing: -0.05em;
-    color: #FFFFFF;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
-}
-
-.onboarding-skip-link:hover {
-    opacity: 1;
-}
+/* skip link removed — onboarding is unskippable */
 
 /* Main Content */
 .onboarding-main {
@@ -251,40 +237,7 @@
     box-shadow: 0px 4px 15px rgba(21, 159, 99, 0.15);
 }
 
-/* Footer */
-.onboarding-footer {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 40px;
-}
-
-.onboarding-copyright {
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 20px;
-    letter-spacing: -0.05em;
-    color: #FFFFFF;
-    margin: 0;
-}
-
-.onboarding-contact-link {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    letter-spacing: -0.05em;
-    color: #FFFFFF;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-}
-
-.onboarding-contact-link:hover {
-    opacity: 0.8;
-}
+/* Footer removed — onboarding has no footer */
 
 /* ========================================
    Loading Page Styles
@@ -764,4 +717,152 @@
 .onboarding-content:has(.choice-cards) {
     max-width: 1074px;
     gap: 48px;
+}
+
+/* ========================================
+   Brand Title Spans
+   ======================================== */
+
+.onboarding-brand-fin {
+    color: #FFFFFF;
+}
+
+.onboarding-brand-asaan {
+    color: #159F63;
+}
+
+/* ========================================
+   Entry Animation
+   ======================================== */
+
+@keyframes onboarding-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.onboarding-content {
+    animation: onboarding-fade-up 0.5s ease forwards;
+}
+
+/* ========================================
+   Mobile Responsive Styles
+   ======================================== */
+
+@media (max-width: 768px) {
+    .onboarding-header {
+        padding: 24px 20px;
+    }
+
+    .onboarding-content {
+        padding: 0 16px;
+    }
+
+    .onboarding-title {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .onboarding-subtitle {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    /* Step cards — vertical stack, horizontal card layout */
+    .step-cards {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .selection-card {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .selection-card-icon {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .selection-card-text {
+        width: auto;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .selection-card-title {
+        font-size: 20px;
+        line-height: 26px;
+        text-align: left;
+    }
+
+    .selection-card-description {
+        font-size: 14px;
+        line-height: 18px;
+        text-align: left;
+    }
+
+    /* Choice cards */
+    .choice-cards {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .choice-card {
+        width: 100%;
+        height: auto;
+        padding: 24px 20px;
+    }
+
+    .choice-card-icon {
+        width: 120px;
+        height: 80px;
+        margin-bottom: 16px;
+    }
+
+    .choice-card-title {
+        font-size: 20px;
+    }
+
+    .choice-card-description {
+        font-size: 14px;
+    }
+
+    /* Chips */
+    .chip {
+        font-size: 16px;
+        height: 40px;
+        padding: 10px 16px;
+    }
+
+    /* Buttons */
+    .step-buttons {
+        gap: 16px;
+    }
+
+    .step-button {
+        width: 130px;
+        font-size: 16px;
+    }
+
+    /* Loading fact card */
+    .loading-fact-card {
+        bottom: 40px;
+        max-width: calc(100% - 32px);
+        padding: 24px 16px;
+    }
+
+    .loading-fact-text {
+        font-size: 16px;
+    }
 }

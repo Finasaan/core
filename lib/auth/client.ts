@@ -17,6 +17,8 @@ export interface AuthUser {
 
 /**
  * Returns the current user from spine, or null if unauthenticated.
+ * A 401 means the token is invalid/stale — the middleware handles cookie
+ * cleanup when the user visits /login or /signup.
  */
 export async function getUser(): Promise<AuthUser | null> {
     try {

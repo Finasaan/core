@@ -47,7 +47,7 @@ export default function OnboardingStep1Page() {
     };
 
     return (
-        <OnboardingLayout showSkip>
+        <OnboardingLayout>
             <div className="step-header">
                 <h1 className="onboarding-title">
                     How would you describe your financial knowledge?

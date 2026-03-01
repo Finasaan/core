@@ -33,7 +33,7 @@ export default function OnboardingStep2Page() {
     };
 
     return (
-        <OnboardingLayout showSkip>
+        <OnboardingLayout>
             <div className="step-header">
                 <h1 className="onboarding-title">What best describes you?</h1>
                 <p className="onboarding-subtitle">

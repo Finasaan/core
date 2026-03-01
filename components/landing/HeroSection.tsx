@@ -99,7 +99,7 @@ const HeroSection = () => {
           className="w-full sm:w-auto rounded-full px-8 py-6 text-[15px] font-semibold text-zinc-700 border-zinc-200 bg-white/70 backdrop-blur-sm hover:bg-white hover:border-zinc-300 hover:text-zinc-900 shadow-sm transition-all duration-300 hover:scale-[1.02]"
           asChild
         >
-          <Link href="/demo">View Demo</Link>
+          <Link href="/dashboard">View Demo</Link>
         </Button>
       </div>
 

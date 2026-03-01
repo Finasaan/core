@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require authentication
-const protectedRoutes = ["/dashboard", "/onboarding", "/profile", "/settings"];
+const protectedRoutes = ["/onboarding", "/profile", "/settings"];
 
 // Routes that should redirect to dashboard if already authenticated
 const authRoutes = ["/login", "/signup"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     // Preview environment: rewrite /preview/* paths to strip the prefix
@@ -44,9 +44,27 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
     }
 
-    // Redirect authenticated users away from login/signup
+    // Redirect authenticated users away from login/signup —
+    // but first validate the session against spine, because the cookie
+    // may be stale (e.g. account deleted) and middleware only checks presence.
     if (isAuthRoute && hasSession) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+            const meRes = await fetch(`${API_URL}/api/auth/me`, {
+                headers: { cookie: request.headers.get("cookie") ?? "" },
+            });
+            if (meRes.ok) {
+                // Valid session — send authenticated user to dashboard
+                return NextResponse.redirect(new URL("/dashboard", request.url));
+            }
+            // 401 / invalid — stale cookie. Clear it and let the user reach login/signup.
+            const response = NextResponse.next();
+            response.cookies.delete("sb-token");
+            return response;
+        } catch {
+            // Spine unreachable — fail open so the user can still reach login
+            return NextResponse.next();
+        }
     }
 
     return NextResponse.next();

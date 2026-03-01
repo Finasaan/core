@@ -192,6 +192,49 @@
     gap: 24px;
 }
 
+/* Guest Sign In / Get Started buttons */
+.topbar-guest-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-guest-signin {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #121212;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color 0.2s ease;
+}
+
+.topbar-guest-signin:hover {
+    color: #159F63;
+}
+
+.topbar-guest-signup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 20px;
+    height: 36px;
+    background: #159F63;
+    color: #FFFFFF;
+    border-radius: 999px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.topbar-guest-signup:hover {
+    background: #128b56;
+    transform: scale(1.02);
+}
+
 /* Learning Progress */
 .topbar-progress {
     display: flex;
