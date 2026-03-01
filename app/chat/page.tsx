@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Send,
   Bot,
@@ -369,9 +371,45 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           : "bg-muted text-foreground"
           }`}
       >
-        <div className="whitespace-pre-wrap text-sm leading-relaxed">
-          {message.content}
-        </div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap text-sm leading-relaxed">
+            {message.content}
+          </div>
+        ) : (
+          <div className="chat-markdown text-sm leading-relaxed">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
+                li: ({ children }) => <li className="text-sm">{children}</li>,
+                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                em: ({ children }) => <em className="italic">{children}</em>,
+                h1: ({ children }) => <h1 className="text-base font-bold mb-1 mt-2">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-sm font-bold mb-1 mt-2">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-sm font-semibold mb-1 mt-1">{children}</h3>,
+                code: ({ className, children, ...props }) => {
+                  const isBlock = className?.includes("language-");
+                  return isBlock ? (
+                    <code className="block bg-black/10 rounded px-2 py-1.5 text-xs font-mono whitespace-pre-wrap my-1" {...props}>{children}</code>
+                  ) : (
+                    <code className="bg-black/10 rounded px-1 py-0.5 text-xs font-mono" {...props}>{children}</code>
+                  );
+                },
+                pre: ({ children }) => <pre className="bg-black/10 rounded p-2 my-1 overflow-x-auto">{children}</pre>,
+                blockquote: ({ children }) => <blockquote className="border-l-2 border-current opacity-70 pl-2 my-1 italic">{children}</blockquote>,
+                table: ({ children }) => <div className="overflow-x-auto my-2"><table className="text-xs border-collapse w-full">{children}</table></div>,
+                th: ({ children }) => <th className="border border-current/20 px-2 py-1 font-semibold bg-black/5">{children}</th>,
+                td: ({ children }) => <td className="border border-current/20 px-2 py-1">{children}</td>,
+                a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="underline opacity-80 hover:opacity-100">{children}</a>,
+                hr: () => <hr className="border-current/20 my-2" />,
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          </div>
+        )}
         {message.sources && message.sources.length > 0 && (
           <div className="mt-3 border-t border-border/50 pt-2">
             <div className="text-xs font-medium opacity-70 mb-1">Sources:</div>
