@@ -31,7 +31,7 @@ const infoItems: SidebarItem[] = [
     { label: "Watchlist", href: "/dashboard/watchlist", icon: "star" },
     { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
     { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
-    { label: "Insurance", href: "#", icon: "shield", comingSoon: true },
+    { label: "Insurance", href: "/dashboard/insurance", icon: "shield" },
 ];
 
 interface SidebarNavItemProps {

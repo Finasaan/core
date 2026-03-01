@@ -14,6 +14,7 @@ import {
   X,
   FileText,
   CheckCircle,
+  Trash2,
 } from "lucide-react";
 
 // ============================================
@@ -413,12 +414,14 @@ function ChatSidebar({
   onSelect,
   onNew,
   onUpload,
+  onDelete,
 }: {
   sessions: ChatSession[];
   currentId: string | null;
   onSelect: (id: string) => void;
   onNew: () => void;
   onUpload: () => void;
+  onDelete: (id: string) => void;
 }) {
   return (
     <div className="w-64 border-r border-border bg-card/50 flex flex-col">
@@ -455,19 +458,33 @@ function ChatSidebar({
         ) : (
           <div className="space-y-1">
             {sessions.map((session) => (
-              <button
+              <div
                 key={session.id}
-                onClick={() => onSelect(session.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${currentId === session.id
+                className={`group relative flex items-center rounded-lg text-sm transition-colors ${currentId === session.id
                   ? "bg-accent font-medium"
                   : "hover:bg-accent/50"
                   }`}
               >
-                <div className="truncate">{session.title}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {session.message_count} messages
-                </div>
-              </button>
+                <button
+                  onClick={() => onSelect(session.id)}
+                  className="flex-1 text-left px-3 py-2.5 min-w-0"
+                >
+                  <div className="truncate pr-6">{session.title}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {session.message_count} messages
+                  </div>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(session.id);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive transition-all"
+                  title="Delete chat"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
             ))}
           </div>
         )}
@@ -535,6 +552,26 @@ export default function ChatPage() {
     setMessages([]);
     setCurrentChatId(null);
     setError(null);
+  }
+
+  async function deleteChat(chatId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/chatbot/chats/${chatId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to delete chat: ${res.status}`);
+      }
+      // If we deleted the active chat, clear it
+      if (currentChatId === chatId) {
+        setMessages([]);
+        setCurrentChatId(null);
+      }
+      // Refresh session list
+      setSessions((prev) => prev.filter((s) => s.id !== chatId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete chat");
+    }
   }
 
   async function handleUpload(
@@ -656,6 +693,7 @@ export default function ChatPage() {
         onSelect={loadChat}
         onNew={startNewChat}
         onUpload={() => setShowUpload(true)}
+        onDelete={deleteChat}
       />
 
       {/* Main Chat Area */}
