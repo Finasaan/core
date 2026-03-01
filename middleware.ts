@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require authentication
-const protectedRoutes = ["/onboarding", "/profile", "/settings"];
+const protectedRoutes = ["/onboarding", "/profile", "/settings", "/chat"];
 
 // Routes that should redirect to dashboard if already authenticated
 const authRoutes = ["/login", "/signup"];
@@ -37,11 +37,35 @@ export async function middleware(request: NextRequest) {
         (route) => pathname === route || pathname.startsWith(`${route}/`)
     );
 
+    const isOnboardingRoute =
+        pathname === "/onboarding" || pathname.startsWith("/onboarding/");
+
     // Redirect unauthenticated users away from protected pages
     if (isProtectedRoute && !hasSession) {
         const redirectUrl = new URL("/login", request.url);
         redirectUrl.searchParams.set("redirect", pathname);
         return NextResponse.redirect(redirectUrl);
+    }
+
+    // Guard: authenticated users visiting /onboarding who have already completed
+    // it should be sent to /dashboard instead.
+    if (isOnboardingRoute && hasSession) {
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+            const profileRes = await fetch(`${API_URL}/api/profile`, {
+                headers: { cookie: request.headers.get("cookie") ?? "" },
+            });
+            if (profileRes.ok) {
+                const body = await profileRes.json() as { success: boolean; data: unknown };
+                if (body.success && body.data !== null) {
+                    // User already has a profile — skip onboarding
+                    return NextResponse.redirect(new URL("/dashboard", request.url));
+                }
+            }
+        } catch {
+            // Profile API unreachable — let the request through; onboarding is
+            // idempotent (upsert) so a second run won't corrupt data.
+        }
     }
 
     // Redirect authenticated users away from login/signup —
@@ -57,9 +81,11 @@ export async function middleware(request: NextRequest) {
                 // Valid session — send authenticated user to dashboard
                 return NextResponse.redirect(new URL("/dashboard", request.url));
             }
-            // 401 / invalid — stale cookie. Clear it and let the user reach login/signup.
+            // 401 / invalid — stale cookie. Clear both auth cookies and let
+            // the user reach the login/signup page.
             const response = NextResponse.next();
             response.cookies.delete("sb-token");
+            response.cookies.delete("sb-refresh-token");
             return response;
         } catch {
             // Spine unreachable — fail open so the user can still reach login
