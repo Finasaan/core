@@ -6,9 +6,9 @@ import HomeFooter from "@/components/landing/HomeFooter";
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center bg-white">
+    <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans selection:bg-[#159F63]/20">
       <HomeNav />
-      <main className="flex w-full flex-col items-center">
+      <main className="flex w-full flex-col items-center overflow-hidden">
         <HeroSection />
         <TestimonialsSection />
         <FAQSection />
