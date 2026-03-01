@@ -8,15 +8,23 @@ import {
     useCallback,
     type ReactNode,
 } from "react";
-import { createClient } from "@/lib/supabase/client";
-import type { User, Session, AuthError } from "@supabase/supabase-js";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
+
+interface User {
+    id: string;
+    email?: string;
+    email_confirmed_at?: string;
+    created_at?: string;
+    updated_at?: string;
+    user_metadata?: Record<string, unknown>;
+}
 
 interface AuthContextType {
     user: User | null;
-    session: Session | null;
     loading: boolean;
     signOut: () => Promise<void>;
-    refreshSession: () => Promise<void>;
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,64 +35,50 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const supabase = createClient();
+    const fetchUser = useCallback(async () => {
+        try {
+            const res = await fetch(`${API_URL}/api/auth/me`, {
+                credentials: "include",
+            });
 
-    // Refresh session manually if needed
-    const refreshSession = useCallback(async () => {
-        const { data, error } = await supabase.auth.refreshSession();
-        if (data.session) {
-            setSession(data.session);
-            setUser(data.session.user);
+            if (res.ok) {
+                const data = await res.json() as { success: boolean; data: User };
+                setUser(data.success ? data.data : null);
+            } else {
+                setUser(null);
+            }
+        } catch {
+            setUser(null);
         }
-    }, [supabase.auth]);
+    }, []);
 
-    // Sign out handler
+    const refreshUser = useCallback(async () => {
+        await fetchUser();
+    }, [fetchUser]);
+
     const signOut = useCallback(async () => {
-        await supabase.auth.signOut();
-        setSession(null);
+        try {
+            await fetch(`${API_URL}/api/auth/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+        } catch {
+            // Best-effort — clear local state regardless
+        }
         setUser(null);
-    }, [supabase.auth]);
+    }, []);
 
     useEffect(() => {
-        // Get initial session
-        const getInitialSession = async () => {
-            const {
-                data: { session: initialSession },
-            } = await supabase.auth.getSession();
+        fetchUser().finally(() => setLoading(false));
+    }, [fetchUser]);
 
-            setSession(initialSession);
-            setUser(initialSession?.user ?? null);
-            setLoading(false);
-        };
-
-        getInitialSession();
-
-        // Listen for auth state changes
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, newSession) => {
-            setSession(newSession);
-            setUser(newSession?.user ?? null);
-            setLoading(false);
-        });
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, [supabase.auth]);
-
-    const value: AuthContextType = {
-        user,
-        session,
-        loading,
-        signOut,
-        refreshSession,
-    };
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ user, loading, signOut, refreshUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {

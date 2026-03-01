@@ -9,7 +9,8 @@ import {
     SocialLoginButton,
     AuthDivider,
 } from "@/components/auth";
-import { createClient } from "@/lib/supabase/client";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -19,19 +20,15 @@ export default function SignupPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const supabase = createClient();
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
-        // Validate passwords match
         if (password !== confirmPassword) {
             setError("Passwords do not match");
             return;
         }
 
-        // Validate password length
         if (password.length < 6) {
             setError("Password must be at least 6 characters");
             return;
@@ -40,26 +37,27 @@ export default function SignupPage() {
         setLoading(true);
 
         try {
-            const { data, error: signUpError } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    // Redirect URL after email verification
+            const res = await fetch(`${API_URL}/api/auth/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    email,
+                    password,
                     emailRedirectTo: `${window.location.origin}/auth/callback`,
-                },
+                }),
             });
 
-            if (signUpError) {
-                setError(signUpError.message);
+            const data = await res.json() as { success: boolean; error?: string };
+
+            if (!res.ok || !data.success) {
+                setError(data.error ?? "Failed to create account");
                 return;
             }
 
-            // Store email in sessionStorage for the verify page
             sessionStorage.setItem("signup_email", email);
-
-            // Redirect to verify page
             router.push("/signup/verify");
-        } catch (err) {
+        } catch {
             setError("An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);

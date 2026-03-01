@@ -9,7 +9,8 @@ import {
     SocialLoginButton,
     AuthDivider,
 } from "@/components/auth";
-import { createClient } from "@/lib/supabase/client";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 function LoginForm() {
     const router = useRouter();
@@ -19,29 +20,30 @@ function LoginForm() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const supabase = createClient();
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
 
         try {
-            const { data, error: signInError } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const res = await fetch(`${API_URL}/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ email, password }),
             });
 
-            if (signInError) {
-                setError(signInError.message);
+            const data = await res.json() as { success: boolean; error?: string };
+
+            if (!res.ok || !data.success) {
+                setError(data.error ?? "Invalid email or password");
                 return;
             }
 
-            // Redirect to the originally requested page or dashboard
             const redirectTo = searchParams.get("redirect") || "/dashboard";
             router.push(redirectTo);
             router.refresh();
-        } catch (err) {
+        } catch {
             setError("An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);
