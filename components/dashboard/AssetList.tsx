@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { WatchlistToggle } from "./WatchlistToggle";
+import { AddToPortfolioButton } from "./AddToPortfolioButton";
 
 export interface AssetItem {
     id: string;
@@ -106,6 +110,16 @@ export function AssetList({ items, type, emptyMessage = "No data available", loa
                             <YtdIndicator ytd={item.ytd} />
                         )}
                     </Link>
+                    <div className="asset-list-actions" onClick={(e) => e.stopPropagation()}>
+                        <WatchlistToggle assetId={item.id} type={type} />
+                        <AddToPortfolioButton
+                            assetId={item.id}
+                            symbol={item.symbol}
+                            assetType={type}
+                            currentPrice={type === "stock" ? item.close_price : undefined}
+                            iconOnly
+                        />
+                    </div>
                 </li>
             ))}
         </ul>

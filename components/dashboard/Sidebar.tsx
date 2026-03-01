@@ -26,10 +26,12 @@ const learnItems: SidebarItem[] = [
 
 const infoItems: SidebarItem[] = [
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
+    { label: "Sectors", href: "/dashboard/sectors", icon: "sectors" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
+    { label: "Watchlist", href: "/dashboard/watchlist", icon: "star" },
     { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
     { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
-    { label: "Insurance", href: "#", icon: "shield", comingSoon: true },
+    { label: "Insurance", href: "/dashboard/insurance", icon: "shield" },
 ];
 
 interface SidebarNavItemProps {
@@ -98,6 +100,14 @@ function getIcon(name: string): React.ReactElement {
                 <path d="M6.88 17.76v-2.03M12 17.76v-4.06M17.12 17.76v-6.1M6.88 12.7L10.47 8.1c.62-.78 1.74-.88 2.5-.24l1.49 1.3c.76.64 1.88.54 2.5-.24l3.05-3.82" />
             </svg>
         ),
+        sectors: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+        ),
         coin: (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="9" cy="9" r="7" />
@@ -128,6 +138,11 @@ function getIcon(name: string): React.ReactElement {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="4" y="2" width="16" height="20" rx="2" />
                 <path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2" />
+            </svg>
+        ),
+        star: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
         ),
     };

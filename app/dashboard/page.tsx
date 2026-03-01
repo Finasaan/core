@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { DashboardPanel, AssetList, AssetItem } from "@/components/dashboard";
+import { MarketSummaryBar } from "@/components/dashboard/MarketSummaryBar";
+import { WatchlistQuickView } from "@/components/dashboard/WatchlistQuickView";
+import { PortfolioSnapshot } from "@/components/dashboard/PortfolioSnapshot";
 import { createClient } from "@/lib/supabase/client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
@@ -71,6 +74,9 @@ export default function DashboardPage() {
 
     return (
         <>
+            {/* D-4: Market Summary Bar */}
+            <MarketSummaryBar />
+
             <header className="dashboard-header">
                 <h1 className="dashboard-greeting">
                     <span className="greeting-green">Welcome back</span>
@@ -98,15 +104,11 @@ export default function DashboardPage() {
                     />
                 </DashboardPanel>
 
-                <DashboardPanel title="Learning Progress" className="coming-soon-panel">
-                    <span className="coming-soon-icon">📚</span>
-                    <p className="coming-soon-text">Coming Soon</p>
-                </DashboardPanel>
+                {/* D-5: Watchlist Quick View (replaces Learning Progress) */}
+                <WatchlistQuickView />
 
-                <DashboardPanel title="Market News" className="coming-soon-panel">
-                    <span className="coming-soon-icon">📰</span>
-                    <p className="coming-soon-text">Coming Soon</p>
-                </DashboardPanel>
+                {/* D-6: Portfolio Snapshot (replaces Market News) */}
+                <PortfolioSnapshot />
             </div>
         </>
     );
