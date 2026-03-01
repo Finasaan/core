@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { Suspense, useState, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CATEGORIES, getAllProducts, getProviderBySlug, getCategoryInfo } from "@/lib/insurance";
 import type { PolicyCategory } from "@/lib/insurance";
 
-export default function PoliciesPage() {
+function PoliciesContent() {
   const searchParams = useSearchParams();
   const initialCategory = (searchParams.get("category") as PolicyCategory) || "all";
   const [activeCategory, setActiveCategory] = useState<PolicyCategory | "all">(initialCategory);
@@ -133,5 +133,13 @@ export default function PoliciesPage() {
         })}
       </div>
     </>
+  );
+}
+
+export default function PoliciesPage() {
+  return (
+    <Suspense fallback={<div className="dashboard-grid">Loading policies...</div>}>
+      <PoliciesContent />
+    </Suspense>
   );
 }
