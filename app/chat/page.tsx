@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,8 +15,7 @@ import { PanelLeftIcon } from "lucide-react";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 type Session = {
   id: string;
@@ -47,14 +46,32 @@ export default function ChatPage() {
   const [lastUserText, setLastUserText] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // ── Refs for latest model + session (read at send-time) ───────────────────
+
+  const selectedModelRef = useRef(selectedModel);
+  selectedModelRef.current = selectedModel;
+  const activeSessionRef = useRef(activeSessionId);
+  activeSessionRef.current = activeSessionId;
+
+  // Transport created ONCE — body is a function so it always reads latest refs
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: `${API_BASE}/api/chatbot/stream`,
+        credentials: "include",
+        body: () => ({
+          modelId: selectedModelRef.current,
+          sessionId: activeSessionRef.current,
+        }),
+      }),
+    [], // intentionally stable — body function reads from refs
+  );
+
   // ── useChat (AI SDK v6) ─────────────────────────────────────────────────
 
   const { messages, sendMessage, status, stop, setMessages } = useChat({
-    transport: new DefaultChatTransport({
-      api: `${API_BASE}/api/chatbot/stream`,
-      credentials: "include",
-      body: { modelId: selectedModel, sessionId: activeSessionId },
-    }),
+    transport,
     onFinish: () => {
       setStreamError(null);
       // Re-fetch sessions to update the sidebar after each turn.
@@ -104,7 +121,7 @@ export default function ChatPage() {
         credentials: "include",
       });
       if (!r.ok) return;
-      const d = await r.json() as { sessions: Session[] };
+      const d = (await r.json()) as { sessions: Session[] };
       setSessions(d.sessions);
     } catch {
       // silently ignore
@@ -119,29 +136,36 @@ export default function ChatPage() {
 
   // ── Load session messages ────────────────────────────────────────────────
 
-  const handleSelectSession = useCallback(async (id: string) => {
-    setActiveSessionId(id);
-    try {
-      const r = await fetch(`${API_BASE}/api/chatbot/sessions/${id}`, {
-        credentials: "include",
-      });
-      if (!r.ok) return;
-      const d = await r.json() as {
-        messages: Array<{ role: string; content: string; metadata?: Record<string, unknown> }>;
-      };
-      // Convert DB messages to UIMessage format for setMessages
-      setMessages(
-        d.messages.map((m, i) => ({
-          id: String(i),
-          role: m.role as "user" | "assistant",
-          parts: [{ type: "text" as const, text: m.content }],
-          metadata: m.metadata ?? {},
-        }))
-      );
-    } catch {
-      // ignore
-    }
-  }, [setMessages]);
+  const handleSelectSession = useCallback(
+    async (id: string) => {
+      setActiveSessionId(id);
+      try {
+        const r = await fetch(`${API_BASE}/api/chatbot/sessions/${id}`, {
+          credentials: "include",
+        });
+        if (!r.ok) return;
+        const d = (await r.json()) as {
+          messages: Array<{
+            role: string;
+            content: string;
+            metadata?: Record<string, unknown>;
+          }>;
+        };
+        // Convert DB messages to UIMessage format for setMessages
+        setMessages(
+          d.messages.map((m, i) => ({
+            id: String(i),
+            role: m.role as "user" | "assistant",
+            parts: [{ type: "text" as const, text: m.content }],
+            metadata: m.metadata ?? {},
+          })),
+        );
+      } catch {
+        // ignore
+      }
+    },
+    [setMessages],
+  );
 
   // ── New chat ─────────────────────────────────────────────────────────────
 
@@ -154,14 +178,17 @@ export default function ChatPage() {
 
   // ── Delete session ───────────────────────────────────────────────────────
 
-  const handleDeleteSession = useCallback(async (id: string) => {
-    await fetch(`${API_BASE}/api/chatbot/sessions/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setSessions((prev) => prev.filter((s) => s.id !== id));
-    if (activeSessionId === id) handleNewChat();
-  }, [activeSessionId, handleNewChat]);
+  const handleDeleteSession = useCallback(
+    async (id: string) => {
+      await fetch(`${API_BASE}/api/chatbot/sessions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      setSessions((prev) => prev.filter((s) => s.id !== id));
+      if (activeSessionId === id) handleNewChat();
+    },
+    [activeSessionId, handleNewChat],
+  );
 
   // ── Send message ─────────────────────────────────────────────────────────
 
@@ -184,35 +211,43 @@ export default function ChatPage() {
 
   // ── Attach PDF ───────────────────────────────────────────────────────────
 
-  const handleAttach = useCallback(async (file: File) => {
-    if (!activeSessionId) {
-      // Need a session first — create one by sending a dummy context message
-      // For now just alert
-      alert("Please send a message first to start a session, then attach a file.");
-      return;
-    }
+  const handleAttach = useCallback(
+    async (file: File) => {
+      if (!activeSessionId) {
+        // Need a session first — create one by sending a dummy context message
+        // For now just alert
+        alert(
+          "Please send a message first to start a session, then attach a file.",
+        );
+        return;
+      }
 
-    setAttachments((prev) => [...prev, { filename: file.name, uploading: true }]);
+      setAttachments((prev) => [
+        ...prev,
+        { filename: file.name, uploading: true },
+      ]);
 
-    const form = new FormData();
-    form.append("file", file);
-    form.append("sessionId", activeSessionId);
+      const form = new FormData();
+      form.append("file", file);
+      form.append("sessionId", activeSessionId);
 
-    try {
-      await fetch(`${API_BASE}/api/chatbot/upload-attachment`, {
-        method: "POST",
-        credentials: "include",
-        body: form,
-      });
-      setAttachments((prev) =>
-        prev.map((a) =>
-          a.filename === file.name ? { ...a, uploading: false } : a
-        )
-      );
-    } catch {
-      setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
-    }
-  }, [activeSessionId]);
+      try {
+        await fetch(`${API_BASE}/api/chatbot/upload-attachment`, {
+          method: "POST",
+          credentials: "include",
+          body: form,
+        });
+        setAttachments((prev) =>
+          prev.map((a) =>
+            a.filename === file.name ? { ...a, uploading: false } : a,
+          ),
+        );
+      } catch {
+        setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
+      }
+    },
+    [activeSessionId],
+  );
 
   const handleRemoveAttachment = useCallback((filename: string) => {
     setAttachments((prev) => prev.filter((a) => a.filename !== filename));
@@ -265,10 +300,7 @@ export default function ChatPage() {
           </div>
 
           {/* Messages */}
-          <div
-            className="chat-messages"
-            ref={scrollRef}
-          >
+          <div className="chat-messages" ref={scrollRef}>
             {messages.length === 0 ? (
               <WelcomeScreen onPrompt={handlePrompt} />
             ) : (
@@ -319,7 +351,8 @@ export default function ChatPage() {
 
           {/* Disclaimer */}
           <div className="chat-disclaimer">
-            FinasaanGPT can make mistakes. Verify important financial data independently. Not investment advice.
+            FinasaanGPT can make mistakes. Verify important financial data
+            independently. Not investment advice.
           </div>
         </main>
       </div>
