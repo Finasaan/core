@@ -16,8 +16,8 @@ export function ChoiceCard({
     description,
     selected = false,
     onClick,
-    iconWidth = 180,
-    iconHeight = 172,
+    iconWidth = 120,
+    iconHeight = 120,
 }: ChoiceCardProps) {
     return (
         <button
@@ -42,4 +42,3 @@ export function ChoiceCard({
         </button>
     );
 }
-

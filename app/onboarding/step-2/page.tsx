@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { OnboardingLayout, OnboardingSelect } from "@/components/onboarding";
+import { OnboardingLayout } from "@/components/onboarding";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useOnboarding } from "@/context/OnboardingContext";
 
 const professionOptions = [
@@ -21,9 +28,7 @@ export default function OnboardingStep2Page() {
 
     const handleContinue = () => {
         if (selected) {
-            // Save selection to context
             setOccupation(selected);
-            // Navigate directly to step-3
             router.push("/onboarding/step-3");
         }
     };
@@ -41,12 +46,24 @@ export default function OnboardingStep2Page() {
                 </p>
             </div>
 
-            <OnboardingSelect
-                options={professionOptions}
-                value={selected}
-                onChange={setSelected}
-                placeholder="Please Select"
-            />
+            <div className="onboarding-select-wrapper">
+                <Select value={selected ?? ""} onValueChange={(v) => setSelected(v)}>
+                    <SelectTrigger className="w-full h-[52px] bg-white/5 border-white/15 text-white font-[Satoshi,Inter,sans-serif] text-base focus:border-[#159F63] focus:ring-[#159F63]/20">
+                        <SelectValue placeholder="Please Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#0D2E23] border-white/10 text-white">
+                        {professionOptions.map((opt) => (
+                            <SelectItem
+                                key={opt.value}
+                                value={opt.value}
+                                className="text-white/80 focus:bg-white/8 focus:text-white data-[state=checked]:text-[#159F63]"
+                            >
+                                {opt.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
 
             <div className="step-buttons">
                 <button

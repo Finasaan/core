@@ -50,10 +50,10 @@ export default function OnboardingStep1Page() {
         <OnboardingLayout>
             <div className="step-header">
                 <h1 className="onboarding-title">
-                    How would you describe your financial knowledge?
+                    What's your financial knowledge level?
                 </h1>
                 <p className="onboarding-subtitle">
-                    This helps us tailor your financial learning experience. Don't worry you can change this later in the settings.
+                    We'll tailor your experience to match. You can always update this later.
                 </p>
             </div>
 
@@ -69,10 +69,6 @@ export default function OnboardingStep1Page() {
                     />
                 ))}
             </div>
-
-            <p className="step-help-text">
-                Unsure? Take a 5 minute test
-            </p>
 
             <div className="step-buttons">
                 <button

@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 interface OnboardingLayoutProps {
     children: React.ReactNode;
 }
@@ -9,34 +7,14 @@ interface OnboardingLayoutProps {
 export function OnboardingLayout({ children }: OnboardingLayoutProps) {
     return (
         <div className="onboarding-layout">
-            {/* Grid Background */}
-            <div className="onboarding-grid-bg">
-                <div className="onboarding-grid-lines" />
-                <div className="onboarding-blob onboarding-blob-1" />
-                <div className="onboarding-blob onboarding-blob-2" />
-                <div className="onboarding-blob onboarding-blob-3" />
-                <div className="onboarding-blob onboarding-blob-4" />
-                <div className="onboarding-grid-blocks">
-                    <div className="onboarding-grid-block onboarding-grid-block-1" />
-                    <div className="onboarding-grid-block onboarding-grid-block-2" />
-                    <div className="onboarding-grid-block onboarding-grid-block-3" />
-                    <div className="onboarding-grid-block onboarding-grid-block-4" />
-                    <div className="onboarding-grid-block onboarding-grid-block-5" />
-                    <div className="onboarding-grid-block onboarding-grid-block-6" />
-                    <div className="onboarding-grid-block onboarding-grid-block-7" />
-                    <div className="onboarding-grid-block onboarding-grid-block-8" />
-                </div>
-            </div>
+            {/* Background glow */}
+            <div className="onboarding-bg-glow" aria-hidden="true" />
 
-            {/* Header — logo only, no skip */}
+            {/* Header — JSX text logo */}
             <header className="onboarding-header">
-                <Image
-                    src="/loginlogo.png"
-                    alt="Finasaan"
-                    width={140}
-                    height={40}
-                    priority
-                />
+                <span className="onboarding-logo-text">
+                    <span className="onboarding-brand-fin">fin</span><span className="onboarding-brand-asaan">asaan</span>
+                </span>
             </header>
 
             {/* Main Content */}

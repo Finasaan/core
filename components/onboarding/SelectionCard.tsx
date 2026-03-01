@@ -26,8 +26,8 @@ export function SelectionCard({
                 <Image
                     src={icon}
                     alt={title}
-                    width={173}
-                    height={172}
+                    width={80}
+                    height={80}
                     priority
                 />
             </div>

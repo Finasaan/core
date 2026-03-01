@@ -12,17 +12,17 @@ const choices = [
         id: "guided" as const,
         icon: "/guidedstart.svg",
         title: "Guided Start",
-        description: "Take a quick tour to understand how Finasaan works",
-        iconWidth: 254,
-        iconHeight: 172,
+        description: "A quick walkthrough of everything Finasaan offers.",
+        iconWidth: 80,
+        iconHeight: 80,
     },
     {
         id: "explore" as const,
         icon: "/explore.svg",
         title: "Explore on my own",
-        description: "Jump straight to your personalized dashboard",
-        iconWidth: 135,
-        iconHeight: 172,
+        description: "Go straight to your dashboard.",
+        iconWidth: 80,
+        iconHeight: 80,
     },
 ];
 
@@ -50,9 +50,9 @@ export default function OnboardingCompletePage() {
     return (
         <OnboardingLayout>
             <div className="step-header">
-                <h1 className="onboarding-title">You're all set, {userName}.</h1>
+                <h1 className="onboarding-title">Welcome aboard, {userName}.</h1>
                 <p className="onboarding-subtitle">
-                    Your personalized learning journey is ready. Choose what you'd like to do next.
+                    How would you like to get started?
                 </p>
             </div>
 
@@ -72,7 +72,7 @@ export default function OnboardingCompletePage() {
             </div>
 
             <p className="step-help-text">
-                You can always take the guided start tour from your account settings.
+                You can revisit the guided tour anytime from settings.
             </p>
 
             <div className="step-buttons">
