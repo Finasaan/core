@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { isAuthenticated as checkIsAuthenticated } from "@/lib/auth/client";
 import {
     getWatchlist,
     removeFromWatchlist,
@@ -54,14 +54,8 @@ export function WatchlistPage() {
     }, [filter]);
 
     useEffect(() => {
-        const supabase = createClient();
-
         const checkAndFetch = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            if (!session) {
+            if (!await checkIsAuthenticated()) {
                 setIsAuthenticated(false);
                 setLoading(false);
                 return;

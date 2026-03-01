@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { isAuthenticated as checkIsAuthenticated } from "@/lib/auth/client";
 import {
     checkWatchlisted,
     addToWatchlist,
@@ -27,14 +27,8 @@ export function WatchlistToggle({ assetId, type, className = "" }: WatchlistTogg
 
     // Check initial watchlist status
     useEffect(() => {
-        const supabase = createClient();
-
         const checkStatus = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            if (!session) {
+            if (!await checkIsAuthenticated()) {
                 setIsAuthenticated(false);
                 setLoading(false);
                 return;

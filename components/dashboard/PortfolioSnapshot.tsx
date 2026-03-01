@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { isAuthenticated as checkIsAuthenticated } from "@/lib/auth/client";
 import {
     listPortfolios,
     getPortfolioSummary,
@@ -52,14 +52,8 @@ export function PortfolioSnapshot() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const supabase = createClient();
-
         const checkAuthAndFetch = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            if (!session) {
+            if (!await checkIsAuthenticated()) {
                 setIsAuthenticated(false);
                 setLoading(false);
                 return;

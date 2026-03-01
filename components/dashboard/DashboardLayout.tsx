@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { createClient } from "@/lib/supabase/client";
+import { getUser } from "@/lib/auth/client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -13,19 +13,13 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [userName, setUserName] = useState("User");
-    const supabase = createClient();
 
     useEffect(() => {
-        // Get user display name from spine profile API
+        // Get user display name from spine profile API — sb-token cookie sent automatically
         const fetchProfile = async () => {
             try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session?.access_token) return;
-
                 const response = await fetch(`${API_URL}/api/profile`, {
-                    headers: {
-                        Authorization: `Bearer ${session.access_token}`,
-                    },
+                    credentials: "include",
                 });
 
                 if (response.ok) {
@@ -36,8 +30,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     }
                 }
 
-                // Fallback to email if no profile
-                const { data: { user } } = await supabase.auth.getUser();
+                // Fallback to email from /api/auth/me if no profile display_name
+                const user = await getUser();
                 if (user?.email) {
                     setUserName(user.email.split("@")[0]);
                 }
@@ -46,7 +40,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             }
         };
         fetchProfile();
-    }, [supabase.auth]);
+    }, []);
 
     return (
         <div className="dashboard-container">

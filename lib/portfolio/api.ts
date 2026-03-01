@@ -1,4 +1,10 @@
-import { createClient } from "@/lib/supabase/client";
+/**
+ * Portfolio API client
+ * All portfolio endpoints require authentication.
+ * Auth is handled via the `sb-token` HttpOnly cookie set by spine — no manual
+ * token extraction needed; credentials: "include" sends it automatically.
+ */
+
 import type {
   Portfolio,
   PortfolioSummary,
@@ -10,35 +16,17 @@ import type {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
 /**
- * Get the current session's access token.
- * Throws if no session is available.
- */
-async function getAccessToken(): Promise<string> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    throw new Error("Not authenticated");
-  }
-  return session.access_token;
-}
-
-/**
  * Authenticated fetch wrapper for portfolio API calls.
  */
 async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = await getAccessToken();
-
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   });

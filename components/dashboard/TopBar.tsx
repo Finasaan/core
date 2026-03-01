@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { logout } from "@/lib/auth/client";
 
 interface ProfileDropdownProps {
     userName: string;
@@ -11,7 +11,6 @@ interface ProfileDropdownProps {
 
 function ProfileDropdown({ userName, onClose }: ProfileDropdownProps) {
     const router = useRouter();
-    const supabase = createClient();
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -25,7 +24,7 @@ function ProfileDropdown({ userName, onClose }: ProfileDropdownProps) {
     }, [onClose]);
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        await logout();
         router.push("/login");
     };
 

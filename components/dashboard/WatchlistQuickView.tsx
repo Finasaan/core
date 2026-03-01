@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getWatchlist, type WatchlistItem } from "@/lib/watchlist";
-import { createClient } from "@/lib/supabase/client";
+import { isAuthenticated as checkIsAuthenticated } from "@/lib/auth/client";
 
 function formatPrice(price: number): string {
     return new Intl.NumberFormat("en-PK", {
@@ -26,14 +26,8 @@ export function WatchlistQuickView() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const supabase = createClient();
-
         const checkAuthAndFetch = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            if (!session) {
+            if (!await checkIsAuthenticated()) {
                 setIsAuthenticated(false);
                 setLoading(false);
                 return;

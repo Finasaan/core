@@ -5,8 +5,6 @@ import { DashboardPanel, AssetList, AssetItem } from "@/components/dashboard";
 import { MarketSummaryBar } from "@/components/dashboard/MarketSummaryBar";
 import { WatchlistQuickView } from "@/components/dashboard/WatchlistQuickView";
 import { PortfolioSnapshot } from "@/components/dashboard/PortfolioSnapshot";
-import { createClient } from "@/lib/supabase/client";
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
 export default function DashboardPage() {
@@ -15,7 +13,6 @@ export default function DashboardPage() {
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingFunds, setLoadingFunds] = useState(true);
     const [userName, setUserName] = useState("");
-    const supabase = createClient();
 
     useEffect(() => {
         // Fetch top stocks
@@ -40,16 +37,11 @@ export default function DashboardPage() {
             .catch(console.error)
             .finally(() => setLoadingFunds(false));
 
-        // Fetch user profile for name
+        // Fetch user profile for name — sb-token cookie sent automatically
         const fetchProfile = async () => {
             try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session?.access_token) return;
-
                 const response = await fetch(`${API_URL}/api/profile`, {
-                    headers: {
-                        Authorization: `Bearer ${session.access_token}`,
-                    },
+                    credentials: "include",
                 });
 
                 if (response.ok) {
@@ -63,7 +55,7 @@ export default function DashboardPage() {
             }
         };
         fetchProfile();
-    }, [supabase.auth]);
+    }, []);
 
     const today = new Date().toLocaleDateString("en-US", {
         weekday: "long",
