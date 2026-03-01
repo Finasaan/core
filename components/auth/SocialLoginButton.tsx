@@ -1,43 +1,28 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
-import { createClient } from "@/lib/supabase/client";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 interface SocialLoginButtonProps {
     provider: "google";
 }
 
 export function SocialLoginButton({ provider }: SocialLoginButtonProps) {
-    const router = useRouter();
-    const supabase = createClient();
-
     const getProviderInfo = () => {
         switch (provider) {
             case "google":
-                return {
-                    icon: <GoogleIcon />,
-                    text: "Continue with Google",
-                };
+                return { icon: <GoogleIcon />, text: "Continue with Google" };
             default:
-                return {
-                    icon: null,
-                    text: "Continue",
-                };
+                return { icon: null, text: "Continue" };
         }
     };
 
-    const handleOAuthSignIn = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
-
-        if (error) {
-            console.error("OAuth error:", error.message);
-        }
+    const handleOAuthSignIn = () => {
+        // Redirect the browser to spine, which generates the OAuth URL and redirects to Google.
+        // The redirectTo param tells spine where Google should send the user back after auth.
+        const callbackUrl = encodeURIComponent(`${window.location.origin}/auth/callback`);
+        window.location.href = `${API_URL}/api/auth/oauth/google?redirectTo=${callbackUrl}`;
     };
 
     const { icon, text } = getProviderInfo();

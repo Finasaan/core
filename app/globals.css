@@ -120,3 +120,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Masonry column layout for testimonials */
+  .masonry {
+    column-gap: 1.5em;
+    column-count: 1;
+  }
+  .masonry-sm {
+    column-gap: 1.5em;
+    column-count: 2;
+  }
+  .masonry-md {
+    column-gap: 1.5em;
+    column-count: 3;
+  }
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+}

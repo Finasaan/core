@@ -7,7 +7,8 @@ import {
     useCallback,
     type ReactNode,
 } from "react";
-import { createClient } from "@/lib/supabase/client";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 interface OnboardingData {
     displayName: string | null;
@@ -43,8 +44,6 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     const [data, setData] = useState<OnboardingData>(initialData);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const supabase = createClient();
-
     const setDisplayName = useCallback((name: string) => {
         setData((prev) => ({ ...prev, displayName: name }));
     }, []);
@@ -65,23 +64,12 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
         setIsSubmitting(true);
 
         try {
-            // Get the current session for the access token
-            const { data: sessionData } = await supabase.auth.getSession();
-            const accessToken = sessionData.session?.access_token;
-
-            if (!accessToken) {
-                return { success: false, error: "Not authenticated" };
-            }
-
-            // Determine API URL based on environment
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
-
-            const response = await fetch(`${apiUrl}/api/profile`, {
+            // The sb-token HttpOnly cookie is sent automatically via credentials: "include".
+            // No need to extract or pass the token manually.
+            const response = await fetch(`${API_URL}/api/profile`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify({
                     display_name: data.displayName,
                     financial_knowledge: data.financialKnowledge,
@@ -93,17 +81,16 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
             const result = await response.json() as { error?: string };
 
             if (!response.ok) {
-                return { success: false, error: result.error || "Failed to save profile" };
+                return { success: false, error: result.error ?? "Failed to save profile" };
             }
 
             return { success: true };
-        } catch (error) {
-            console.error("Failed to submit profile:", error);
+        } catch {
             return { success: false, error: "Network error" };
         } finally {
             setIsSubmitting(false);
         }
-    }, [data, supabase.auth]);
+    }, [data]);
 
     const value: OnboardingContextType = {
         data,
