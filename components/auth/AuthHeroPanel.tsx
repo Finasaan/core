@@ -11,22 +11,33 @@ export function AuthHeroPanel({
 }: AuthHeroPanelProps) {
     return (
         <aside className="auth-hero-panel">
+            {/* Plain img — no Next.js wrapper divs that escape border-radius clipping */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+                src="/original.jpg"
+                alt=""
+                className="auth-hero-image"
+            />
+
+            {/* Dark gradient overlay */}
+            <div className="auth-hero-overlay" aria-hidden="true" />
+
+            {/* Logo */}
             <div className="auth-hero-logo">
                 <Image
                     src="/loginlogo.png"
                     alt="Finasaan"
-                    width={152}
-                    height={48}
+                    width={140}
+                    height={44}
                     priority
                 />
             </div>
 
+            {/* Bottom content */}
             <div className="auth-hero-content">
                 <h2 className="auth-hero-tagline">{tagline}</h2>
                 <p className="auth-hero-testimonial">{testimonial}</p>
             </div>
-
-            <div className="auth-hero-glow" aria-hidden="true" />
         </aside>
     );
 }

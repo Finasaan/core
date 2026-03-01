@@ -1,25 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ReactNode } from "react";
-import { AuthHeroPanel } from "./AuthHeroPanel";
-import { ProfileIcon } from "./ProfileIcon";
-import { ArrowLeftIcon } from "./ArrowLeftIcon";
 import "@/app/auth.css";
 
 interface AuthLayoutProps {
     children: ReactNode;
-    heroTagline?: string;
-    heroTestimonial?: string;
     headerPrompt?: string;
     headerLinkText?: string;
     headerLinkHref?: string;
-    /** Variant: 'default' shows prompt + link on right, 'back' shows back arrow + link on left of form */
     headerVariant?: "default" | "back";
 }
 
 export function AuthLayout({
     children,
-    heroTagline,
-    heroTestimonial,
     headerPrompt = "Don't have an account?",
     headerLinkText = "Sign Up",
     headerLinkHref = "/signup",
@@ -27,40 +20,46 @@ export function AuthLayout({
 }: AuthLayoutProps) {
     return (
         <div className="auth-page">
+            {/* Top bar */}
             <header className="auth-header">
+                {/* Logo — links to home */}
+                <Link href="/" className="auth-logo-link" aria-label="Go to Finasaan home">
+                    <Image
+                        src="/logo.png"
+                        alt="Finasaan"
+                        width={130}
+                        height={40}
+                        priority
+                    />
+                </Link>
+
+                {/* Right side — sign in / sign up prompt */}
                 {headerVariant === "default" ? (
                     <div className="auth-header-right">
                         <span className="auth-header-prompt">{headerPrompt}</span>
                         <Link href={headerLinkHref} className="auth-header-link">
-                            <ProfileIcon className="auth-profile-icon" />
-                            <span className="auth-header-link-text">{headerLinkText}</span>
+                            {headerLinkText}
                         </Link>
                     </div>
                 ) : (
                     <Link href={headerLinkHref} className="auth-back-link">
-                        <ArrowLeftIcon className="auth-back-icon" />
                         <span className="auth-back-text">{headerLinkText}</span>
                     </Link>
                 )}
             </header>
 
-            <main className="auth-container">
-                <AuthHeroPanel tagline={heroTagline} testimonial={heroTestimonial} />
-
-                <section className="auth-form-panel">
-                    <div className="auth-form-container">
-                        {children}
-                    </div>
-                </section>
+            {/* Centered form */}
+            <main className="auth-main">
+                <div className="auth-card">
+                    {children}
+                </div>
             </main>
 
+            {/* Footer */}
             <footer className="auth-footer">
-                <span className="auth-footer-copyright">© 2025 finasaan</span>
-                <Link href="/contact" className="auth-footer-link">
-                    Contact Us
-                </Link>
+                <span className="auth-footer-copyright">© {new Date().getFullYear()} finasaan</span>
+                <Link href="/contact" className="auth-footer-link">Contact Us</Link>
             </footer>
         </div>
     );
 }
-

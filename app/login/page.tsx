@@ -104,15 +104,15 @@ function LoginForm() {
                 </button>
             </form>
 
+            <AuthDivider />
+
+            <SocialLoginButton provider="google" />
+
             <p className="auth-terms-text">
                 By continuing, you agree to our{" "}
                 <Link href="/terms">Terms of Service</Link> and{" "}
                 <Link href="/privacy">Privacy Policy</Link>.
             </p>
-
-            <AuthDivider />
-
-            <SocialLoginButton provider="google" />
         </>
     );
 }
