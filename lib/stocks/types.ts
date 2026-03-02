@@ -63,3 +63,57 @@ export const STOCK_TIME_RANGES: TimeRangeOption[] = [
   { key: "5Y", label: "5Y", limit: 1300 },
   { key: "MAX", label: "MAX", limit: 10000 },
 ];
+
+// ---- Company Financials ----
+
+export interface ExtractedTable {
+  id: string;
+  company_name: string;
+  company_id: string;
+  table_name: string;
+  table_type: string;
+  fiscal_period: string | null;
+  fiscal_period_end: string | null;
+  currency: string;
+  table_unit: string | null;
+  comparative: boolean;
+  headers: string[];
+  rows: Record<string, string | number>[];
+  source_type: string;
+  created_at: string;
+}
+
+export interface FinancialReportLineItem {
+  id: string;
+  item_key: string;
+  item_label: string;
+  item_value: number;
+}
+
+export interface FinancialReport {
+  id: string;
+  report_type: string;
+  period_type: string;
+  period_end_date: string | null;
+  fiscal_year: number | null;
+  fiscal_quarter: number | null;
+  currency: string | null;
+  source_url: string | null;
+  filed_date: string | null;
+  financial_report_line_items: FinancialReportLineItem[];
+}
+
+export interface CompanyRatio {
+  id: string;
+  as_of_date: string | null;
+  ratio_key: string;
+  ratio_value: number;
+  ratio_period: string | null;
+}
+
+export interface CompanyFinancialsData {
+  company: { id: string; symbol: string; company_name: string };
+  extracted_tables: ExtractedTable[];
+  financial_reports: FinancialReport[];
+  company_ratios: CompanyRatio[];
+}

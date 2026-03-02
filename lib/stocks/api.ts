@@ -3,7 +3,7 @@
  * Public endpoints — no auth required.
  */
 
-import type { Company, StockDayData } from "./types";
+import type { Company, StockDayData, CompanyFinancialsData } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -76,4 +76,20 @@ export async function getStockData(
     data: json.data || [],
     total: json.pagination?.total || 0,
   };
+}
+
+// ---- Company Financials ----
+
+export async function getCompanyFinancials(
+  companyId: string
+): Promise<CompanyFinancialsData | null> {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/psx/companies/${companyId}/financials`
+    );
+    const json = (await res.json()) as { success: boolean; data?: CompanyFinancialsData };
+    return json.success ? json.data ?? null : null;
+  } catch {
+    return null;
+  }
 }
