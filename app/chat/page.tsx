@@ -264,7 +264,7 @@ export default function ChatPage() {
         // Remove the chip and notify the AI about the upload in the chat
         setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
         sendMessage({
-          text: `I just uploaded a file: "${file.name}". Please acknowledge it and let me know you can search it when I ask questions.`,
+          text: `I just uploaded a document: "${file.name}". Please acknowledge it and let me know you can answer questions about it using the searchConversationDocument tool.`,
         });
       } catch (err) {
         setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
@@ -275,7 +275,7 @@ export default function ChatPage() {
         );
       }
     },
-    [activeSessionId],
+    [activeSessionId, sendMessage],
   );
 
   const handleRemoveAttachment = useCallback((filename: string) => {

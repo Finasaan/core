@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { PlusIcon, XIcon, MessageSquareIcon } from "lucide-react";
+import { PlusIcon, XIcon, MessageSquareIcon, ArrowLeftIcon } from "lucide-react";
 
 interface Session {
   id: string;
@@ -125,6 +126,14 @@ export function ChatSidebar({
           ))
         )}
       </ScrollArea>
+
+      {/* Footer — back to dashboard */}
+      <div className="chat-sidebar__footer">
+        <Link href="/dashboard" className="chat-sidebar__back-link">
+          <ArrowLeftIcon size={11} className="chat-sidebar__back-icon" />
+          <span>Dashboard</span>
+        </Link>
+      </div>
     </aside>
   );
 }
