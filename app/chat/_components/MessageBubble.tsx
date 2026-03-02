@@ -34,11 +34,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           let parts = message.parts as AnyPart[] | undefined;
 
           if (!parts || parts.length === 0) {
-            if (typeof message.content === "string" && message.content) {
-              parts = [{ type: "text", text: message.content }];
-            } else {
-              parts = [];
-            }
+            parts = [];
           }
 
           return parts.map((part, i) => {

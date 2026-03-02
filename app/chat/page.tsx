@@ -256,15 +256,23 @@ export default function ChatPage() {
           body: form,
         });
         if (!res.ok) {
-          const err = await res.json().catch(() => ({})) as { message?: string };
+          const err = (await res.json().catch(() => ({}))) as {
+            message?: string;
+          };
           throw new Error(err.message ?? `Upload failed (${res.status})`);
         }
         // Remove the chip and notify the AI about the upload in the chat
         setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
-        sendMessage({ text: `I just uploaded a file: "${file.name}". Please acknowledge it and let me know you can search it when I ask questions.` });
+        sendMessage({
+          text: `I just uploaded a file: "${file.name}". Please acknowledge it and let me know you can search it when I ask questions.`,
+        });
       } catch (err) {
         setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
-        setStreamError(err instanceof Error ? err.message : "Upload failed. Please try again.");
+        setStreamError(
+          err instanceof Error
+            ? err.message
+            : "Upload failed. Please try again.",
+        );
       }
     },
     [activeSessionId],
