@@ -250,18 +250,21 @@ export default function ChatPage() {
       form.append("sessionId", activeSessionId);
 
       try {
-        await fetch(`${API_BASE}/api/chatbot/upload-attachment`, {
+        const res = await fetch(`${API_BASE}/api/chatbot/upload-attachment`, {
           method: "POST",
           credentials: "include",
           body: form,
         });
-        setAttachments((prev) =>
-          prev.map((a) =>
-            a.filename === file.name ? { ...a, uploading: false } : a,
-          ),
-        );
-      } catch {
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({})) as { message?: string };
+          throw new Error(err.message ?? `Upload failed (${res.status})`);
+        }
+        // Remove the chip and notify the AI about the upload in the chat
         setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
+        sendMessage({ text: `I just uploaded a file: "${file.name}". Please acknowledge it and let me know you can search it when I ask questions.` });
+      } catch (err) {
+        setAttachments((prev) => prev.filter((a) => a.filename !== file.name));
+        setStreamError(err instanceof Error ? err.message : "Upload failed. Please try again.");
       }
     },
     [activeSessionId],
