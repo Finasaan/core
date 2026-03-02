@@ -3,7 +3,7 @@
  * Public endpoints — no auth required.
  */
 
-import type { Sector, SectorCompany } from "./types";
+import type { Sector, SectorCompany, SectorPerformance } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -19,6 +19,12 @@ export async function getSectorById(id: string): Promise<Sector | null> {
   const res = await fetch(`${API_URL}/api/sectors/${id}`);
   const json = (await res.json()) as { success: boolean; data?: Sector };
   return json.success ? json.data ?? null : null;
+}
+
+export async function getSectorPerformance(): Promise<SectorPerformance[]> {
+  const res = await fetch(`${API_URL}/api/sectors/performance`);
+  const json = (await res.json()) as { success: boolean; data?: SectorPerformance[] };
+  return json.success ? json.data ?? [] : [];
 }
 
 // ---- Sector companies ----

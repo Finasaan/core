@@ -11,6 +11,15 @@ export interface Sector {
   company_count: number;
 }
 
+export interface SectorPerformance extends Sector {
+  avg_change_pct: number | null;
+  total_volume: number;
+  gainers: number;
+  losers: number;
+  top_gainer: { symbol: string; company_name: string; change_pct: number } | null;
+  top_loser: { symbol: string; company_name: string; change_pct: number } | null;
+}
+
 export interface SectorCompany {
   id: string;
   symbol: string;

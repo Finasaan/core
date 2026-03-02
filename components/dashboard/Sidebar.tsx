@@ -18,10 +18,8 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 const learnItems: SidebarItem[] = [
-    { label: "My Journeys", href: "#", icon: "book", comingSoon: true },
-    { label: "Recommended", href: "#", icon: "magic", comingSoon: true },
-    { label: "Explore", href: "#", icon: "search", comingSoon: true },
-    { label: "Bookmarks", href: "#", icon: "bookmark", comingSoon: true },
+    { label: "My Journeys", href: "/dashboard/learn", icon: "book" },
+    { label: "Explore", href: "/dashboard/learn", icon: "search" },
 ];
 
 const infoItems: SidebarItem[] = [

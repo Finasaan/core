@@ -109,17 +109,16 @@ export function ChatSidebar({
                   <span className="chat-session-item__title" title={s.title}>
                     {s.title}
                   </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
+                  <button
                     className="chat-session-item__delete"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDeleteSession(s.id);
                     }}
+                    title="Delete chat"
                   >
-                    <XIcon size={11} />
-                  </Button>
+                    <XIcon size={12} />
+                  </button>
                 </div>
               ))}
             </div>

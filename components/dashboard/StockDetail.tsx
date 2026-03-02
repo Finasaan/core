@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { WatchlistToggle } from "./WatchlistToggle";
 import { StockPriceChart } from "./StockPriceChart";
+import { CompanyFinancials } from "./CompanyFinancials";
 import { AddToPortfolioButton } from "./AddToPortfolioButton";
 import type { StockTimeRange, StockDayData } from "@/lib/stocks";
 import { STOCK_TIME_RANGES } from "@/lib/stocks";
@@ -303,6 +304,9 @@ export function StockDetail({ symbol }: StockDetailProps) {
                     <p className="stock-description">{company.description}</p>
                 )}
             </div>
+
+            {/* Company Financials (S-5) */}
+            <CompanyFinancials companyId={company.id} />
 
             {/* Recent Trades */}
             {priceHistory.length > 0 && (
