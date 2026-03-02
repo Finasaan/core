@@ -53,6 +53,17 @@ export default function ChatPage() {
   const activeSessionRef = useRef(activeSessionId);
   activeSessionRef.current = activeSessionId;
 
+  // Stable ref to a callback that updates activeSessionId from the response
+  // header. Using a ref keeps the transport memo dependency-free while always
+  // calling the latest setter.
+  const onSessionIdReceived = useRef<(id: string) => void>(() => {});
+  onSessionIdReceived.current = (id: string) => {
+    if (activeSessionRef.current !== id) {
+      setActiveSessionId(id);
+      activeSessionRef.current = id;
+    }
+  };
+
   // Transport created ONCE — body is a function so it always reads latest refs
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const transport = useMemo(
@@ -60,12 +71,19 @@ export default function ChatPage() {
       new DefaultChatTransport({
         api: `${API_BASE}/api/chatbot/stream`,
         credentials: "include",
+        // Intercept the response to capture the session ID the server assigned
+        fetch: async (input, init) => {
+          const response = await fetch(input, init);
+          const sessionId = response.headers.get("X-Session-Id");
+          if (sessionId) onSessionIdReceived.current(sessionId);
+          return response;
+        },
         body: () => ({
           modelId: selectedModelRef.current,
           sessionId: activeSessionRef.current,
         }),
       }),
-    [], // intentionally stable — body function reads from refs
+    [], // intentionally stable — body/fetch functions read from refs
   );
 
   // ── useChat (AI SDK v6) ─────────────────────────────────────────────────
@@ -308,6 +326,29 @@ export default function ChatPage() {
                 {messages.map((msg) => (
                   <MessageBubble key={msg.id} message={msg} />
                 ))}
+
+                {/* Persistent streaming indicator — shows whenever the
+                    stream is active and the last message isn't already
+                    showing a streaming text cursor */}
+                {isStreaming &&
+                  (() => {
+                    const lastMsg = messages[messages.length - 1];
+                    const lastParts = (lastMsg?.parts ?? []) as Array<{
+                      type: string;
+                      state?: string;
+                    }>;
+                    const hasStreamingText = lastParts.some(
+                      (p) => p.type === "text" && p.state === "streaming",
+                    );
+                    if (hasStreamingText) return null;
+                    return (
+                      <div className="chat-streaming-indicator">
+                        <span className="chat-streaming-indicator__dot" />
+                        <span className="chat-streaming-indicator__dot" />
+                        <span className="chat-streaming-indicator__dot" />
+                      </div>
+                    );
+                  })()}
               </div>
             )}
           </div>

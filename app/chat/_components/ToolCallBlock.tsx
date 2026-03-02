@@ -9,9 +9,13 @@ const TOOL_LABELS: Record<string, string> = {
   getMarketSummary: "FETCHING MARKET SUMMARY",
   searchCompanies: "SEARCHING COMPANIES",
   getStockDetail: "LOADING STOCK DATA",
+  getStockHistory: "LOADING STOCK HISTORY",
   getTopStocks: "FETCHING TOP STOCKS",
-  searchMutualFunds: "SEARCHING MUTUAL FUNDS",
+  listSectors: "LOADING SECTORS",
+  queryMutualFunds: "QUERYING MUTUAL FUNDS",
   getFundDetail: "LOADING FUND DATA",
+  getFundNavHistory: "LOADING NAV HISTORY",
+  getFundProviders: "LOADING FUND PROVIDERS",
   getTopFunds: "FETCHING TOP FUNDS",
   getUserPortfolio: "LOADING PORTFOLIO",
   getUserWatchlist: "LOADING WATCHLIST",
@@ -22,7 +26,10 @@ function getResultSummary(toolName: string, result: unknown): string {
   const r = result as Record<string, unknown>;
   if (r.error) return `error: ${r.error}`;
 
-  if (toolName === "searchKnowledge" || toolName === "searchConversationDocument") {
+  if (
+    toolName === "searchKnowledge" ||
+    toolName === "searchConversationDocument"
+  ) {
     const items = r.results as unknown[] | undefined;
     return items?.length
       ? `${items.length} result${items.length !== 1 ? "s" : ""}`
@@ -36,28 +43,50 @@ function getResultSummary(toolName: string, result: unknown): string {
     }
     return "loaded";
   }
-  if (toolName === "searchCompanies" || toolName === "searchMutualFunds") {
+  // Tools returning arrays with a total count
+  if (r.total !== undefined) {
+    const total = Number(r.total);
+    return total > 0
+      ? `${total} result${total !== 1 ? "s" : ""}`
+      : "no results";
+  }
+  if (toolName === "searchCompanies") {
     const items = r.results as unknown[] | undefined;
-    return items?.length ? `${items.length} result${items.length !== 1 ? "s" : ""}` : "no results";
+    return items?.length
+      ? `${items.length} result${items.length !== 1 ? "s" : ""}`
+      : "no results";
   }
   return "done";
 }
 
 interface ToolCallBlockProps {
   toolName: string;
-  state: "input-streaming" | "input-available" | "output-available" | "output-streaming";
+  state:
+    | "input-streaming"
+    | "input-available"
+    | "output-available"
+    | "output-streaming";
   result?: unknown;
 }
 
 export function ToolCallBlock({ toolName, state, result }: ToolCallBlockProps) {
-  const label = TOOL_LABELS[toolName] ?? toolName.toUpperCase().replace(/_/g, " ");
-  const isRunning = state === "input-streaming" || state === "input-available" || state === "output-streaming";
+  const label =
+    TOOL_LABELS[toolName] ?? toolName.toUpperCase().replace(/_/g, " ");
+  const isRunning =
+    state === "input-streaming" ||
+    state === "input-available" ||
+    state === "output-streaming";
   const isDone = state === "output-available";
   const hasError =
-    isDone && result && typeof result === "object" && (result as Record<string, unknown>).error;
+    isDone &&
+    result &&
+    typeof result === "object" &&
+    (result as Record<string, unknown>).error;
 
   return (
-    <div className={`tool-call ${isRunning ? "tool-call--running" : hasError ? "tool-call--error" : "tool-call--done"}`}>
+    <div
+      className={`tool-call ${isRunning ? "tool-call--running" : hasError ? "tool-call--error" : "tool-call--done"}`}
+    >
       {isRunning ? (
         <Loader2Icon size={11} className="flex-shrink-0 animate-spin" />
       ) : hasError ? (
@@ -68,7 +97,9 @@ export function ToolCallBlock({ toolName, state, result }: ToolCallBlockProps) {
       <span className="tool-call__text">
         {label}
         {isDone && !isRunning && (
-          <span className="ml-2 opacity-60">— {getResultSummary(toolName, result)}</span>
+          <span className="ml-2 opacity-60">
+            — {getResultSummary(toolName, result)}
+          </span>
         )}
         {isRunning && <span className="opacity-60">...</span>}
       </span>

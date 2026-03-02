@@ -27,104 +27,120 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div className={`chat-msg chat-msg--${isUser ? "user" : "assistant"}`}>
-      <span className="chat-msg__role">
-        {isUser ? "YOU" : "FINASAANGPT"}
-      </span>
+      <span className="chat-msg__role">{isUser ? "YOU" : "FINASAANGPT"}</span>
 
       <div className="chat-msg__bubble">
-        {(message.parts as AnyPart[]).map((part, i) => {
-          /* ── Text ── */
-          if (part.type === "text") {
-            if (isUser) {
+        {(() => {
+          let parts = message.parts as AnyPart[] | undefined;
+
+          if (!parts || parts.length === 0) {
+            if (typeof message.content === "string" && message.content) {
+              parts = [{ type: "text", text: message.content }];
+            } else {
+              parts = [];
+            }
+          }
+
+          return parts.map((part, i) => {
+            /* ── Text ── */
+            if (part.type === "text") {
+              if (isUser) {
+                return (
+                  <span key={i} style={{ whiteSpace: "pre-wrap" }}>
+                    {part.text ?? ""}
+                  </span>
+                );
+              }
               return (
-                <span key={i} style={{ whiteSpace: "pre-wrap" }}>
-                  {part.text ?? ""}
-                </span>
+                <div key={i}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {part.text ?? ""}
+                  </ReactMarkdown>
+                  {part.state === "streaming" && (
+                    <span className="streaming-cursor" />
+                  )}
+                </div>
               );
             }
-            return (
-              <div key={i}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {part.text ?? ""}
-                </ReactMarkdown>
-                {part.state === "streaming" && (
-                  <span className="streaming-cursor" />
-                )}
-              </div>
-            );
-          }
 
-          /* ── File (user upload preview) ── */
-          if (part.type === "file") {
-            return (
-              <div key={i} className="chat-msg__attachments">
-                <AttachmentChip filename={part.mediaType ?? "file"} />
-              </div>
-            );
-          }
-
-          /* ── Tool call (dynamic-tool part) ── */
-          if (part.type === "dynamic-tool") {
-            return (
-              <ToolCallBlock
-                key={i}
-                toolName={part.toolName ?? ""}
-                state={(part.state ?? "input-streaming") as ToolCallBlockState}
-                result={part.output}
-              />
-            );
-          }
-
-          /* ── Typed tool (tool-<name>) ── */
-          if (part.type.startsWith("tool-")) {
-            const toolName = part.type.replace(/^tool-/, "");
-            return (
-              <ToolCallBlock
-                key={i}
-                toolName={toolName}
-                state={(part.state ?? "input-streaming") as ToolCallBlockState}
-                result={part.output}
-              />
-            );
-          }
-
-          /* ── Reasoning ── */
-          if (part.type === "reasoning") {
-            return (
-              <details
-                key={i}
-                className="tool-call tool-call--done"
-                style={{ cursor: "pointer" }}
-              >
-                <summary className="tool-call__text">Reasoning</summary>
-                <div
-                  style={{
-                    paddingTop: 6,
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 11,
-                    color: "var(--chat-text-dim)",
-                    lineHeight: 1.6,
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                {String(part.reasoning ?? "")}
+            /* ── File (user upload preview) ── */
+            if (part.type === "file") {
+              return (
+                <div key={i} className="chat-msg__attachments">
+                  <AttachmentChip filename={part.mediaType ?? "file"} />
                 </div>
-              </details>
-            );
-          }
+              );
+            }
 
-          /* ── Step separator ── */
-          if (part.type === "step-start") return null;
+            /* ── Tool call (dynamic-tool part) ── */
+            if (part.type === "dynamic-tool") {
+              return (
+                <ToolCallBlock
+                  key={i}
+                  toolName={part.toolName ?? ""}
+                  state={
+                    (part.state ?? "input-streaming") as ToolCallBlockState
+                  }
+                  result={part.output}
+                />
+              );
+            }
 
-          return null;
-        })}
+            /* ── Typed tool (tool-<name>) ── */
+            if (part.type.startsWith("tool-")) {
+              const toolName = part.type.replace(/^tool-/, "");
+              return (
+                <ToolCallBlock
+                  key={i}
+                  toolName={toolName}
+                  state={
+                    (part.state ?? "input-streaming") as ToolCallBlockState
+                  }
+                  result={part.output}
+                />
+              );
+            }
+
+            /* ── Reasoning ── */
+            if (part.type === "reasoning") {
+              return (
+                <details
+                  key={i}
+                  className="tool-call tool-call--done"
+                  style={{ cursor: "pointer" }}
+                >
+                  <summary className="tool-call__text">Reasoning</summary>
+                  <div
+                    style={{
+                      paddingTop: 6,
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 11,
+                      color: "var(--chat-text-dim)",
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {String(part.reasoning ?? "")}
+                  </div>
+                </details>
+              );
+            }
+
+            /* ── Step separator ── */
+            if (part.type === "step-start") return null;
+
+            return null;
+          });
+        })()}
 
         {/* Sources from metadata (persisted messages reloaded from DB) */}
         {(() => {
           if (isUser) return null;
           const meta = message.metadata as Record<string, unknown> | undefined;
           if (!meta || !Array.isArray(meta.sources)) return null;
-          const sources = meta.sources as Parameters<typeof SourcesCard>[0]["sources"];
+          const sources = meta.sources as Parameters<
+            typeof SourcesCard
+          >[0]["sources"];
           return <SourcesCard sources={sources} />;
         })()}
       </div>

@@ -69,7 +69,9 @@
   background: var(--chat-surface);
   border-right: 1px solid var(--chat-border);
   overflow: hidden;
-  transition: width 200ms ease, opacity 200ms ease;
+  transition:
+    width 200ms ease,
+    opacity 200ms ease;
 }
 
 .chat-sidebar.collapsed {
@@ -108,7 +110,10 @@
   background: transparent;
   color: var(--chat-text-muted);
   cursor: pointer;
-  transition: color 120ms, border-color 120ms, background 120ms;
+  transition:
+    color 120ms,
+    border-color 120ms,
+    background 120ms;
 }
 
 .chat-sidebar__new-btn:hover {
@@ -193,7 +198,9 @@
   background: transparent;
   color: var(--chat-text-dim);
   cursor: pointer;
-  transition: opacity 120ms, color 120ms;
+  transition:
+    opacity 120ms,
+    color 120ms;
   flex-shrink: 0;
 }
 
@@ -241,7 +248,9 @@
   background: transparent;
   color: var(--chat-text-muted);
   cursor: pointer;
-  transition: color 120ms, background 120ms;
+  transition:
+    color 120ms,
+    background 120ms;
 }
 
 .chat-topbar__toggle:hover {
@@ -276,7 +285,7 @@
   max-width: 780px;
   margin: 0 auto;
   margin-top: auto; /* push messages to bottom of scroll area */
-  width: 100%;      /* correct bubble max-width: 88% calculation */
+  width: 100%; /* correct bubble max-width: 88% calculation */
   padding: 0 20px;
   display: flex;
   flex-direction: column;
@@ -622,8 +631,13 @@
 }
 
 @keyframes chip-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* ============================================
@@ -703,7 +717,9 @@
   background: transparent;
   color: var(--chat-text-muted);
   cursor: pointer;
-  transition: color 120ms, background 120ms;
+  transition:
+    color 120ms,
+    background 120ms;
 }
 
 .chat-input-bar__btn:hover {
@@ -775,7 +791,9 @@
   font-family: var(--font-mono);
   font-size: 10px;
   cursor: pointer;
-  transition: color 120ms, border-color 120ms;
+  transition:
+    color 120ms,
+    border-color 120ms;
   letter-spacing: 0.04em;
 }
 
@@ -910,7 +928,9 @@
   background: var(--chat-surface);
   text-align: left;
   cursor: pointer;
-  transition: border-color 120ms, background 120ms;
+  transition:
+    border-color 120ms,
+    background 120ms;
   font-size: 12px;
   color: var(--chat-text-muted);
   line-height: 1.5;
@@ -995,7 +1015,9 @@
   font-size: 11px;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 120ms, border-color 120ms;
+  transition:
+    background 120ms,
+    border-color 120ms;
   align-self: center;
 }
 
@@ -1032,8 +1054,53 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Streaming Indicator (persistent loading dots)
+   ============================================ */
+.chat-streaming-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+}
+
+.chat-streaming-indicator__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--chat-green);
+  opacity: 0.4;
+  animation: streaming-bounce 1.4s ease-in-out infinite;
+}
+
+.chat-streaming-indicator__dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-streaming-indicator__dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes streaming-bounce {
+  0%,
+  80%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 /* ============================================
