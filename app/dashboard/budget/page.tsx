@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, ArrowRight } from "lucide-react";
+import { Plus, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,8 @@ import {
   TransactionList,
   AddTransactionDialog,
 } from "@/components/budget";
+import { InsightCard } from "@/components/budget/ai";
+import { useBudgetAI } from "@/context/BudgetAIContext";
 import { fetchDashboard, fetchHistory, fetchTransactions, fetchCategories } from "@/lib/budget/api";
 import type { 
   BudgetDashboardData, 
@@ -35,6 +37,8 @@ export default function BudgetDashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [isAddTxOpen, setIsAddTxOpen] = useState(false);
 
+  const { insights, isInsightsLoading, fetchInsights } = useBudgetAI();
+
   const loadData = async () => {
     setLoading(true);
     setError(null);
@@ -44,6 +48,7 @@ export default function BudgetDashboardPage() {
         fetchHistory(6),
         fetchTransactions({ month, year, limit: 5 }),
         fetchCategories(),
+        fetchInsights(month, year),
       ]);
       setDashboard(dashData);
       setHistory(histData);
@@ -159,32 +164,50 @@ export default function BudgetDashboardPage() {
           )}
         </div>
 
-        <Card className="lg:col-span-3">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle>Recent Transactions</CardTitle>
-            <Link href="/dashboard/budget/transactions">
-              <Button variant="ghost" size="sm">
-                View All <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="space-y-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Skeleton key={i} className="h-12 w-full" />
+        <div className="lg:col-span-3 space-y-6">
+          {insights.length > 0 && (
+            <section className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-green-600" />
+                <h2 className="text-xl font-semibold">Smart Insights</h2>
+              </div>
+              <div className="flex flex-col md:flex-row gap-4 overflow-x-auto pb-2 scrollbar-none">
+                {insights.map((insight, idx) => (
+                  <div key={idx} className="min-w-[300px] flex-1">
+                    <InsightCard insight={insight} />
+                  </div>
                 ))}
               </div>
-            ) : (
-              <TransactionList 
-                transactions={recentTransactions} 
-                loading={false}
-                onEdit={() => {}} 
-                onDelete={() => {}} 
-              />
-            )}
-          </CardContent>
-        </Card>
+            </section>
+          )}
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle>Recent Transactions</CardTitle>
+              <Link href="/dashboard/budget/transactions">
+                <Button variant="ghost" size="sm">
+                  View All <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="space-y-2">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <TransactionList 
+                  transactions={recentTransactions} 
+                  loading={false}
+                  onEdit={() => {}} 
+                  onDelete={() => {}} 
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <AddTransactionDialog 

@@ -12,6 +12,9 @@ import {
   AddIncomeDialog,
   EditIncomeDialog,
 } from "@/components/budget";
+import { SuggestionCard } from "@/components/budget/ai";
+import { useBudgetAI } from "@/context/BudgetAIContext";
+import { Sparkles } from "lucide-react";
 import { 
   fetchCategories, 
   fetchBudgetPlans, 
@@ -42,6 +45,8 @@ export default function PlannerPage() {
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
   const [editingIncome, setEditingIncome] = useState<BudgetIncomeSource | null>(null);
 
+  const { suggestions, isSuggestionsLoading, fetchSuggestions } = useBudgetAI();
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -50,6 +55,7 @@ export default function PlannerPage() {
         fetchBudgetPlans(month, year),
         fetchDashboard(month, year),
         fetchIncome(month, year),
+        fetchSuggestions(month, year),
       ]);
       setCategories(cats);
       setPlans(planData);
@@ -140,6 +146,22 @@ export default function PlannerPage() {
         </div>
 
         <div className="space-y-6">
+          {suggestions.length > 0 && (
+            <div className="space-y-4">
+               <div className="flex items-center gap-2 px-1">
+                 <Sparkles className="h-5 w-5 text-green-600" />
+                 <h2 className="text-xl font-semibold">Smart Tips</h2>
+               </div>
+               {suggestions.map((s, idx) => (
+                 <SuggestionCard 
+                   key={idx} 
+                   suggestion={s} 
+                   onApply={(sug) => handlePlanChange(sug.category_id, sug.suggested_budget)}
+                 />
+               ))}
+            </div>
+          )}
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Incomes</CardTitle>

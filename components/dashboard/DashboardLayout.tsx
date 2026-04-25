@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { getUser } from "@/lib/auth/client";
+import { useBudgetAI } from "@/context/BudgetAIContext";
+import { AskAIPanel } from "@/components/budget/ai";
+import { Sparkles } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -49,6 +52,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         fetchProfile();
     }, []);
 
+    const { togglePanel } = useBudgetAI();
+
     return (
         <div className="dashboard-container">
             <Sidebar />
@@ -58,6 +63,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     {children}
                 </main>
             </div>
+            
+            {/* Ask AI Floating Button */}
+            <button 
+                className="ask-ai-fab"
+                onClick={togglePanel}
+                title="Asaan Budgeting"
+            >
+                <Sparkles size={24} />
+                <span>Asaan Budgeting</span>
+            </button>
+
+            <AskAIPanel />
         </div>
     );
 }
