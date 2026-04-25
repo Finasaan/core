@@ -28,6 +28,7 @@ const infoItems: SidebarItem[] = [
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
     { label: "Watchlist", href: "/dashboard/watchlist", icon: "star" },
     { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
+    { label: "Budget", href: "/dashboard/budget", icon: "budget" },
     { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
     { label: "Insurance", href: "/dashboard/insurance", icon: "shield" },
 ];
@@ -130,6 +131,15 @@ function getIcon(name: string): React.ReactElement {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5z" />
                 <path d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" />
+            </svg>
+        ),
+        budget: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M19 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14z" />
+                <path d="M16 11h.01M16 13h.01M16 15h.01M16 17h.01" />
+                <path d="M12 11h.01M12 13h.01M12 15h.01M12 17h.01" />
+                <path d="M8 11h.01M8 13h.01M8 15h.01M8 17h.01" />
+                <path d="M3 13h18" />
             </svg>
         ),
         calculator: (
