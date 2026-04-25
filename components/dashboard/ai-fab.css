@@ -1,0 +1,49 @@
+/* Floating Action Button (FAB) for AI Assistants */
+.ask-ai-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #159F63;
+  color: #fff;
+  border: none;
+  border-radius: 3rem;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(21, 159, 99, 0.4);
+  cursor: pointer;
+  z-index: 900;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ask-ai-fab:hover {
+  transform: scale(1.05) translateY(-5px);
+  background: #128b56;
+  box-shadow: 0 12px 40px rgba(21, 159, 99, 0.5);
+}
+
+.ask-ai-fab svg {
+  animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.2) rotate(15deg); opacity: 0.8; }
+}
+
+@media (max-width: 640px) {
+  .ask-ai-fab span { display: none; }
+  .ask-ai-fab { padding: 1rem; border-radius: 50%; }
+}
+
+/* Specific overlay for FinasaanGPT */
+.gpt-fab {
+  background: #000; /* Black for Finasaan GPT to distinguish */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.gpt-fab:hover {
+  background: #222;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}

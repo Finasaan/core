@@ -6,7 +6,10 @@ import { TopBar } from "./TopBar";
 import { getUser } from "@/lib/auth/client";
 import { useBudgetAI } from "@/context/BudgetAIContext";
 import { AskAIPanel } from "@/components/budget/ai";
-import { Sparkles } from "lucide-react";
+import { Sparkles, MessageSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { MiniGPTSidebar } from "@/components/gpt/MiniGPTSidebar";
+import "./ai-fab.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -17,6 +20,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [userName, setUserName] = useState("User");
     const [isGuest, setIsGuest] = useState(false);
+    const [isGPTOpen, setIsGPTOpen] = useState(false);
 
     useEffect(() => {
         // Get user display name from spine profile API — sb-token cookie sent automatically
@@ -53,6 +57,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     }, []);
 
     const { togglePanel } = useBudgetAI();
+    const pathname = usePathname();
+    const isBudgetPage = pathname?.startsWith("/dashboard/budget");
 
     return (
         <div className="dashboard-container">
@@ -64,17 +70,34 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 </main>
             </div>
             
-            {/* Ask AI Floating Button */}
-            <button 
-                className="ask-ai-fab"
-                onClick={togglePanel}
-                title="Asaan Budgeting"
-            >
-                <Sparkles size={24} />
-                <span>Asaan Budgeting</span>
-            </button>
+            {isBudgetPage ? (
+              <>
+                {/* BachatAI Floating Button */}
+                <button 
+                    className="ask-ai-fab"
+                    onClick={togglePanel}
+                    title="BachatAI"
+                >
+                    <Sparkles size={24} />
+                    <span>BachatAI</span>
+                </button>
 
-            <AskAIPanel />
+                <AskAIPanel />
+              </>
+            ) : (
+              <>
+                {/* Mini FinasaanGPT Floating Button */}
+                <button 
+                    className="ask-ai-fab gpt-fab"
+                    onClick={() => setIsGPTOpen(prev => !prev)}
+                    title="FinasaanGPT"
+                >
+                    <MessageSquare size={24} />
+                    <span>FinasaanGPT</span>
+                </button>
+                <MiniGPTSidebar isOpen={isGPTOpen} onClose={() => setIsGPTOpen(false)} />
+              </>
+            )}
         </div>
     );
 }

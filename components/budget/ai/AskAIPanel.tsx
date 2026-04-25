@@ -38,7 +38,7 @@ export function AskAIPanel() {
         <div className="ai-panel-header">
           <div className="ai-header-title">
             <Sparkles className="ai-sparkle-icon" size={20} />
-            <h2>Asaan Budgeting</h2>
+            <h2>BachatAI</h2>
           </div>
           <div className="ai-header-actions">
             <button onClick={clearChat} title="Clear Chat" className="ai-action-btn">
