@@ -5,6 +5,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -57,45 +59,54 @@ export function NewsStrip() {
 
   return (
     <div className="mb-7">
-      <div className="news-strip-header">
-        <span className="news-strip-label">Market News</span>
-        <span className="news-strip-count">{articles.length} articles</span>
-      </div>
+      <Carousel
+        opts={{ align: "start", dragFree: true }}
+        className="w-full relative group"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="news-strip-header mb-0">
+            <span className="news-strip-label">Market News</span>
+            <span className="news-strip-count">{articles.length} articles</span>
+          </div>
+          <div className="flex gap-2 mr-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+            <CarouselPrevious className="static translate-y-0" />
+            <CarouselNext className="static translate-y-0" />
+          </div>
+        </div>
 
-      <div className="overflow-hidden">
-        <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
-          <CarouselContent className="-ml-4">
-            {articles.map((a) => {
-              const dot  = SENTIMENT_COLOR[a.sentiment] ?? SENTIMENT_COLOR.neutral;
-              const date = new Date(a.published_at).toLocaleDateString("en-PK", {
-                month: "short",
-                day:   "numeric",
-              });
+        <CarouselContent>
+          {articles.map((a) => {
+            const dot  = SENTIMENT_COLOR[a.sentiment] ?? SENTIMENT_COLOR.neutral;
+            const date = new Date(a.published_at).toLocaleDateString("en-PK", {
+              month: "short",
+              day:   "numeric",
+            });
 
-              return (
-                <CarouselItem key={a.id} className="pl-4 basis-[280px]">
-                  <a
-                    href={a.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="news-card"
-                  >
-                    <div className="news-card-meta">
-                      <span className="news-card-dot" style={{ background: dot }} />
-                      <span className="news-card-source">{a.source}</span>
-                      <span className="news-card-date">{date}</span>
-                    </div>
-                    <p className="news-card-title">{a.title}</p>
-                    {a.ai_summary && (
-                      <p className="news-card-summary">{a.ai_summary}</p>
-                    )}
-                  </a>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
-      </div>
+            return (
+              <CarouselItem key={a.id} className="basis-[85%] sm:basis-[300px] select-none cursor-grab active:cursor-grabbing">
+                <a
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="news-card h-full"
+                  draggable="false"
+                >
+                  <div className="news-card-meta">
+                    <span className="news-card-dot" style={{ background: dot }} />
+                    <span className="news-card-source">{a.source}</span>
+                    <span className="news-card-date">{date}</span>
+                  </div>
+                  <p className="news-card-title">{a.title}</p>
+                  {a.ai_summary && (
+                    <p className="news-card-summary">{a.ai_summary}</p>
+                  )}
+                </a>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+      </Carousel>
     </div>
+
   );
 }
