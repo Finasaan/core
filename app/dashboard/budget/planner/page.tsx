@@ -1,108 +1,131 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  AddCategoryDialog,
   MonthYearSelector,
   BudgetPlannerTable,
+  CategoryManager,
   IncomeList,
   AddIncomeDialog,
   EditIncomeDialog,
 } from "@/components/budget";
-import { SuggestionCard } from "@/components/budget/ai";
-import { useBudgetAI } from "@/context/BudgetAIContext";
-import { Sparkles } from "lucide-react";
-import { 
-  fetchCategories, 
-  fetchBudgetPlans, 
-  fetchDashboard, 
+import {
+  deleteCategory,
+  deleteIncome,
+  fetchBudgetPlans,
+  fetchCategories,
+  fetchDashboard,
   fetchIncome,
   upsertBudgetPlan,
-  deleteIncome
 } from "@/lib/budget/api";
-import type { 
-  BudgetCategory, 
-  BudgetPlan, 
+import type {
+  BudgetCategory,
   CategoryBreakdown,
-  BudgetIncomeSource
+  BudgetIncomeSource,
+  BudgetPlan,
 } from "@/lib/budget/types";
 
 export default function PlannerPage() {
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [year, setYear] = useState(new Date().getFullYear());
-  
+  const now = new Date();
+  const [month, setMonth] = useState(now.getMonth() + 1);
+  const [year, setYear] = useState(now.getFullYear());
+
   const [categories, setCategories] = useState<BudgetCategory[]>([]);
   const [plans, setPlans] = useState<BudgetPlan[]>([]);
   const [breakdown, setBreakdown] = useState<CategoryBreakdown[]>([]);
   const [income, setIncome] = useState<BudgetIncomeSource[]>([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
   const [editingIncome, setEditingIncome] = useState<BudgetIncomeSource | null>(null);
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
 
-  const { suggestions, isSuggestionsLoading, fetchSuggestions } = useBudgetAI();
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const [cats, planData, dashData, incomeData] = await Promise.all([
         fetchCategories(),
         fetchBudgetPlans(month, year),
         fetchDashboard(month, year),
         fetchIncome(month, year),
-        fetchSuggestions(month, year),
       ]);
       setCategories(cats);
       setPlans(planData);
       setBreakdown(dashData.category_breakdown);
       setIncome(incomeData);
     } catch (err) {
-      setError("Failed to load planner data.");
-      console.error(err);
+      const message =
+        err instanceof Error ? err.message : "Failed to load planner data.";
+      setError(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [month, year]);
 
   useEffect(() => {
     loadData();
-  }, [month, year]);
+  }, [loadData]);
 
   const handlePlanChange = async (categoryId: string | null, amount: number) => {
+    const previousPlans = plans;
+
+    const tempPlan: BudgetPlan = {
+      id: `temp-${categoryId ?? "total"}`,
+      category_id: categoryId,
+      planned_amount: amount,
+      month,
+      year,
+    };
+
     try {
       // Optimistic update
-      setPlans(prev => {
-        const existing = prev.find(p => p.category_id === categoryId);
+      setPlans((prev) => {
+        const existing = prev.find((p) => p.category_id === categoryId);
         if (existing) {
-          return prev.map(p => p.category_id === categoryId ? { ...p, planned_amount: amount } : p);
-        } else {
-          return [...prev, { id: 'temp', category_id: categoryId, planned_amount: amount, month, year }];
+          return prev.map((p) =>
+            p.category_id === categoryId ? { ...p, planned_amount: amount } : p
+          );
         }
+        return [...prev, tempPlan];
       });
-      
+
       await upsertBudgetPlan({
         category_id: categoryId,
         planned_amount: amount,
         month,
         year,
       });
-    } catch (err) {
-      console.error("Failed to update plan", err);
-      loadData(); // Revert on error
+    } catch {
+      setPlans(previousPlans);
+      setError("Failed to update budget plan.");
     }
   };
 
   const handleDeleteIncome = async (id: string) => {
     try {
       await deleteIncome(id);
-      loadData();
-    } catch (err) {
-      console.error("Failed to delete income", err);
+      await loadData();
+    } catch {
+      setError("Failed to delete income.");
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      await deleteCategory(id);
+      setCategories((prev) => prev.filter((category) => category.id !== id));
+      setPlans((prev) => prev.filter((plan) => plan.category_id !== id));
+      await loadData();
+    } catch {
+      setError("Failed to delete category. It may be in use by transactions.");
     }
   };
 
@@ -119,6 +142,12 @@ export default function PlannerPage() {
           onChange={(m, y) => { setMonth(m); setYear(y); }} 
         />
       </header>
+
+      {error ? (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
@@ -143,25 +172,27 @@ export default function PlannerPage() {
               )}
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Categories</CardTitle>
+              <Button size="sm" variant="outline" onClick={() => setIsAddCategoryOpen(true)}>
+                <Plus className="mr-1 h-4 w-4" /> Add Category
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <CategoryManager
+                categories={categories}
+                onCategoryAdded={() => {
+                  void loadData();
+                }}
+                onCategoryDeleted={handleDeleteCategory}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-6">
-          {suggestions.length > 0 && (
-            <div className="space-y-4">
-               <div className="flex items-center gap-2 px-1">
-                 <Sparkles className="h-5 w-5 text-green-600" />
-                 <h2 className="text-xl font-semibold">Smart Tips</h2>
-               </div>
-               {suggestions.map((s, idx) => (
-                 <SuggestionCard 
-                   key={idx} 
-                   suggestion={s} 
-                   onApply={(sug) => handlePlanChange(sug.category_id, sug.suggested_budget)}
-                 />
-               ))}
-            </div>
-          )}
-
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Incomes</CardTitle>
@@ -180,6 +211,15 @@ export default function PlannerPage() {
           </Card>
         </div>
       </div>
+
+      <AddCategoryDialog
+        open={isAddCategoryOpen}
+        onClose={() => setIsAddCategoryOpen(false)}
+        onSuccess={() => {
+          setIsAddCategoryOpen(false);
+          loadData();
+        }}
+      />
 
       <AddIncomeDialog 
         open={isAddIncomeOpen}

@@ -477,6 +477,83 @@ const stockMarketBasics: LearningJourney = {
         ],
       },
     },
+    {
+      id: "smb-investing",
+      journeyId: "stock-market-basics",
+      title: "Taking Action",
+      description: "Ready to invest? Let's open an account and place your first order.",
+      order: 4,
+      lessons: [
+        {
+          id: "smb-inv-1",
+          moduleId: "smb-investing",
+          title: "Step-by-Step Investing Flow",
+          order: 1,
+          estimatedMinutes: 12,
+          content: [
+            {
+              type: "heading",
+              content: "From Account Opening to Order Execution"
+            },
+            {
+              type: "text",
+              content: "Investing in PSX is a structured process involving three main entities: the Broker, the CDC (Central Depository Company), and the NCCPL (National Clearing Company of Pakistan Limited). Don't worry, most of this is handled automatically through your broker's platform."
+            },
+            {
+              type: "video",
+              youtubeId: "V6h7C_P1f8I",
+              title: "Step-by-Step Investing in Pakistan"
+            },
+            {
+              type: "list",
+              ordered: true,
+              items: [
+                "Select a broker and open a trading account.",
+                "Your CDC sub-account is created (where your shares are safely stored).",
+                "Transfer funds to your brokerage account.",
+                "Place a 'Buy' order via your broker's terminal or app.",
+                "NCCPL handles the clearing and settlement on a T+2 basis (Trade Day + 2 Business Days)."
+              ]
+            },
+            {
+              type: "keyTakeaway",
+              items: [
+                "CDC is the digital 'safe' for your shares.",
+                "T+2 is the standard settlement cycle in Pakistan.",
+                "Modern apps like Finasaan make the flow seamless."
+              ]
+            }
+          ]
+        }
+      ],
+      quiz: {
+        id: "smb-investing-quiz",
+        moduleId: "smb-investing",
+        title: "Test Your Knowledge: Investing Process",
+        passingScore: 60,
+        questions: [
+          {
+            id: "q1",
+            question: "What does CDC stand for in the Pakistan Stock Market?",
+            options: [
+              "Central Data Center",
+              "Central Depository Company",
+              "Capital Development Controller",
+              "Common Dividend Council"
+            ],
+            correctIndex: 1,
+            explanation: "CDC (Central Depository Company) is the institution that holds your shares electronically."
+          },
+          {
+            id: "q2",
+            question: "What is the standard settlement cycle at PSX?",
+            options: ["Same day", "T+1", "T+2", "T+5"],
+            correctIndex: 2,
+            explanation: "T+2 means your trade is settled two business days after the execution date."
+          }
+        ]
+      }
+    }
   ],
 };
 
@@ -746,6 +823,65 @@ const mutualFundsMastery: LearningJourney = {
         ],
       },
     },
+    {
+      id: "mfm-strategy",
+      journeyId: "mutual-funds-mastery",
+      title: "Advanced Mutual Fund Concepts",
+      description: "Deep dive into portfolio pooling and asset management strategies.",
+      order: 3,
+      lessons: [
+        {
+          id: "mfm-strat-1",
+          moduleId: "mfm-strategy",
+          title: "Asset Management & Passive Income",
+          order: 1,
+          estimatedMinutes: 10,
+          content: [
+            {
+              type: "heading",
+              content: "The Power of Professional Management"
+            },
+            {
+              type: "text",
+              content: "Mutual funds pool investments into diversified assets managed by professionals. This allows you to benefit from high-level financial research even with a small capital base."
+            },
+            {
+              type: "video",
+              youtubeId: "RUv0qqzrbK0",
+              title: "Passive Income through Mutual Funds"
+            },
+            {
+              type: "keyTakeaway",
+              items: [
+                "Fund managers adjust portfolios based on market trends.",
+                "Diversification is built-in.",
+                "Ideal for building long-term passive wealth."
+              ]
+            }
+          ]
+        }
+      ],
+      quiz: {
+        id: "mfm-strategy-quiz",
+        moduleId: "mfm-strategy",
+        title: "Test Your Knowledge: MF Strategies",
+        passingScore: 60,
+        questions: [
+          {
+            id: "q1",
+            question: "What is a major benefit of pooling money in a mutual fund?",
+            options: [
+              "Guaranteed 50% returns",
+              "Direct voting rights in companies",
+              "Professional asset management and diversification",
+              "Exemption from all taxes"
+            ],
+            correctIndex: 2,
+            explanation: "Mutual funds allow individual investors to access professional management and broad diversification."
+          }
+        ]
+      }
+    }
   ],
 };
 
@@ -1009,6 +1145,141 @@ const financialLiteracy: LearningJourney = {
 };
 
 // ====================================================================
+//  JOURNEY 4: Pakistan Taxation mastery
+// ====================================================================
+
+const pakistanTaxation: LearningJourney = {
+  id: "pakistan-taxation",
+  title: "Taxation in Pakistan",
+  description: "Navigate FBR, understand Filer vs. Non-Filer status, and optimize your tax liability.",
+  difficulty: "beginner",
+  category: "taxation",
+  estimatedMinutes: 45,
+  coverColor: "#059669",
+  icon: "file-text",
+  modules: [
+    {
+      id: "tax-filer",
+      journeyId: "pakistan-taxation",
+      title: "Filer vs. Non-Filer",
+      description: "The single most important concept in Pakistani taxation.",
+      order: 1,
+      lessons: [
+        {
+          id: "tax-filer-1",
+          moduleId: "tax-filer",
+          title: "The Core Concept",
+          order: 1,
+          estimatedMinutes: 10,
+          content: [
+            {
+              type: "heading",
+              content: "Understanding Your Status"
+            },
+            {
+              type: "text",
+              content: "In Pakistan, the distinction between a Filer (on the Active Taxpayers List - ATL) and a Non-Filer is massive. Being a Filer reduces your tax rates significantly across banking, investing, and property transactions."
+            },
+            {
+              type: "video",
+              youtubeId: "WvXmI90YI3g",
+              title: "Filer vs Non-Filer Explained"
+            },
+            {
+              type: "callout",
+              variant: "info",
+              content: "Being a filer = Lower taxes on dividends, bank withdrawals, and vehicle purchases."
+            },
+            {
+              type: "keyTakeaway",
+              items: [
+                "Filers are on the FBR Active Taxpayers List (ATL).",
+                "Non-filers pay up to 2x more withholding tax.",
+                "Filing your returns is mandatory if you earn above the threshold."
+              ]
+            }
+          ]
+        }
+      ],
+      quiz: {
+        id: "tax-filer-quiz",
+        moduleId: "tax-filer",
+        title: "Test Your Knowledge: Filer Status",
+        passingScore: 60,
+        questions: [
+          {
+            id: "q1",
+            question: "What is the main benefit of being a 'Filer' in Pakistan?",
+            options: [
+              "You don't have to pay any tax",
+              "You get free health insurance",
+              "You pay significantly lower withholding tax rates",
+              "You get a free passport"
+            ],
+            correctIndex: 2,
+            explanation: "Filers pay reduced taxes on banking, property, and dividend income compared to non-filers."
+          }
+        ]
+      }
+    },
+    {
+      id: "tax-policy",
+      journeyId: "pakistan-taxation",
+      title: "Tax Policy & Reforms",
+      description: "Understanding how FBR reforms affect the economy.",
+      order: 2,
+      lessons: [
+        {
+          id: "tax-policy-1",
+          moduleId: "tax-policy",
+          title: "Policy Level Understanding",
+          order: 1,
+          estimatedMinutes: 15,
+          content: [
+            {
+              type: "heading",
+              content: "Why Taxation Matters for the Economy"
+            },
+            {
+              type: "text",
+              content: "Understanding the government's tax reforms helps you plan your financial future. Credible sources like BBC Urdu provide deep dives into how these policies change over time."
+            },
+            {
+              type: "video",
+              youtubeId: "Qp0B0-YUnpI",
+              title: "Explaining Pakistan's Tax Dilemma"
+            },
+            {
+              type: "keyTakeaway",
+              items: [
+                "Tax reforms impact inflation and disposable income.",
+                "The government uses tax policy to encourage formalization.",
+                "Higher tax collection leads to better infrastructure (ideally)."
+              ]
+            }
+          ]
+        }
+      ],
+      quiz: {
+        id: "tax-policy-quiz",
+        moduleId: "tax-policy",
+        title: "Test Your Knowledge: Tax Policy",
+        passingScore: 60,
+        questions: [
+          {
+            id: "q1",
+            question: "Which body is responsible for tax collection in Pakistan?",
+            options: ["SBP", "FBR", "SECP", "FIA"],
+            correctIndex: 1,
+            explanation: "The Federal Board of Revenue (FBR) is the central agency for tax administration in Pakistan."
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// ====================================================================
 //  Exports
 // ====================================================================
 
@@ -1016,6 +1287,7 @@ export const JOURNEYS: LearningJourney[] = [
   stockMarketBasics,
   mutualFundsMastery,
   financialLiteracy,
+  pakistanTaxation,
 ];
 
 export function getJourneyById(id: string): LearningJourney | undefined {
