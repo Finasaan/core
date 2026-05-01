@@ -95,7 +95,7 @@ export function NewsFeed() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {news.map((item) => (
-              <NewsCard key={item.id} article={item} />
+              <NewsCard key={item.id} article={item} showPopover={true} />
             ))}
             {loadingMore && Array.from({ length: 3 }).map((_, i) => (
               <NewsCardSkeleton key={`more-${i}`} />

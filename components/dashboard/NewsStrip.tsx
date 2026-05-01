@@ -9,6 +9,8 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 interface NewsArticle {
   id: string;
@@ -104,6 +106,18 @@ export function NewsStrip() {
               </CarouselItem>
             );
           })}
+          
+          <CarouselItem className="basis-[85%] sm:basis-[300px]">
+            <Link 
+              href="/dashboard/news" 
+              className="news-card h-full flex flex-col items-center justify-center gap-3 border-dashed border-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group/view-all"
+            >
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover/view-all:scale-110 transition-transform">
+                <ArrowRight className="w-6 h-6 text-primary" />
+              </div>
+              <span className="font-semibold text-primary">View All News</span>
+            </Link>
+          </CarouselItem>
         </CarouselContent>
       </Carousel>
     </div>

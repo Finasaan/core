@@ -23,6 +23,7 @@ const learnItems: SidebarItem[] = [
 ];
 
 const infoItems: SidebarItem[] = [
+    { label: "News", href: "/dashboard/news", icon: "newspaper" },
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
     { label: "Sectors", href: "/dashboard/sectors", icon: "sectors" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
@@ -146,6 +147,12 @@ function getIcon(name: string): React.ReactElement {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="4" y="2" width="16" height="20" rx="2" />
                 <path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2" />
+            </svg>
+        ),
+        newspaper: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4z" />
+                <path d="M7 8h10M7 12h10M7 16h6" />
             </svg>
         ),
         star: (
