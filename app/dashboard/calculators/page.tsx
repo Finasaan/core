@@ -24,6 +24,14 @@ export default function CalculatorsPage() {
                         Estimate capital gains, dividend tax, and pension credits
                     </p>
                 </Link>
+
+                <Link href="/dashboard/calculators/salary-tax" className="calculator-card">
+                    <div className="calculator-card-icon">💼</div>
+                    <h3 className="calculator-card-title">Salary Tax</h3>
+                    <p className="calculator-card-description">
+                        FY 2025-26 income tax with pension rebate, zakat deduction, and multi-year salary projection
+                    </p>
+                </Link>
             </div>
         </>
     );

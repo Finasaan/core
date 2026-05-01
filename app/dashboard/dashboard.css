@@ -7367,3 +7367,77 @@
         padding: 6px 12px;
     }
 }
+
+/* ========================================================================
+   SALARY TAX CALCULATOR — SC-1
+   ======================================================================== */
+
+/* Two-column layout: inputs (left) | results (right) */
+.salary-calculator-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .salary-calculator-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Slab breakdown table */
+.salary-tax-breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+}
+
+.salary-tax-breakdown-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: #708090;
+    font-weight: 500;
+    border-bottom: 1.5px solid #E5E5E5;
+}
+
+.salary-tax-breakdown-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #F0F0F0;
+    color: #121212;
+}
+
+.salary-tax-breakdown-table tr.active-slab td {
+    color: #159F63;
+    font-weight: 600;
+    background: rgba(21, 159, 99, 0.04);
+}
+
+.salary-tax-breakdown-table tfoot td {
+    font-weight: 700;
+    border-top: 1.5px solid #CBD5E1;
+    border-bottom: none;
+    padding-top: 14px;
+    color: #121212;
+}
+
+/* Chart tooltip */
+.salary-chart-tooltip {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Satoshi', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    line-height: 1.5;
+}
+
+.salary-chart-tooltip-year {
+    font-weight: 600;
+    color: #121212;
+    margin: 0 0 8px 0;
+    font-size: 14px;
+}
