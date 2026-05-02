@@ -50,3 +50,31 @@ export const formatPKR = (amount: number): string => {
 export const formatPercent = (rate: number): string => {
     return `${(rate * 100).toFixed(1)}%`;
 };
+
+// ============================================================
+// Salary Tax — FY 2025-26 (Finance Act 2025)
+// Source: FBR Income Tax Ordinance 2001, Second Schedule, Part I
+// ============================================================
+
+export interface SalaryTaxSlab {
+  min: number;          // minimum annual income for this slab (inclusive)
+  max: number | null;   // maximum annual income (exclusive); null = no upper limit
+  baseTax: number;      // fixed tax owed on income up to this slab's min
+  rate: number;         // marginal rate applied to income exceeding min
+  label: string;        // display label shown in slab breakdown table
+}
+
+export const SALARY_TAX_SLABS_FY2526: SalaryTaxSlab[] = [
+  { min: 0,         max: 600_000,   baseTax: 0,       rate: 0.000, label: "Up to 6 Lac"  },
+  { min: 600_000,   max: 1_200_000, baseTax: 0,       rate: 0.025, label: "6L – 12L"     },
+  { min: 1_200_000, max: 2_200_000, baseTax: 6_000,   rate: 0.110, label: "12L – 22L"    },
+  { min: 2_200_000, max: 3_200_000, baseTax: 116_000, rate: 0.230, label: "22L – 32L"    },
+  { min: 3_200_000, max: 4_100_000, baseTax: 346_000, rate: 0.300, label: "32L – 41L"    },
+  { min: 4_100_000, max: null,      baseTax: 616_000, rate: 0.350, label: "Above 41L"    },
+];
+
+// Max pension contribution eligible for tax credit as a fraction of taxable income.
+// FBR allows 20% for age < 40, 30% for 40–50, 40% for 50+.
+// We use 20% as the conservative/default cap. Users who know their age tier can mentally adjust.
+export const PENSION_CREDIT_CAP_RATE = 0.20;
+

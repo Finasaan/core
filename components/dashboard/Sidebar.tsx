@@ -23,11 +23,13 @@ const learnItems: SidebarItem[] = [
 ];
 
 const infoItems: SidebarItem[] = [
+    { label: "News", href: "/dashboard/news", icon: "newspaper" },
     { label: "Stocks", href: "/dashboard/stocks", icon: "chart" },
     { label: "Sectors", href: "/dashboard/sectors", icon: "sectors" },
     { label: "Mutual Funds", href: "/dashboard/funds", icon: "coin" },
     { label: "Watchlist", href: "/dashboard/watchlist", icon: "star" },
     { label: "Portfolio", href: "/dashboard/portfolio", icon: "portfolio" },
+    { label: "Budget", href: "/dashboard/budget", icon: "budget" },
     { label: "Calculators", href: "/dashboard/calculators", icon: "calculator" },
     { label: "Insurance", href: "/dashboard/insurance", icon: "shield" },
 ];
@@ -132,10 +134,25 @@ function getIcon(name: string): React.ReactElement {
                 <path d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" />
             </svg>
         ),
+        budget: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M19 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14z" />
+                <path d="M16 11h.01M16 13h.01M16 15h.01M16 17h.01" />
+                <path d="M12 11h.01M12 13h.01M12 15h.01M12 17h.01" />
+                <path d="M8 11h.01M8 13h.01M8 15h.01M8 17h.01" />
+                <path d="M3 13h18" />
+            </svg>
+        ),
         calculator: (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="4" y="2" width="16" height="20" rx="2" />
                 <path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2" />
+            </svg>
+        ),
+        newspaper: (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4z" />
+                <path d="M7 8h10M7 12h10M7 16h6" />
             </svg>
         ),
         star: (

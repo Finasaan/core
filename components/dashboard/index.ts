@@ -20,4 +20,5 @@ export { WatchlistQuickView } from "./WatchlistQuickView";
 export { PortfolioSnapshot } from "./PortfolioSnapshot";
 export { WatchlistToggle } from "./WatchlistToggle";
 export { WatchlistPage } from "./WatchlistPage";
+export { NewsStrip } from "./NewsStrip";
 export type { AssetItem } from "./AssetList";

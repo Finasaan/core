@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { StocksList } from "@/components/dashboard";
 import type { Sector } from "@/lib/sectors";
 import { getSectors } from "@/lib/sectors";
+import { NewsWidget } from "@/components/news";
+
 
 // Bills & bonds sector to exclude from filter
 const BILLS_BONDS_SECTOR_ID = "978757d6-3c54-4704-bf4b-5f0e489ab668";
@@ -99,7 +101,17 @@ export default function StocksPage() {
                 </div>
             )}
 
-            <StocksList searchQuery={debouncedSearch} sectorId={selectedSector} />
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div className="lg:col-span-3">
+                    <StocksList searchQuery={debouncedSearch} sectorId={selectedSector} />
+                </div>
+                <div className="lg:col-span-1">
+                    <div className="sticky top-24">
+                        <NewsWidget title="Contextual News" />
+                    </div>
+                </div>
+            </div>
+
         </>
     );
 }

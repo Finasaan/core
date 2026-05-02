@@ -1,4 +1,5 @@
 import { DashboardLayout } from "@/components/dashboard";
+import { BudgetAIProvider } from "@/context/BudgetAIContext";
 import "./dashboard.css";
 
 export default function DashboardLayoutWrapper({
@@ -6,5 +7,9 @@ export default function DashboardLayoutWrapper({
 }: {
     children: React.ReactNode;
 }) {
-    return <DashboardLayout>{children}</DashboardLayout>;
+    return (
+        <BudgetAIProvider>
+            <DashboardLayout>{children}</DashboardLayout>
+        </BudgetAIProvider>
+    );
 }

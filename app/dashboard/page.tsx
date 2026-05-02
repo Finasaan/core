@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DashboardPanel, AssetList, AssetItem } from "@/components/dashboard";
+import { DashboardPanel, AssetList, AssetItem, NewsStrip } from "@/components/dashboard";
 import { MarketSummaryBar } from "@/components/dashboard/MarketSummaryBar";
 import { WatchlistQuickView } from "@/components/dashboard/WatchlistQuickView";
 import { PortfolioSnapshot } from "@/components/dashboard/PortfolioSnapshot";
@@ -84,6 +84,8 @@ export default function DashboardPage() {
                 </h1>
                 <p className="dashboard-date">{today}</p>
             </header>
+
+            <NewsStrip />
 
             <div className="dashboard-grid">
                 <DashboardPanel title="Top Stocks">

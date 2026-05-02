@@ -5,9 +5,11 @@ import Link from "next/link";
 import { WatchlistToggle } from "./WatchlistToggle";
 import { StockPriceChart } from "./StockPriceChart";
 import { CompanyFinancials } from "./CompanyFinancials";
+import { StockAIPulse } from "./StockAIPulse";
 import { AddToPortfolioButton } from "./AddToPortfolioButton";
 import type { StockTimeRange, StockDayData } from "@/lib/stocks";
 import { STOCK_TIME_RANGES } from "@/lib/stocks";
+import "./stock-ai-pulse.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
@@ -201,6 +203,9 @@ export function StockDetail({ symbol }: StockDetailProps) {
                     </div>
                 )}
             </div>
+
+            {/* AI Pulse Summary */}
+            <StockAIPulse symbol={company.symbol} />
 
             {/* Price Chart (S-3) */}
             {priceHistory.length > 1 && (
