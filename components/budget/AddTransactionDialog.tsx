@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,8 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createTransaction } from "@/lib/budget/api";
+import { createTransaction, classifyTransactionDescription } from "@/lib/budget/api";
 import { BudgetCategory, BudgetTransaction } from "@/lib/budget/types";
+import { Sparkles } from "lucide-react";
 
 interface AddTransactionDialogProps {
   categories: BudgetCategory[];
@@ -43,6 +44,29 @@ export function AddTransactionDialog({
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [classifying, setClassifying] = useState(false);
+
+  // Debounced AI Classification
+  useEffect(() => {
+    if (!description || description.length < 3 || type === "income") return;
+
+    const timeout = setTimeout(async () => {
+      setClassifying(true);
+      try {
+        const result = await classifyTransactionDescription(description);
+        if (result.confidence > 0.5) {
+          const match = categories.find(c => c.slug === result.category_slug);
+          if (match) setCategoryId(match.id);
+        }
+      } catch (err) {
+        console.error("Auto-classification failed:", err);
+      } finally {
+        setClassifying(false);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [description, categories, type]);
 
   const filteredCategories = useMemo(() => {
     if (type === "income") {
@@ -137,12 +161,20 @@ export function AddTransactionDialog({
             onChange={(event) => setDate(event.target.value)}
           />
 
-          <Input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              className={classifying ? "pr-10" : ""}
+            />
+            {classifying && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Sparkles className="h-4 w-4 text-violet-400 animate-pulse" />
+              </div>
+            )}
+          </div>
 
           <Textarea
             placeholder="Notes (optional)"

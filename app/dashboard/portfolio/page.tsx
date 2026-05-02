@@ -1,6 +1,7 @@
 "use client";
 
 import { PortfolioList } from "@/components/dashboard";
+import { PortfolioAISummaryCard } from "@/components/dashboard/PortfolioAISummaryCard";
 
 export default function PortfolioPage() {
     return (
@@ -10,6 +11,7 @@ export default function PortfolioPage() {
                 <p className="dashboard-date">Track your investments</p>
             </header>
 
+            <PortfolioAISummaryCard />
             <PortfolioList />
         </>
     );

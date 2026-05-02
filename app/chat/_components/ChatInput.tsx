@@ -10,6 +10,7 @@ import {
   SendHorizontalIcon,
   SquareIcon,
   PaperclipIcon,
+  DatabaseZapIcon,
 } from "lucide-react";
 
 interface PendingAttachment {
@@ -24,6 +25,7 @@ interface ChatInputProps {
   onStop: () => void;
   onAttach: (file: File) => void;
   onRemoveAttachment: (filename: string) => void;
+  onOpenIngest: () => void;
   attachments: PendingAttachment[];
   isStreaming: boolean;
   models: Model[];
@@ -39,6 +41,7 @@ export function ChatInput({
   onStop,
   onAttach,
   onRemoveAttachment,
+  onOpenIngest,
   attachments,
   isStreaming,
   models,
@@ -100,7 +103,7 @@ export function ChatInput({
             disabled={disabled}
           />
           <div className="chat-input-bar__actions">
-            {/* Attach PDF */}
+            {/* Attach PDF (conversation context) */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -113,7 +116,23 @@ export function ChatInput({
                   <PaperclipIcon size={15} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Attach PDF</TooltipContent>
+              <TooltipContent>Attach PDF to conversation</TooltipContent>
+            </Tooltip>
+
+            {/* Ingest Document (knowledge base) */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="chat-input-bar__btn chat-input-bar__btn--ingest"
+                  onClick={onOpenIngest}
+                  disabled={isStreaming || disabled}
+                >
+                  <DatabaseZapIcon size={15} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Ingest document into knowledge base</TooltipContent>
             </Tooltip>
 
             {/* Send / Stop */}

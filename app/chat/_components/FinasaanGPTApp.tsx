@@ -10,6 +10,7 @@ import { ChatSidebar } from "./ChatSidebar";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { WelcomeScreen } from "./WelcomeScreen";
+import { DocIngestModal } from "./DocIngestModal";
 import type { Model } from "./ModelPicker";
 import { PanelLeftIcon, X } from "lucide-react";
 
@@ -47,9 +48,11 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [attachments, setAttachments] = useState<PendingAttachment[]>([]);
+  const [ingestModalOpen, setIngestModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [streamError, setStreamError] = useState<string | null>(null);
   const [lastUserText, setLastUserText] = useState<string | null>(null);
+  const [interests, setInterests] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // ── Refs for latest model + session (read at send-time) ───────────────────
@@ -139,7 +142,18 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
       .catch(console.error);
   }, []);
 
-  // ── Fetch sessions ──────────────────────────────────────────────────────
+  // ── Fetch profile (interests) ───────────────────────────────────────────
+  
+  useEffect(() => {
+    fetch(`${API_BASE}/api/profile`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((d: any) => {
+        if (d.success && d.data?.interests) {
+          setInterests(d.data.interests);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -351,7 +365,7 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
           {/* Messages */}
           <div className="chat-messages" ref={scrollRef}>
             {messages.length === 0 ? (
-              <WelcomeScreen onPrompt={handlePrompt} />
+              <WelcomeScreen onPrompt={handlePrompt} interests={interests} />
             ) : (
               <div className="chat-messages__inner">
                 {messages.map((msg) => (
@@ -414,6 +428,7 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
             onStop={stop}
             onAttach={handleAttach}
             onRemoveAttachment={handleRemoveAttachment}
+            onOpenIngest={() => setIngestModalOpen(true)}
             attachments={attachments}
             isStreaming={isStreaming}
             models={models}
@@ -428,6 +443,12 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
           </div>
         </main>
       </div>
+
+      {/* Document ingestion modal — rendered outside main layout to overlay everything */}
+      <DocIngestModal
+        open={ingestModalOpen}
+        onClose={() => setIngestModalOpen(false)}
+      />
     </TooltipProvider>
   );
 }

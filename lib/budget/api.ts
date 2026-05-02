@@ -147,6 +147,10 @@ export async function deleteTransaction(id: string): Promise<void> {
   await apiFetch(`${BASE}/transactions/${id}`, { method: "DELETE" });
 }
 
+export async function classifyTransactionDescription(description: string): Promise<{ category_slug: string; confidence: number }> {
+  return apiFetch<{ category_slug: string; confidence: number }>(`${BASE}/classify?description=${encodeURIComponent(description)}`);
+}
+
 export async function fetchBudgetPlans(
   month: number,
   year: number
