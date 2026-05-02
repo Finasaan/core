@@ -108,7 +108,7 @@ interface EnrichedChartPoint extends StockChartPoint {
     bbUpper?: number | null;
     bbMiddle?: number | null;
     bbLower?: number | null;
-    vwapVal?: number | null;
+    vwap?: number | null;
     rsiVal?: number | null;
     macdLine?: number | null;
     macdSignal?: number | null;
@@ -286,10 +286,10 @@ function ChartTooltip({
                             <span>EMA 26: {point.ema26.toFixed(2)}</span>
                         </div>
                     )}
-                    {activeIndicators.has("vwap") && point.vwapVal != null && (
+                    {activeIndicators.has("vwap") && point.vwap != null && (
                         <div className="tooltip-indicator-row">
-                            <span className="tooltip-indicator-dot" style={{ background: "#00BCD4" }} />
-                            <span>VWAP: {point.vwapVal.toFixed(2)}</span>
+                            <span className="tooltip-indicator-dot" style={{ background: "#ec4899" }} />
+                            <span>VWAP: {point.vwap.toFixed(2)}</span>
                         </div>
                     )}
                     {activeSubCharts.has("rsi") && point.rsiVal != null && (
@@ -431,7 +431,7 @@ export function StockPriceChart({
             bbUpper: bb.upper[i],
             bbMiddle: bb.middle[i],
             bbLower: bb.lower[i],
-            vwapVal: vwapVals[i],
+            vwap: vwapVals[i],
             rsiVal: rsiResult.rsi[i],
             macdLine: macdResult.macd[i],
             macdSignal: macdResult.signal[i],
@@ -529,20 +529,25 @@ export function StockPriceChart({
             {/* Indicator Toggle Bar */}
             <div className="indicator-toggle-bar">
                 <span className="indicator-toggle-label">Overlays:</span>
-                {OVERLAY_INDICATORS.map((ind) => (
-                    <button
-                        key={ind.key}
-                        className={`indicator-chip ${activeIndicators.has(ind.key) ? "active" : ""}`}
-                        onClick={() => toggleIndicator(ind.key)}
-                        style={activeIndicators.has(ind.key) ? { borderColor: ind.color, color: ind.color } : {}}
-                    >
-                        <span
-                            className="indicator-chip-dot"
-                            style={{ background: activeIndicators.has(ind.key) ? ind.color : "#9CA3AF" }}
-                        />
-                        {ind.label}
-                    </button>
-                ))}
+                {OVERLAY_INDICATORS.map((ind) => {
+                    // VWAP is only meaningful for intraday (1D) and 7D views
+                    if (ind.key === "vwap" && timeRange !== "1D" && timeRange !== "7D") return null;
+                    
+                    return (
+                        <button
+                            key={ind.key}
+                            className={`indicator-chip ${activeIndicators.has(ind.key) ? "active" : ""}`}
+                            onClick={() => toggleIndicator(ind.key)}
+                            style={activeIndicators.has(ind.key) ? { borderColor: ind.color, color: ind.color } : {}}
+                        >
+                            <span
+                                className="indicator-chip-dot"
+                                style={{ background: activeIndicators.has(ind.key) ? ind.color : "#9CA3AF" }}
+                            />
+                            {ind.label}
+                        </button>
+                    );
+                })}
 
                 <span className="indicator-toggle-separator" />
                 <span className="indicator-toggle-label">Panels:</span>
@@ -703,10 +708,12 @@ export function StockPriceChart({
                                         yAxisId="price"
                                         type="monotone"
                                         dataKey="sma20"
-                                        stroke="#FF9800"
+                                        stroke="#f59e0b"
                                         strokeWidth={1.5}
                                         dot={false}
                                         connectNulls={false}
+                                        isAnimationActive={false}
+                                        name="SMA 20"
                                     />
                                 )}
                                 {activeIndicators.has("sma50") && (
@@ -714,10 +721,12 @@ export function StockPriceChart({
                                         yAxisId="price"
                                         type="monotone"
                                         dataKey="sma50"
-                                        stroke="#2196F3"
+                                        stroke="#3b82f6"
                                         strokeWidth={1.5}
                                         dot={false}
                                         connectNulls={false}
+                                        isAnimationActive={false}
+                                        name="SMA 50"
                                     />
                                 )}
                                 {activeIndicators.has("ema12") && (
@@ -725,10 +734,12 @@ export function StockPriceChart({
                                         yAxisId="price"
                                         type="monotone"
                                         dataKey="ema12"
-                                        stroke="#9C27B0"
+                                        stroke="#10b981"
                                         strokeWidth={1.5}
                                         dot={false}
                                         connectNulls={false}
+                                        isAnimationActive={false}
+                                        name="EMA 12"
                                     />
                                 )}
                                 {activeIndicators.has("ema26") && (
@@ -736,22 +747,26 @@ export function StockPriceChart({
                                         yAxisId="price"
                                         type="monotone"
                                         dataKey="ema26"
-                                        stroke="#E91E63"
+                                        stroke="#8b5cf6"
                                         strokeWidth={1.5}
                                         dot={false}
                                         connectNulls={false}
+                                        isAnimationActive={false}
+                                        name="EMA 26"
                                     />
                                 )}
                                 {activeIndicators.has("vwap") && (
                                     <Line
                                         yAxisId="price"
                                         type="monotone"
-                                        dataKey="vwapVal"
-                                        stroke="#00BCD4"
+                                        dataKey="vwap"
+                                        stroke="#ec4899"
                                         strokeWidth={1.5}
                                         dot={false}
                                         connectNulls={false}
-                                        strokeDasharray="6 3"
+                                        strokeDasharray="4 2"
+                                        isAnimationActive={false}
+                                        name="VWAP"
                                     />
                                 )}
                             </ComposedChart>

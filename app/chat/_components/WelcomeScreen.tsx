@@ -23,9 +23,18 @@ const PROMPTS = [
 
 interface WelcomeScreenProps {
   onPrompt: (text: string) => void;
+  interests?: string[];
 }
 
-export function WelcomeScreen({ onPrompt }: WelcomeScreenProps) {
+export function WelcomeScreen({ onPrompt, interests = [] }: WelcomeScreenProps) {
+  // Personalized prompts based on interests
+  const personalizedPrompts = [
+    ...PROMPTS,
+    ...(interests.includes("technology") ? [{ label: "Tech Sector", text: "How is the technology sector performing on PSX right now?" }] : []),
+    ...(interests.includes("banking") ? [{ label: "Banking", text: "Show me the top dividend paying banks on PSX" }] : []),
+    ...(interests.includes("energy") ? [{ label: "Energy", text: "What's the outlook for oil and gas stocks in Pakistan?" }] : []),
+  ].slice(0, 5); // Keep it clean
+
   return (
     <div className="chat-welcome">
       <p className="chat-welcome__logo">Finasaan · AI Terminal</p>
@@ -35,13 +44,14 @@ export function WelcomeScreen({ onPrompt }: WelcomeScreenProps) {
           Your <span>financial intelligence</span> layer
         </h1>
         <p className="chat-welcome__subtitle">
-          Ask about PSX stocks, mutual funds, and insurance — powered by live
-          market data and your uploaded documents.
+          {interests.length > 0 
+            ? `Tailored to your interests in ${interests.join(", ")} — ask anything.`
+            : "Ask about PSX stocks, mutual funds, and insurance — powered by live market data."}
         </p>
       </div>
 
       <div className="chat-welcome__prompts">
-        {PROMPTS.map((p) => (
+        {personalizedPrompts.map((p) => (
           <button
             key={p.label}
             className="chat-welcome__prompt"

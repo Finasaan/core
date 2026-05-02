@@ -10,20 +10,31 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
 export function StockAIPulse({ symbol }: StockAIPulseProps) {
   const [summary, setSummary] = useState<string | null>(null);
+  const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function fetchSummary() {
+    async function fetchData() {
       try {
         setLoading(true);
-        const res = await fetch(`${API_URL}/api/psx/companies/symbol/${symbol}/ai-summary`);
-        const result = await res.json() as { success: boolean; data?: { summary: string } };
+        // Fetch Summary and News in parallel
+        const [summaryRes, newsRes] = await Promise.all([
+          fetch(`${API_URL}/api/psx/companies/symbol/${symbol}/ai-summary`),
+          fetch(`${API_URL}/api/news?ticker=${symbol}&limit=3`)
+        ]);
 
-        if (result.success && result.data) {
-          setSummary(result.data.summary);
+        const summaryResult = await summaryRes.json() as { success: boolean; data?: { summary: string } };
+        const newsResult = await newsRes.json() as { success: boolean; data?: any[] };
+
+        if (summaryResult.success && summaryResult.data) {
+          setSummary(summaryResult.data.summary);
         } else {
           setError(true);
+        }
+
+        if (newsResult.success && newsResult.data) {
+          setNews(newsResult.data);
         }
       } catch (err) {
         setError(true);
@@ -32,7 +43,7 @@ export function StockAIPulse({ symbol }: StockAIPulseProps) {
       }
     }
 
-    fetchSummary();
+    fetchData();
   }, [symbol]);
 
   if (loading) {
@@ -51,14 +62,15 @@ export function StockAIPulse({ symbol }: StockAIPulseProps) {
     );
   }
 
-  if (error || !summary) {
+  // If both failed, show error
+  if (!summary && news.length === 0) {
     return (
       <div className="stock-ai-pulse error">
         <div className="pulse-header">
           <span className="pulse-icon">✨</span>
           <h3>Finasaan AI Pulse</h3>
         </div>
-        <p className="pulse-error-text">AI summary temporarily unavailable for {symbol}.</p>
+        <p className="pulse-error-text">Insights temporarily unavailable for {symbol}.</p>
       </div>
     );
   }
@@ -73,14 +85,43 @@ export function StockAIPulse({ symbol }: StockAIPulseProps) {
         </div>
       </div>
       <div className="pulse-content">
-        <div className="pulse-bullets">
-          {summary.split("\n").filter(line => line.trim()).map((bullet, idx) => (
-            <div key={idx} className="pulse-bullet-item">
-              <span className="bullet-dot" />
-              <p>{bullet.startsWith("- ") ? bullet.substring(2) : bullet}</p>
+        {summary && (
+          <div className="pulse-bullets">
+            {summary.split("\n").filter(line => line.trim()).map((bullet, idx) => (
+              <div key={idx} className="pulse-bullet-item">
+                <span className="bullet-dot" />
+                <p>{bullet.startsWith("- ") ? bullet.substring(2) : bullet}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {news.length > 0 && (
+          <div className="pulse-news-section mt-6 pt-5 border-t border-slate-100">
+            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Market Context
+            </h4>
+            <div className="flex flex-col gap-3">
+              {news.map((item) => (
+                <a
+                  key={item.id}
+                  href={item.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col"
+                >
+                  <p className="text-[13px] font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                    {item.title}
+                  </p>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    {item.source_name} · {new Date(item.published_at).toLocaleDateString()}
+                  </span>
+                </a>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
       <div className="pulse-footer">
         <p className="pulse-disclaimer">AI-generated for information only.</p>

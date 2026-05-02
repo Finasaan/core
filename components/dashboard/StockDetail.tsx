@@ -7,6 +7,7 @@ import { StockPriceChart } from "./StockPriceChart";
 import { CompanyFinancials } from "./CompanyFinancials";
 import { StockAIPulse } from "./StockAIPulse";
 import { AddToPortfolioButton } from "./AddToPortfolioButton";
+import { StockNewsSection } from "./StockNewsSection";
 import type { StockTimeRange, StockDayData } from "@/lib/stocks";
 import { STOCK_TIME_RANGES } from "@/lib/stocks";
 import "./stock-ai-pulse.css";
@@ -29,7 +30,8 @@ interface StockDetailProps {
     symbol: string;
 }
 
-function formatPrice(price: number): string {
+function formatPrice(price: number | null | undefined): string {
+    if (price === null || price === undefined || isNaN(price)) return "—";
     return new Intl.NumberFormat("en-PK", {
         style: "currency",
         currency: "PKR",
@@ -37,15 +39,19 @@ function formatPrice(price: number): string {
     }).format(price);
 }
 
-function formatNumber(num: number): string {
+function formatNumber(num: number | null | undefined): string {
+    if (num === null || num === undefined || isNaN(num)) return "—";
     if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(2) + "B";
     if (num >= 1_000_000) return (num / 1_000_000).toFixed(2) + "M";
     if (num >= 1_000) return (num / 1_000).toFixed(2) + "K";
     return num.toLocaleString();
 }
 
-function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString("en-PK", {
+function formatDate(dateStr: string | null | undefined): string {
+    if (!dateStr) return "—";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("en-PK", {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -312,6 +318,9 @@ export function StockDetail({ symbol }: StockDetailProps) {
 
             {/* Company Financials (S-5) */}
             <CompanyFinancials companyId={company.id} />
+
+            {/* News correlated to this stock */}
+            <StockNewsSection ticker={company.symbol} />
 
             {/* Recent Trades */}
             {priceHistory.length > 0 && (
