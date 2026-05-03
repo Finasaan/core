@@ -29,19 +29,30 @@ function ProfileDropdown({ userName, onClose }: ProfileDropdownProps) {
         router.push("/login");
     };
 
+    const handleNavigate = (path: string) => {
+        router.push(path);
+        onClose();
+    };
+
     return (
         <div className="profile-dropdown" ref={dropdownRef}>
             <div className="profile-dropdown-header">
                 <span className="profile-dropdown-name">{userName}</span>
             </div>
             <div className="profile-dropdown-divider" />
-            <button className="profile-dropdown-item" onClick={() => { }}>
+            <button
+                className="profile-dropdown-item"
+                onClick={() => handleNavigate("/dashboard/settings?tab=profile")}
+            >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM20.59 22c0-3.87-3.85-7-8.59-7s-8.59 3.13-8.59 7" />
                 </svg>
                 <span>User Settings</span>
             </button>
-            <button className="profile-dropdown-item" onClick={() => { }}>
+            <button
+                className="profile-dropdown-item"
+                onClick={() => handleNavigate("/dashboard/settings?tab=preferences")}
+            >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.32 9c.3.56.48 1.18.51 1.82V12a2 2 0 002 2 2 2 0 012 2z" />

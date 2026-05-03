@@ -54,6 +54,10 @@ const PAGES: PageEntry[] = [
 
     // Tax page
     { title: "Taxation", subtitle: "Tax tools and info", href: "/dashboard/taxation", keywords: "tax taxation income", group: "Tools", icon: "calculator" },
+
+    // Account
+    { title: "Settings", subtitle: "Profile, account, preferences", href: "/dashboard/settings", keywords: "settings account profile preferences password", group: "Account", icon: "settings" },
+    { title: "Change Password", subtitle: "Update your password", href: "/dashboard/settings?tab=account", keywords: "password change security account", group: "Account", icon: "settings" },
 ];
 
 interface FlatItem {
@@ -159,6 +163,13 @@ function getIcon(name: string) {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 3a9 9 0 010 18M3 12h18" />
+                </svg>
+            );
+        case "settings":
+            return (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .66.39 1.26 1 1.51a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82c.25.61.85 1 1.51 1H21a2 2 0 010 4h-.09c-.66 0-1.26.39-1.51 1z" />
                 </svg>
             );
         default:
