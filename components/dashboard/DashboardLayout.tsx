@@ -9,6 +9,7 @@ import { AskAIPanel } from "@/components/budget/ai";
 import { Sparkles, MessageSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { MiniGPTSidebar } from "@/components/gpt/MiniGPTSidebar";
+import { CommandPalette } from "@/components/CommandPalette";
 import "./ai-fab.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
@@ -22,7 +23,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [isGuest, setIsGuest] = useState(false);
     const [isGPTOpen, setIsGPTOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [paletteOpen, setPaletteOpen] = useState(false);
     const pathname = usePathname();
+
+    // Global Cmd/Ctrl + K to toggle command palette
+    useEffect(() => {
+        function handleKey(e: KeyboardEvent) {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                setPaletteOpen((o) => !o);
+            }
+        }
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, []);
 
     // Close mobile sidebar whenever the user navigates to a new page
     useEffect(() => {
@@ -93,6 +107,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     userName={userName}
                     isGuest={isGuest}
                     onMenuClick={() => setSidebarOpen(true)}
+                    onSearchClick={() => setPaletteOpen(true)}
                 />
                 <main className="dashboard-main">
                     {children}
@@ -127,6 +142,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <MiniGPTSidebar isOpen={isGPTOpen} onClose={() => setIsGPTOpen(false)} />
               </>
             )}
+
+            <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
         </div>
     );
 }

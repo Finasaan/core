@@ -64,12 +64,19 @@ interface TopBarProps {
     userName?: string;
     isGuest?: boolean;
     onMenuClick?: () => void;
+    onSearchClick?: () => void;
 }
 
-export function TopBar({ userName = "User", isGuest = false, onMenuClick }: TopBarProps) {
+export function TopBar({ userName = "User", isGuest = false, onMenuClick, onSearchClick }: TopBarProps) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [isMac, setIsMac] = useState(false);
     const pathname = usePathname();
     const userInitial = userName.charAt(0).toUpperCase();
+
+    useEffect(() => {
+        const platform = typeof navigator !== "undefined" ? (navigator.platform || navigator.userAgent) : "";
+        setIsMac(/Mac|iPhone|iPad|iPod/i.test(platform));
+    }, []);
 
     // Redirect back to current page after login
     const loginHref = `/login?redirect=${encodeURIComponent(pathname ?? "/dashboard")}`;
@@ -90,19 +97,26 @@ export function TopBar({ userName = "User", isGuest = false, onMenuClick }: TopB
                 </button>
             )}
 
-            {/* Search */}
-            <div className="topbar-search">
+            {/* Search — opens command palette */}
+            <button
+                type="button"
+                className="topbar-search"
+                onClick={onSearchClick}
+                aria-label="Open search"
+            >
                 <svg className="topbar-search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#708090" strokeWidth="1.5">
                     <circle cx="11" cy="11" r="8" />
                     <path d="M21 21l-4.35-4.35" />
                 </svg>
-                <input
-                    type="text"
-                    className="topbar-search-input"
-                    placeholder="Search finasaan"
-                    readOnly
-                />
-            </div>
+                <span className="topbar-search-text">Search finasaan</span>
+                <span className="topbar-search-kbd" aria-hidden="true">
+                    {isMac ? (
+                        <><kbd>⌘</kbd><kbd>K</kbd></>
+                    ) : (
+                        <><kbd>Ctrl</kbd><kbd>K</kbd></>
+                    )}
+                </span>
+            </button>
 
             {/* Right side */}
             <div className="topbar-right">
