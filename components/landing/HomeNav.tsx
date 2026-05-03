@@ -31,10 +31,10 @@ const HomeNav = () => {
         <Image
           src="/logo.png"
           alt="Finasaan"
-          width={180}
-          height={40}
+          width={260}
+          height={56}
           priority
-          className="h-10 w-auto object-contain transition-opacity duration-200 hover:opacity-75"
+          className="h-14 w-auto object-contain transition-opacity duration-200 hover:opacity-75"
         />
       </Link>
 
