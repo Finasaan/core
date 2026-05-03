@@ -13,6 +13,12 @@ import {
     ResponsiveContainer,
     ReferenceLine,
 } from "recharts";
+import {
+    Tooltip as UITooltip,
+    TooltipContent,
+    TooltipTrigger,
+    TooltipProvider,
+} from "@/components/ui/tooltip";
 import type { StockDayData, StockChartPoint, StockTimeRange } from "@/lib/stocks";
 import { STOCK_TIME_RANGES } from "@/lib/stocks";
 import {
@@ -55,6 +61,18 @@ const SUB_CHARTS: SubChartOption[] = [
     { key: "rsi", label: "RSI" },
     { key: "macd", label: "MACD" },
 ];
+
+const INDICATOR_TOOLTIPS: Record<string, string> = {
+    sma20: "SMA 20 — Simple Moving Average over 20 periods. Smooths short-term price noise.",
+    sma50: "SMA 50 — Simple Moving Average over 50 periods. Tracks medium-term trend direction.",
+    ema12: "EMA 12 — Exponential Moving Average (12 periods). Reacts faster to recent price changes than SMA.",
+    ema26: "EMA 26 — Exponential Moving Average (26 periods). Used with EMA 12 to derive MACD.",
+    bollinger: "Bollinger Bands — Volatility channel: SMA 20 ± 2 standard deviations. Bands widen when volatility is high.",
+    vwap: "VWAP — Volume Weighted Average Price. Institutional benchmark for fair intraday value.",
+    volume: "Volume — Shares traded per day. High volume validates price breakouts and reversals.",
+    rsi: "RSI 14 — Relative Strength Index (0–100). Above 70 = overbought; below 30 = oversold.",
+    macd: "MACD (12,26,9) — Momentum indicator. Shows difference between EMA 12 and EMA 26, with a 9-period signal line.",
+};
 
 // ---- Helpers ----
 
@@ -527,42 +545,49 @@ export function StockPriceChart({
             )}
 
             {/* Indicator Toggle Bar */}
+            <TooltipProvider delayDuration={300}>
             <div className="indicator-toggle-bar">
                 <span className="indicator-toggle-label">Overlays:</span>
-                {OVERLAY_INDICATORS.map((ind) => {
-                    // VWAP is only meaningful for intraday (1D) and 7D views
-                    if (ind.key === "vwap") {
-                        // VWAP can be shown for all ranges, but we'll stick to a simple check for now
-                    }
-                    
-                    return (
-                        <button
-                            key={ind.key}
-                            className={`indicator-chip ${activeIndicators.has(ind.key) ? "active" : ""}`}
-                            onClick={() => toggleIndicator(ind.key)}
-                            style={activeIndicators.has(ind.key) ? { borderColor: ind.color, color: ind.color } : {}}
-                        >
-                            <span
-                                className="indicator-chip-dot"
-                                style={{ background: activeIndicators.has(ind.key) ? ind.color : "#9CA3AF" }}
-                            />
-                            {ind.label}
-                        </button>
-                    );
-                })}
+                {OVERLAY_INDICATORS.map((ind) => (
+                    <UITooltip key={ind.key}>
+                        <TooltipTrigger asChild>
+                            <button
+                                className={`indicator-chip ${activeIndicators.has(ind.key) ? "active" : ""}`}
+                                onClick={() => toggleIndicator(ind.key)}
+                                style={activeIndicators.has(ind.key) ? { borderColor: ind.color, color: ind.color } : {}}
+                            >
+                                <span
+                                    className="indicator-chip-dot"
+                                    style={{ background: activeIndicators.has(ind.key) ? ind.color : "#9CA3AF" }}
+                                />
+                                {ind.label}
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                            {INDICATOR_TOOLTIPS[ind.key]}
+                        </TooltipContent>
+                    </UITooltip>
+                ))}
 
                 <span className="indicator-toggle-separator" />
                 <span className="indicator-toggle-label">Panels:</span>
                 {SUB_CHARTS.map((sc) => (
-                    <button
-                        key={sc.key}
-                        className={`indicator-chip ${activeSubCharts.has(sc.key) ? "active" : ""}`}
-                        onClick={() => toggleSubChart(sc.key)}
-                    >
-                        {sc.label}
-                    </button>
+                    <UITooltip key={sc.key}>
+                        <TooltipTrigger asChild>
+                            <button
+                                className={`indicator-chip ${activeSubCharts.has(sc.key) ? "active" : ""}`}
+                                onClick={() => toggleSubChart(sc.key)}
+                            >
+                                {sc.label}
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                            {INDICATOR_TOOLTIPS[sc.key]}
+                        </TooltipContent>
+                    </UITooltip>
                 ))}
             </div>
+            </TooltipProvider>
 
             {/* Main Chart */}
             <div className="fund-chart-container">

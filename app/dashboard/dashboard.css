@@ -1236,6 +1236,34 @@
     text-decoration: underline;
 }
 
+.stock-report-figures {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eef0f3;
+}
+
+.stock-report-figures-title {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #708090;
+    margin: 0 0 16px 0;
+}
+
+.stock-report-trend {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+    margin: 16px 0 0 0;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-left: 3px solid #6366f1;
+    border-radius: 6px;
+}
+
 .stock-description {
     font-family: 'Satoshi', sans-serif;
     font-size: 15px;

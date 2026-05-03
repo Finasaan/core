@@ -26,6 +26,13 @@ interface Company {
     ceo_name?: string;
 }
 
+interface DocumentInsights {
+    insights: string[];
+    keyFigures: Array<{ label: string; value: string; period: string | null }>;
+    trendNarrative: string | null;
+    sources: Array<{ filename: string; period: string | null }>;
+}
+
 interface StockDetailProps {
     symbol: string;
 }
@@ -78,6 +85,7 @@ export function StockDetail({ symbol }: StockDetailProps) {
     const [chartLoading, setChartLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [timeRange, setTimeRange] = useState<StockTimeRange>("30D");
+    const [documentInsights, setDocumentInsights] = useState<DocumentInsights | null>(null);
 
     // Initial fetch: company + 30D data
     useEffect(() => {
@@ -114,6 +122,29 @@ export function StockDetail({ symbol }: StockDetailProps) {
         }
 
         fetchData();
+    }, [symbol]);
+
+    // Fetch ingested-document insights in the background — never blocks the page,
+    // silently sets null when no documents exist for this company.
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await fetch(
+                    `${API_URL}/api/psx/companies/symbol/${symbol}/document-insights`
+                );
+                if (!res.ok) return;
+                const json = (await res.json()) as { success: boolean; data?: DocumentInsights | null };
+                if (!cancelled && json.success && json.data) {
+                    setDocumentInsights(json.data);
+                }
+            } catch {
+                // No-op — this is an optional enrichment, not core data.
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
     }, [symbol]);
 
     // Re-fetch when time range changes (skip initial 30D which is already loaded)
@@ -211,7 +242,7 @@ export function StockDetail({ symbol }: StockDetailProps) {
             </div>
 
             {/* AI Pulse Summary */}
-            <StockAIPulse symbol={company.symbol} />
+            <StockAIPulse symbol={company.symbol} documentInsights={documentInsights} />
 
             {/* Price Chart (S-3) */}
             {priceHistory.length > 1 && (
@@ -313,6 +344,29 @@ export function StockDetail({ symbol }: StockDetailProps) {
                 </div>
                 {company.description && (
                     <p className="stock-description">{company.description}</p>
+                )}
+                {documentInsights && documentInsights.keyFigures.length > 0 && (
+                    <div className="stock-report-figures">
+                        <h4 className="stock-report-figures-title">
+                            Key Figures from Latest Report
+                        </h4>
+                        <div className="stock-info-grid">
+                            {documentInsights.keyFigures.map((fig, idx) => (
+                                <div key={idx} className="stock-info-item">
+                                    <span className="stock-info-label">
+                                        {fig.label}
+                                        {fig.period ? ` · ${fig.period}` : ""}
+                                    </span>
+                                    <span className="stock-info-value">{fig.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                        {documentInsights.trendNarrative && (
+                            <p className="stock-report-trend">
+                                {documentInsights.trendNarrative}
+                            </p>
+                        )}
+                    </div>
                 )}
             </div>
 

@@ -171,6 +171,7 @@ interface SidebarSectionProps {
 }
 
 function SidebarSection({ title, items, pathname }: SidebarSectionProps) {
+    let activeAssigned = false;
     return (
         <div className="sidebar-section">
             <div className="sidebar-section-header">
@@ -178,13 +179,18 @@ function SidebarSection({ title, items, pathname }: SidebarSectionProps) {
                 <div className="sidebar-section-line" />
             </div>
             <div className="sidebar-section-items">
-                {items.map((item) => (
-                    <SidebarNavItem
-                        key={item.label}
-                        item={item}
-                        isActive={pathname === item.href || (item.href !== "#" && item.href !== "/dashboard" && pathname.startsWith(item.href + "/"))}
-                    />
-                ))}
+                {items.map((item) => {
+                    const matches = pathname === item.href || (item.href !== "#" && item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
+                    const isActive = !activeAssigned && matches;
+                    if (isActive) activeAssigned = true;
+                    return (
+                        <SidebarNavItem
+                            key={item.label}
+                            item={item}
+                            isActive={isActive}
+                        />
+                    );
+                })}
             </div>
         </div>
     );
