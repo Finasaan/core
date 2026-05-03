@@ -37,7 +37,7 @@ export function StockNewsSection({ ticker }: { ticker: string }) {
         const res = await fetch(
           `${API_URL}/api/news?ticker=${encodeURIComponent(ticker)}&limit=5`
         );
-        const data = await res.json();
+        const data = await res.json() as { news: NewsItem[] };
         setNews(data.news ?? []);
       } catch {
         // silently fail — news is supplementary

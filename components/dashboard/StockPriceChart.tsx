@@ -531,7 +531,9 @@ export function StockPriceChart({
                 <span className="indicator-toggle-label">Overlays:</span>
                 {OVERLAY_INDICATORS.map((ind) => {
                     // VWAP is only meaningful for intraday (1D) and 7D views
-                    if (ind.key === "vwap" && timeRange !== "1D" && timeRange !== "7D") return null;
+                    if (ind.key === "vwap") {
+                        // VWAP can be shown for all ranges, but we'll stick to a simple check for now
+                    }
                     
                     return (
                         <button
