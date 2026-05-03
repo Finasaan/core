@@ -9,6 +9,7 @@ export interface AssetItem {
     symbol: string;
     name?: string;
     company_name?: string;
+    sector?: string;
     // Stock-specific
     close_price?: number;
     open_price?: number;

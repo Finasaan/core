@@ -23,7 +23,7 @@ export function PortfolioAISummaryCard() {
         : `${API_URL}/api/portfolio/ai-summary`;
       const res = await fetch(url, { credentials: "include" });
       if (res.ok) {
-        const json = await res.json();
+        const json = await res.json() as { success: boolean; data: PortfolioSummary };
         if (json.success) {
           setData(json.data);
         }
