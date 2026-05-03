@@ -17,10 +17,68 @@
     left: 0;
     top: 0;
     z-index: 50;
+    transition: transform 0.25s ease;
 }
 
 .sidebar-logo {
     padding: 23px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-close-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #52525b;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Mobile drawer backdrop */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 90;
+    animation: sidebar-backdrop-fade 0.2s ease;
+}
+
+@keyframes sidebar-backdrop-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Hamburger menu button (only shown at <=768px via media query below) */
+.topbar-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #18181b;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease;
+}
+
+.topbar-menu-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-nav {
@@ -790,6 +848,25 @@
     .dashboard-sidebar {
         transform: translateX(-100%);
         z-index: 100;
+        width: 80%;
+        max-width: 300px;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .dashboard-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-close-btn {
+        display: flex;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+    }
+
+    .topbar-menu-btn {
+        display: inline-flex;
     }
 
     .dashboard-content {
@@ -797,19 +874,82 @@
     }
 
     .dashboard-main {
-        padding: 24px 16px;
+        padding: 20px 14px;
     }
 
     .topbar {
-        padding: 0 16px;
+        padding: 0 12px;
+        height: 60px;
     }
 
     .topbar-search {
         display: none;
     }
 
+    .topbar-right {
+        gap: 10px;
+    }
+
     .topbar-profile-info {
         display: none;
+    }
+
+    .topbar-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .topbar-avatar span {
+        font-size: 16px;
+    }
+
+    .topbar-progress-count {
+        font-size: 16px;
+    }
+
+    .topbar-notification {
+        width: 36px;
+        height: 36px;
+    }
+
+    .topbar-profile-arrow {
+        display: none;
+    }
+
+    .topbar-guest-signin {
+        display: none;
+    }
+
+    .topbar-guest-signup {
+        height: 32px;
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 20px;
+    }
+
+    .dashboard-greeting {
+        font-size: 22px;
+    }
+
+    .dashboard-date {
+        font-size: 14px;
+    }
+
+    .dashboard-grid {
+        gap: 16px;
+    }
+
+    .dashboard-panel {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .dashboard-panel-title {
+        font-size: 16px;
+        margin-bottom: 14px;
     }
 }
 
@@ -7468,4 +7608,356 @@
     color: #121212;
     margin: 0 0 8px 0;
     font-size: 14px;
+}
+
+/* =============================================
+   D-1/D-5/D-6: DASHBOARD CARD MOBILE FIT
+   Stops Top Stocks, Top MFs, Watchlist & Portfolio panels
+   overflowing at 375-640px. The grid items lacked min-width:0
+   so long content (asset names, symbols, formatted PKR amounts)
+   was pushing each column wider than the viewport.
+   ============================================= */
+
+@media (max-width: 640px) {
+    .dashboard-grid > * {
+        min-width: 0;
+    }
+
+    .dashboard-panel,
+    .wqv-container,
+    .ps-container {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .dashboard-panel {
+        padding: 16px;
+    }
+
+    .asset-list-link {
+        gap: 8px;
+        padding: 10px 8px;
+    }
+
+    .asset-list-link:hover {
+        transform: none;
+    }
+
+    .asset-symbol {
+        min-width: 56px;
+        font-size: 13px;
+    }
+
+    .asset-name {
+        font-size: 13px;
+        min-width: 0;
+    }
+
+    .asset-price,
+    .asset-ytd {
+        font-size: 13px;
+    }
+
+    .asset-list-actions {
+        opacity: 1;
+        gap: 0;
+        padding-right: 2px;
+    }
+
+    .asset-list-actions .watchlist-toggle,
+    .asset-action-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .wqv-container {
+        padding: 16px;
+    }
+
+    .wqv-item {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    .wqv-item-left {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .wqv-item-symbol {
+        font-size: 13px;
+    }
+
+    .wqv-item-name {
+        max-width: none;
+        min-width: 0;
+        font-size: 12px;
+    }
+
+    .wqv-item-price {
+        font-size: 13px;
+    }
+
+    .wqv-item-change {
+        font-size: 11px;
+    }
+
+    .ps-container {
+        padding: 16px;
+    }
+
+    .ps-content {
+        gap: 14px;
+    }
+
+    .ps-total-amount {
+        font-size: 22px;
+    }
+
+    .ps-pl-value {
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+    .ps-mover {
+        padding: 8px 10px;
+        min-width: 0;
+    }
+
+    .ps-mover-symbol {
+        font-size: 13px;
+        word-break: break-all;
+    }
+
+    .ps-mover-change {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+    .asset-symbol {
+        min-width: 52px;
+    }
+
+    .asset-list-actions .watchlist-toggle,
+    .asset-action-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    .ps-total-amount {
+        font-size: 20px;
+    }
+}
+
+/* =============================================
+   GLOBAL MOBILE TIGHTENING (375-640px) — applied last so it overrides earlier defaults.
+   Keeps things readable on phones without rewriting every component.
+   ============================================= */
+
+@media (max-width: 640px) {
+    /* Container padding for module pages */
+    .stocks-list-container,
+    .pf-holdings-wrap {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .stocks-search-bar {
+        padding: 10px 14px;
+        margin-bottom: 16px;
+    }
+
+    .stocks-search-input {
+        font-size: 16px; /* prevents iOS zoom */
+    }
+
+    /* Filter chips that overflow horizontally — make scrollable */
+    .sector-filter-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        margin-left: -14px;
+        margin-right: -14px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .sector-filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sector-chip {
+        flex-shrink: 0;
+    }
+
+    /* Insurance stat cards become smaller on tiny screens */
+    .ins-stat-card {
+        padding: 14px;
+    }
+
+    .ins-stat-value {
+        font-size: 22px;
+    }
+
+    .ins-stats-row {
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    /* Pagination on mobile */
+    .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    /* Sector grid cards */
+    .sector-card {
+        padding: 18px;
+    }
+
+    /* Holdings table — keep horizontal scroll, nudge cell padding */
+    .pf-holdings-table th,
+    .pf-holdings-table td {
+        padding: 10px 8px;
+        font-size: 12.5px;
+    }
+
+    .pf-holding-name {
+        max-width: 120px;
+    }
+
+    /* Modals/dialogs — full width on mobile */
+    [data-slot="dialog-content"] {
+        width: calc(100vw - 24px) !important;
+        max-width: calc(100vw - 24px) !important;
+        max-height: calc(100dvh - 40px) !important;
+        overflow-y: auto;
+    }
+
+    /* Inputs/selects globally — prevent iOS zoom */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="search"],
+    select,
+    textarea {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 380px) {
+    .dashboard-greeting {
+        font-size: 20px;
+    }
+
+    .ins-stat-value {
+        font-size: 19px;
+    }
+
+    .pf-holdings-table th,
+    .pf-holdings-table td {
+        padding: 8px 6px;
+        font-size: 11.5px;
+    }
+}
+
+/* Stock + Fund detail page hero cards on mobile */
+@media (max-width: 640px) {
+    .stock-price-card,
+    .fund-price-card {
+        padding: 20px 18px;
+        border-radius: 16px;
+    }
+
+    .stock-current-price {
+        font-size: 32px;
+    }
+
+    .stock-company-name {
+        font-size: 18px;
+    }
+
+    .fund-name {
+        font-size: 17px;
+    }
+
+    .fund-nav-display {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .fund-nav-price {
+        font-size: 30px;
+    }
+
+    .fund-ytd-badge {
+        align-self: stretch;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 16px;
+    }
+
+    .stock-summary-card,
+    .stock-info-card,
+    .stock-trades-card,
+    .fund-chart-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .stock-section-title {
+        font-size: 16px;
+        margin-bottom: 14px;
+    }
+
+    .stock-stat-card {
+        padding: 14px;
+    }
+
+    .stock-stat-value {
+        font-size: 17px;
+    }
+
+    .stock-summary-value {
+        font-size: 15px;
+    }
+
+    /* Trades grid table — show fewer columns or scroll on mobile */
+    .stock-trades-table {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .stock-trades-header,
+    .stock-trades-row {
+        grid-template-columns: 1.4fr repeat(5, minmax(60px, 1fr));
+        min-width: 520px;
+    }
+
+    /* Calculator card grid — small screens single column */
+    .calculators-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .calculator-card {
+        padding: 18px;
+    }
+
+    .calculator-shell {
+        padding: 16px;
+    }
 }

@@ -63,9 +63,10 @@ function ProfileDropdown({ userName, onClose }: ProfileDropdownProps) {
 interface TopBarProps {
     userName?: string;
     isGuest?: boolean;
+    onMenuClick?: () => void;
 }
 
-export function TopBar({ userName = "User", isGuest = false }: TopBarProps) {
+export function TopBar({ userName = "User", isGuest = false, onMenuClick }: TopBarProps) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const pathname = usePathname();
     const userInitial = userName.charAt(0).toUpperCase();
@@ -75,6 +76,20 @@ export function TopBar({ userName = "User", isGuest = false }: TopBarProps) {
 
     return (
         <header className="topbar">
+            {/* Mobile menu (hamburger) — visible only at small viewports via CSS */}
+            {onMenuClick && (
+                <button
+                    type="button"
+                    className="topbar-menu-btn"
+                    onClick={onMenuClick}
+                    aria-label="Open menu"
+                >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M4 7h16M4 12h16M4 17h16" />
+                    </svg>
+                </button>
+            )}
+
             {/* Search */}
             <div className="topbar-search">
                 <svg className="topbar-search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#708090" strokeWidth="1.5">

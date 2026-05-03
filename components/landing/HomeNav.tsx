@@ -20,7 +20,7 @@ const HomeNav = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 flex h-20 items-center justify-between px-6 transition-all duration-500 md:px-12",
+        "fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-4 transition-all duration-500 sm:h-20 sm:px-6 md:px-12",
         scrolled
           ? "bg-white/85 backdrop-blur-xl border-b border-zinc-200/60 shadow-[0_1px_20px_rgba(0,0,0,0.06)]"
           : "bg-transparent"
@@ -29,17 +29,17 @@ const HomeNav = () => {
       {/* Logo */}
       <Link href="/" className="flex items-center shrink-0">
         <Image
-          src="/logo.png"
+          src="/logodark.svg"
           alt="Finasaan"
-          width={260}
-          height={56}
+          width={140}
+          height={36}
           priority
-          className="h-14 w-auto object-contain transition-opacity duration-200 hover:opacity-75"
+          className="h-7 w-auto object-contain transition-opacity duration-200 hover:opacity-75 sm:h-9"
         />
       </Link>
 
       {/* Auth */}
-      <div className="flex items-center gap-4 md:gap-6">
+      <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
         <Link
           href="/login"
           className={cn(
@@ -55,7 +55,7 @@ const HomeNav = () => {
         </Link>
         <Button
           className={cn(
-            "rounded-full px-6 h-10 font-semibold text-sm transition-all duration-300",
+            "rounded-full px-4 h-9 font-semibold text-xs transition-all duration-300 sm:px-6 sm:h-10 sm:text-sm",
             "bg-zinc-900 text-white hover:bg-[#159F63] hover:shadow-lg hover:shadow-[#159F63]/20 hover:scale-[1.03]"
           )}
           asChild

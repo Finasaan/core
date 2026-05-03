@@ -21,6 +21,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [userName, setUserName] = useState("User");
     const [isGuest, setIsGuest] = useState(false);
     const [isGPTOpen, setIsGPTOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const pathname = usePathname();
+
+    // Close mobile sidebar whenever the user navigates to a new page
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
+
+    // Lock body scroll while the mobile drawer is open
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [sidebarOpen]);
 
     useEffect(() => {
         // Get user display name from spine profile API — sb-token cookie sent automatically
@@ -57,14 +76,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     }, []);
 
     const { togglePanel } = useBudgetAI();
-    const pathname = usePathname();
     const isBudgetPage = pathname?.startsWith("/dashboard/budget");
 
     return (
         <div className="dashboard-container">
-            <Sidebar />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            {sidebarOpen && (
+                <div
+                    className="sidebar-backdrop"
+                    onClick={() => setSidebarOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
             <div className="dashboard-content">
-                <TopBar userName={userName} isGuest={isGuest} />
+                <TopBar
+                    userName={userName}
+                    isGuest={isGuest}
+                    onMenuClick={() => setSidebarOpen(true)}
+                />
                 <main className="dashboard-main">
                     {children}
                 </main>

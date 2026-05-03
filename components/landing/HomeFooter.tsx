@@ -30,7 +30,7 @@ const HomeFooter = () => {
   return (
     <>
       {/* ── Pre-footer CTA banner ── */}
-      <section className="relative w-full overflow-hidden bg-[#0D1F17] px-6 py-24 sm:px-8 lg:px-16">
+      <section className="relative w-full overflow-hidden bg-[#0D1F17] px-4 py-16 sm:px-8 sm:py-24 lg:px-16">
         {/* Radial glow */}
         <div
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -49,7 +49,7 @@ const HomeFooter = () => {
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
                 Get started today
               </p>
-              <h2 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">
+              <h2 className="text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">
                 Your financial future<br className="hidden sm:block" />
                 starts here.
               </h2>
@@ -85,19 +85,19 @@ const HomeFooter = () => {
       </section>
 
       {/* ── Footer proper ── */}
-      <footer className="w-full border-t border-zinc-100 bg-white px-6 py-16 sm:px-8 lg:px-16">
+      <footer className="w-full border-t border-zinc-100 bg-white px-4 py-12 sm:px-8 sm:py-16 lg:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-16">
+          <div className="flex flex-col gap-10 sm:gap-12 lg:flex-row lg:justify-between lg:gap-16">
 
             {/* Brand column */}
             <div className="flex flex-col gap-6 lg:max-w-xs">
               <Link href="/" className="inline-block w-fit">
                 <Image
-                  src="/logo.png"
+                  src="/logodark.svg"
                   alt="Finasaan"
-                  width={180}
-                  height={40}
-                  className="h-9 w-auto object-contain"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto object-contain"
                 />
               </Link>
               <p className="text-sm leading-relaxed text-zinc-500">
@@ -151,7 +151,7 @@ const HomeFooter = () => {
           </div>
 
           {/* Bottom bar */}
-          <div className="mt-14 border-t border-zinc-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="mt-10 border-t border-zinc-100 pt-6 flex flex-col sm:mt-14 sm:pt-8 sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-zinc-400">
               © {new Date().getFullYear()} Finasaan. All rights reserved.
             </p>

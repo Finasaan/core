@@ -50,16 +50,16 @@ const faqs: FAQItem[] = [
 
 const FAQSection = () => {
   return (
-    <section className="w-full bg-white px-6 py-24 sm:px-8 lg:px-16">
+    <section className="w-full bg-white px-4 py-16 sm:px-8 sm:py-24 lg:px-16">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[5fr_8fr] lg:gap-20">
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-[5fr_8fr] lg:gap-20">
 
           {/* Left column — sticky editorial heading */}
           <div className="lg:sticky lg:top-32 lg:self-start animate-slide-left delay-0">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#159F63] sm:mb-4 sm:text-xs">
               FAQ
             </p>
-            <h2 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-zinc-900 sm:text-5xl">
+            <h2 className="text-3xl font-extrabold leading-[1.1] tracking-tight text-zinc-900 sm:text-5xl">
               Questions,<br />
               Answered.
             </h2>

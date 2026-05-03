@@ -707,25 +707,39 @@
 
 @media (max-width: 768px) {
     .onboarding-header {
-        padding: 24px 24px;
+        padding: 20px 20px;
+    }
+
+    .onboarding-logo-text {
+        font-size: 24px;
     }
 
     .onboarding-main {
-        padding: 0 20px 60px;
+        padding: 0 16px 56px;
     }
 
     .onboarding-content {
         padding: 0;
-        gap: 24px;
+        gap: 22px;
     }
 
     .onboarding-title {
-        font-size: 28px;
+        font-size: 26px;
         line-height: 1.25;
     }
 
     .onboarding-subtitle {
-        font-size: 15px;
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .onboarding-tagline {
+        font-size: 17px;
+    }
+
+    .onboarding-input {
+        height: 48px;
+        font-size: 16px; /* prevents iOS zoom */
     }
 
     /* Step cards — vertical stack on mobile */
@@ -806,22 +820,86 @@
     /* Buttons */
     .step-buttons {
         gap: 10px;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .step-button {
-        min-width: 110px;
+        min-width: 0;
+        flex: 1 1 140px;
+        max-width: 200px;
         height: 44px;
         font-size: 15px;
+        padding: 0 16px;
     }
 
     /* Loading fact card */
     .loading-fact-card {
-        bottom: 40px;
-        max-width: calc(100% - 32px);
-        padding: 24px 16px;
+        bottom: 32px;
+        max-width: calc(100% - 24px);
+        padding: 20px 14px;
     }
 
     .loading-fact-text {
-        font-size: 16px;
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .loading-text {
+        font-size: 22px;
+    }
+
+    .loading-spinner {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* Selects */
+    .onboarding-select-wrapper [data-slot="select-trigger"] {
+        height: 48px;
+        font-size: 15px;
+    }
+
+    .onboarding-select {
+        width: 100%;
+    }
+
+    .onboarding-select-trigger {
+        height: 48px;
+    }
+}
+
+@media (max-width: 380px) {
+    .onboarding-title {
+        font-size: 22px;
+    }
+
+    .selection-card,
+    .choice-card {
+        padding: 14px 12px;
+        gap: 12px;
+    }
+
+    .selection-card-icon,
+    .choice-card-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .selection-card-title,
+    .choice-card-title {
+        font-size: 15px;
+    }
+
+    .selection-card-description,
+    .choice-card-description {
+        font-size: 12px;
+    }
+
+    .chip {
+        font-size: 13px;
+        height: 34px;
+        padding: 6px 12px;
     }
 }

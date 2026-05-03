@@ -40,8 +40,14 @@ interface FinasaanGPTAppProps {
 }
 
 export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: FinasaanGPTAppProps) {
-  // UI state
-  const [sidebarOpen, setSidebarOpen] = useState(!isMini);
+  // UI state — default sidebar closed on mobile (and in mini mode)
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (isMini) return false;
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+      return false;
+    }
+    return true;
+  });
   const [selectedModel, setSelectedModel] = useState("llama-3.3-70b-versatile");
   const [models, setModels] = useState<Model[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -319,17 +325,24 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
 
   return (
     <TooltipProvider delayDuration={400}>
-      <div className={`chat-shell ${isMini ? 'mini' : ''}`}>
+      <div className={`chat-shell ${isMini ? 'mini' : ''} ${sidebarOpen ? 'sidebar-open' : ''}`}>
         {/* Sidebar */}
         <ChatSidebar
           collapsed={!sidebarOpen}
           sessions={sessions}
           activeSessionId={activeSessionId}
-          onSelectSession={handleSelectSession}
-          onNewChat={handleNewChat}
+          onSelectSession={(id) => { handleSelectSession(id); if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) setSidebarOpen(false); }}
+          onNewChat={() => { handleNewChat(); if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) setSidebarOpen(false); }}
           onDeleteSession={handleDeleteSession}
           loadingSessions={loadingSessions}
         />
+        {sidebarOpen && !isMini && (
+          <div
+            className="chat-sidebar-backdrop"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
 
         {/* Main area */}
         <main className="chat-main">

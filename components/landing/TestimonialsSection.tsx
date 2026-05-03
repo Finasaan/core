@@ -40,7 +40,7 @@ const TestimonialsSection = () => {
   return (
     <section
       id="testimonials"
-      className="relative w-full overflow-hidden bg-[#0D1F17] px-6 py-24 sm:px-8 lg:px-16"
+      className="relative w-full overflow-hidden bg-[#0D1F17] px-4 py-16 sm:px-8 sm:py-24 lg:px-16"
     >
       {/* Radial glow — top right corner */}
       <div
@@ -56,11 +56,11 @@ const TestimonialsSection = () => {
       <div className="relative mx-auto max-w-7xl">
 
         {/* Section header — left-aligned, editorial */}
-        <div className="mb-14 animate-slide-left delay-0">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+        <div className="mb-10 animate-slide-left delay-0 sm:mb-14">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#159F63] sm:text-xs">
             Early users
           </p>
-          <h2 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h2 className="text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
             Don&apos;t take our<br />
             word for it.
           </h2>

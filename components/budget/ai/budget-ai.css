@@ -22,6 +22,26 @@
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@media (max-width: 640px) {
+  .ai-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ai-panel-header {
+    padding: 1rem;
+  }
+
+  .ai-chat-container,
+  .ai-input-area {
+    padding: 1rem;
+  }
+
+  .ai-input-area input {
+    font-size: 16px; /* prevents iOS zoom */
+  }
+}
+
 [data-theme='dark'] .ai-panel {
   background: rgba(23, 23, 23, 0.8);
   border-left: 1px solid rgba(255, 255, 255, 0.05);

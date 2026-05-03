@@ -28,7 +28,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative flex w-full flex-col items-center justify-center px-6 pt-36 pb-28 text-center sm:pt-44 lg:pt-52 overflow-hidden min-h-[92vh]"
+      className="relative flex w-full flex-col items-center justify-center px-4 pt-28 pb-20 text-center sm:px-6 sm:pt-44 sm:pb-28 lg:pt-52 overflow-hidden min-h-[88vh] sm:min-h-[92vh]"
       style={{
         background:
           "radial-gradient(ellipse 80% 60% at 10% 0%, #e6f7f0 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 90% 100%, #f0faf5 0%, transparent 55%), #fafafa",
@@ -61,13 +61,13 @@ const HeroSection = () => {
       </div>
 
       {/* Headline — two separate lines so typewriter never wraps */}
-      <div className="mt-8 flex flex-col items-center">
-        <h1 className="animate-fade-up delay-100 text-5xl font-extrabold tracking-tight text-zinc-900 sm:text-7xl md:text-[5.5rem] lg:text-[6.5rem] leading-[1.08]">
+      <div className="mt-6 flex flex-col items-center sm:mt-8">
+        <h1 className="animate-fade-up delay-100 text-[2.5rem] font-extrabold tracking-tight text-zinc-900 sm:text-7xl md:text-[5.5rem] lg:text-[6.5rem] leading-[1.05] sm:leading-[1.08]">
           AI-Assisted
         </h1>
         {/* Typewriter line — fixed height prevents layout shift */}
-        <div className="animate-fade-up delay-200 mt-1 flex min-h-[1.15em] items-center justify-center text-4xl font-extrabold tracking-tight sm:text-6xl md:text-[5rem] lg:text-[6rem] leading-[1.08]">
-          <span className="bg-gradient-to-r from-[#159F63] to-[#0A6C41] bg-clip-text text-transparent whitespace-nowrap">
+        <div className="animate-fade-up delay-200 mt-1 flex min-h-[1.15em] w-full items-center justify-center text-[1.75rem] font-extrabold tracking-tight sm:text-6xl md:text-[5rem] lg:text-[6rem] leading-[1.05] sm:leading-[1.08]">
+          <span className="bg-gradient-to-r from-[#159F63] to-[#0A6C41] bg-clip-text text-transparent whitespace-nowrap overflow-hidden">
             {text}
           </span>
           <Cursor cursorColor="#159F63" cursorBlinking cursorStyle="|" />
@@ -75,7 +75,7 @@ const HeroSection = () => {
       </div>
 
       {/* Subtitle */}
-      <p className="animate-fade-up delay-300 mx-auto mt-8 max-w-xl text-base leading-relaxed text-zinc-500 sm:text-lg font-medium">
+      <p className="animate-fade-up delay-300 mx-auto mt-6 max-w-xl px-2 text-sm leading-relaxed text-zinc-500 sm:mt-8 sm:text-lg sm:px-0 font-medium">
         Your intelligent companion for mastering personal finance in Pakistan.
         Invest wisely, budget smarter, and build your future — in plain language,
         tailored to you.
