@@ -94,7 +94,7 @@ const HomeFooter = () => {
       </section>
 
       {/* ── Footer proper ── */}
-      <footer className="w-full border-t border-zinc-100 bg-white px-6 py-16 sm:px-8 lg:px-16">
+      <footer className="w-full border-t border-zinc-100 bg-white px-4 py-12 sm:px-8 sm:py-16 lg:px-16">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-16">
             <div className="flex flex-col gap-6 lg:max-w-sm">

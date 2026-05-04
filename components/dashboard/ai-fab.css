@@ -35,7 +35,16 @@
 
 @media (max-width: 640px) {
   .ask-ai-fab span { display: none; }
-  .ask-ai-fab { padding: 1rem; border-radius: 50%; }
+  .ask-ai-fab {
+    padding: 0.85rem;
+    border-radius: 50%;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    right: 1rem;
+  }
+  .ask-ai-fab svg {
+    width: 22px;
+    height: 22px;
+  }
 }
 
 /* Specific overlay for FinasaanGPT */

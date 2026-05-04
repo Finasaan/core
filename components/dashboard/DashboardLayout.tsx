@@ -9,6 +9,7 @@ import { AskAIPanel } from "@/components/budget/ai";
 import { Sparkles, MessageSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { MiniGPTSidebar } from "@/components/gpt/MiniGPTSidebar";
+import { CommandPalette } from "@/components/CommandPalette";
 import "./ai-fab.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
@@ -21,6 +22,38 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [userName, setUserName] = useState("User");
     const [isGuest, setIsGuest] = useState(false);
     const [isGPTOpen, setIsGPTOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [paletteOpen, setPaletteOpen] = useState(false);
+    const pathname = usePathname();
+
+    // Global Cmd/Ctrl + K to toggle command palette
+    useEffect(() => {
+        function handleKey(e: KeyboardEvent) {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                setPaletteOpen((o) => !o);
+            }
+        }
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, []);
+
+    // Close mobile sidebar whenever the user navigates to a new page
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
+
+    // Lock body scroll while the mobile drawer is open
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [sidebarOpen]);
 
     useEffect(() => {
         // Get user display name from spine profile API — sb-token cookie sent automatically
@@ -57,14 +90,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     }, []);
 
     const { togglePanel } = useBudgetAI();
-    const pathname = usePathname();
     const isBudgetPage = pathname?.startsWith("/dashboard/budget");
 
     return (
         <div className="dashboard-container">
-            <Sidebar />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            {sidebarOpen && (
+                <div
+                    className="sidebar-backdrop"
+                    onClick={() => setSidebarOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
             <div className="dashboard-content">
-                <TopBar userName={userName} isGuest={isGuest} />
+                <TopBar
+                    userName={userName}
+                    isGuest={isGuest}
+                    onMenuClick={() => setSidebarOpen(true)}
+                    onSearchClick={() => setPaletteOpen(true)}
+                />
                 <main className="dashboard-main">
                     {children}
                 </main>
@@ -98,6 +142,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <MiniGPTSidebar isOpen={isGPTOpen} onClose={() => setIsGPTOpen(false)} />
               </>
             )}
+
+            <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
         </div>
     );
 }

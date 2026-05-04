@@ -43,7 +43,7 @@
 }
 
 .auth-logo-link img {
-  height: 32px;
+  height: 36px;
   width: auto;
 }
 
@@ -516,28 +516,96 @@
 .auth-profile-icon { width: 18px; height: 18px; color: #52525b; }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .auth-header {
-    padding: 0 20px;
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  .auth-logo-link img {
+    height: 30px;
   }
 
   .auth-main {
-    padding: 80px 20px 72px;
+    padding: 72px 16px 64px;
   }
 
   .auth-form-title {
-    font-size: 30px;
+    font-size: 26px;
+    letter-spacing: -0.04em;
+  }
+
+  .auth-form-subtitle {
+    font-size: 14px;
   }
 
   .auth-header-prompt {
     display: none;
   }
 
+  .auth-header-link {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .auth-card,
+  .auth-form-container {
+    gap: 18px;
+  }
+
+  .auth-input-field {
+    height: 44px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .auth-primary-button,
+  .auth-social-button {
+    height: 46px;
+    font-size: 14px;
+  }
+
   .auth-footer {
-    padding: 16px 20px;
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .auth-footer-link {
-    right: 20px;
+    position: static;
+    right: auto;
+  }
+
+  .auth-footer-copyright {
+    font-size: 12px;
+  }
+
+  /* OTP — 6 fields × 50px + 5×12px gaps = 360px overflows 375px page minus padding.
+     Shrink to 42px each + 8px gap = 292px, fits with 16px page padding. */
+  .otp-input-container {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .otp-input-field {
+    width: 42px;
+    height: 48px;
+    font-size: 19px;
+  }
+
+  .otp-resend-row {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .otp-input-field {
+    width: 38px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .otp-input-container {
+    gap: 6px;
   }
 }

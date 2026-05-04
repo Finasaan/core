@@ -1,0 +1,532 @@
+/* ============================================
+   Dashboard Settings Page
+   ============================================ */
+
+.settings-shell {
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.settings-page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 28px;
+}
+
+.settings-page-title {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #121212;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.settings-page-subtitle {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 15px;
+    color: #64748B;
+    margin: 0;
+}
+
+/* ── Tab navigation ──────────────────────────────────────── */
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.settings-tabs::-webkit-scrollbar { display: none; }
+
+.settings-tab {
+    background: transparent;
+    border: none;
+    padding: 12px 18px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748B;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.15s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-tab:hover { color: #121212; }
+
+.settings-tab.is-active {
+    color: #159F63;
+    font-weight: 600;
+}
+
+.settings-tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: #159F63;
+    border-radius: 2px 2px 0 0;
+}
+
+/* ── Card ──────────────────────────────────────────────── */
+.settings-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+}
+
+.settings-card-header {
+    margin-bottom: 24px;
+}
+
+.settings-card-title {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #121212;
+    margin: 0 0 4px 0;
+}
+
+.settings-card-subtitle {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 13px;
+    color: #64748B;
+    margin: 0;
+}
+
+/* ── Form ──────────────────────────────────────────────── */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .settings-row { grid-template-columns: 1fr; }
+}
+
+.settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.settings-field-label {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3F3F46;
+    letter-spacing: 0.01em;
+}
+
+.settings-field-help {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.4;
+    margin-top: 2px;
+}
+
+.settings-input,
+.settings-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    background: #FFFFFF;
+    border: 1.5px solid #E4E4E7;
+    border-radius: 10px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 14px;
+    color: #18181B;
+    box-sizing: border-box;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.settings-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23708090' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+    cursor: pointer;
+}
+
+.settings-input::placeholder { color: #A1A1AA; }
+
+.settings-input:focus,
+.settings-select:focus {
+    outline: none;
+    border-color: #159F63;
+    box-shadow: 0 0 0 3px rgba(21, 159, 99, 0.1);
+}
+
+.settings-input:disabled,
+.settings-select:disabled {
+    background: #F8FAFC;
+    color: #94A3B8;
+    cursor: not-allowed;
+}
+
+.settings-input.is-error {
+    border-color: #DC2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+/* Read-only field with badge (for email) */
+.settings-readonly-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 44px;
+    padding: 0 14px;
+    background: #F8FAFC;
+    border: 1.5px solid #E4E4E7;
+    border-radius: 10px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 14px;
+    color: #18181B;
+}
+
+.settings-readonly-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.settings-badge.is-verified {
+    background: rgba(21, 159, 99, 0.1);
+    color: #159F63;
+}
+
+.settings-badge.is-unverified {
+    background: rgba(245, 158, 11, 0.12);
+    color: #B45309;
+}
+
+/* ── Chip select (for interests) ──────────────────────── */
+.settings-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.settings-chip {
+    padding: 8px 14px;
+    background: #F8FAFC;
+    border: 1.5px solid #E4E4E7;
+    border-radius: 999px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.settings-chip:hover {
+    border-color: #159F63;
+    color: #159F63;
+}
+
+.settings-chip.is-selected {
+    background: rgba(21, 159, 99, 0.1);
+    border-color: #159F63;
+    color: #159F63;
+}
+
+/* ── Buttons / actions ──────────────────────────────── */
+.settings-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid transparent;
+}
+
+.settings-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.settings-button-primary {
+    background: #159F63;
+    color: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 14px rgba(21,159,99,0.25);
+}
+
+.settings-button-primary:hover {
+    background: #128a54;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 6px 20px rgba(21,159,99,0.3);
+}
+
+.settings-button-primary:disabled {
+    background: #A1A1AA;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.settings-button-secondary {
+    background: #FFFFFF;
+    color: #475569;
+    border: 1.5px solid #E2E8F0;
+}
+
+.settings-button-secondary:hover {
+    border-color: #CBD5E1;
+    color: #121212;
+}
+
+.settings-button-danger {
+    background: #FFFFFF;
+    color: #DC2626;
+    border: 1.5px solid #FECACA;
+}
+
+.settings-button-danger:hover {
+    background: #FEF2F2;
+    border-color: #DC2626;
+}
+
+/* ── Status messages ──────────────────────────────────── */
+.settings-message {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.settings-message.is-error {
+    background: #FEF2F2;
+    border: 1.5px solid #FECACA;
+    color: #DC2626;
+}
+
+.settings-message.is-success {
+    background: rgba(21, 159, 99, 0.08);
+    border: 1.5px solid rgba(21, 159, 99, 0.3);
+    color: #0F7548;
+}
+
+/* ── Preferences placeholder ──────────────────────────── */
+.settings-placeholder {
+    text-align: center;
+    padding: 48px 24px;
+    color: #64748B;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+}
+
+.settings-placeholder-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(21, 159, 99, 0.08);
+    color: #159F63;
+}
+
+.settings-placeholder-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #121212;
+    margin: 0 0 6px 0;
+}
+
+.settings-placeholder-text {
+    font-size: 14px;
+    color: #64748B;
+    margin: 0;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ── Sign out section ──────────────────────────────────── */
+.settings-signout-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    border: 1.5px solid #FECACA;
+    border-radius: 12px;
+    background: #FEF2F2;
+}
+
+.settings-signout-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-signout-title {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #991B1B;
+    margin: 0;
+}
+
+.settings-signout-text {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-size: 13px;
+    color: #B45309;
+    margin: 0;
+}
+
+@media (max-width: 540px) {
+    .settings-signout-row {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Mobile responsive
+   Mirrors the dashboard's 768/640/380 breakpoints and uses
+   16px form fields below 640 to prevent iOS focus-zoom.
+   ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .settings-page-header {
+        margin-bottom: 20px;
+    }
+
+    .settings-page-title {
+        font-size: 22px;
+    }
+
+    .settings-page-subtitle {
+        font-size: 14px;
+    }
+
+    .settings-tabs {
+        gap: 2px;
+        margin-bottom: 20px;
+    }
+
+    .settings-tab {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .settings-card {
+        padding: 18px;
+        border-radius: 14px;
+        margin-bottom: 14px;
+    }
+
+    .settings-card-header {
+        margin-bottom: 18px;
+    }
+
+    .settings-card-title {
+        font-size: 16px;
+    }
+
+    .settings-form {
+        gap: 16px;
+    }
+
+    .settings-placeholder {
+        padding: 36px 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    /* iOS zooms inputs whose computed font-size is < 16px on focus.
+       Bumping these prevents the disorienting page-zoom on tap. */
+    .settings-input,
+    .settings-select,
+    .settings-readonly-field {
+        font-size: 16px;
+    }
+
+    .settings-button {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .settings-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .settings-actions .settings-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .settings-tab {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .settings-tab svg {
+        display: none;
+    }
+
+    .settings-card {
+        padding: 16px;
+    }
+
+    .settings-chip {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+}

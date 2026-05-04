@@ -12,7 +12,10 @@ import { ChatInput } from "./ChatInput";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { DocIngestModal } from "./DocIngestModal";
 import type { Model } from "./ModelPicker";
-import { PanelLeftIcon, X } from "lucide-react";
+import { MoonIcon, PanelLeftIcon, SunIcon, X } from "lucide-react";
+
+type ChatTheme = "light" | "dark";
+const THEME_STORAGE_KEY = "finasaan-chat-theme";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -40,8 +43,14 @@ interface FinasaanGPTAppProps {
 }
 
 export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: FinasaanGPTAppProps) {
-  // UI state
-  const [sidebarOpen, setSidebarOpen] = useState(!isMini);
+  // UI state — default sidebar closed on mobile (and in mini mode)
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (isMini) return false;
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+      return false;
+    }
+    return true;
+  });
   const [selectedModel, setSelectedModel] = useState("llama-3.3-70b-versatile");
   const [models, setModels] = useState<Model[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -53,7 +62,40 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   const [streamError, setStreamError] = useState<string | null>(null);
   const [lastUserText, setLastUserText] = useState<string | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
+  const [theme, setTheme] = useState<ChatTheme>("light");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // ── Theme: load persisted preference, apply to <html>, restore on unmount ─
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "dark" || stored === "light") setTheme(stored);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-chat-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-chat-theme");
+    }
+    return () => {
+      // Clear the attribute when this component unmounts so the chat theme
+      // doesn't leak to other surfaces (e.g. dashboard, mini-gpt host page).
+      document.documentElement.removeAttribute("data-chat-theme");
+    };
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next: ChatTheme = prev === "light" ? "dark" : "light";
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(THEME_STORAGE_KEY, next);
+      }
+      return next;
+    });
+  }, []);
 
   // ── Refs for latest model + session (read at send-time) ───────────────────
 
@@ -102,13 +144,40 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
 
   const { messages, sendMessage, status, stop, setMessages } = useChat({
     transport,
-    onFinish: () => {
-      setStreamError(null);
+    onFinish: ({ message }) => {
+      // Detect empty completions — sometimes Groq Llama returns 200 OK but
+      // streams nothing meaningful after a tool call. Surface that as an
+      // error so the user can retry instead of staring at a blank reply.
+      const hasContent = (message.parts ?? []).some((p) => {
+        if (p.type === "text") {
+          return ((p as { text?: string }).text ?? "").trim().length > 0;
+        }
+        return p.type.startsWith("tool-") || p.type === "dynamic-tool";
+      });
+      if (!hasContent) {
+        setStreamError(
+          "The model returned an empty response. This is a known issue with Groq Llama after tool calls — try again or switch models.",
+        );
+      } else {
+        setStreamError(null);
+      }
       // Re-fetch sessions to update the sidebar after each turn.
       fetchSessions();
     },
     onError: (error) => {
-      setStreamError(error?.message ?? "Stream failed. Please try again.");
+      const msg = error?.message ?? "Stream failed. Please try again.";
+      // Provide more actionable hints for common failure modes.
+      if (/missing tool result|tool[- ]call/i.test(msg)) {
+        setStreamError(
+          "Previous turn errored mid-tool-call. Start a new chat or retry — the next request will sanitize the broken state.",
+        );
+      } else if (/ECONNRESET|fetch failed|network/i.test(msg)) {
+        setStreamError(
+          "Network error reaching the model. Check your connection and retry.",
+        );
+      } else {
+        setStreamError(msg);
+      }
     },
   });
 
@@ -126,7 +195,11 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   useEffect(() => {
     if (status === "error") {
       setStreamError((prev) => prev ?? "Stream failed. Please try again.");
+      // Refresh the sessions list — if the backend persisted the partial
+      // turn, the sidebar will reflect it on next select.
+      fetchSessions();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   // ── Fetch models ────────────────────────────────────────────────────────
@@ -239,7 +312,20 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
     setInputValue("");
     setStreamError(null);
     setLastUserText(text);
-    sendMessage({ text });
+    try {
+      sendMessage({ text });
+    } catch (err) {
+      // sendMessage shouldn't throw, but if the underlying transport rejects
+      // synchronously we want to keep the user's input recoverable rather
+      // than silently dropping it.
+      console.error("[handleSend] sendMessage threw:", err);
+      setInputValue(text);
+      setStreamError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send. Please try again.",
+      );
+    }
   }, [inputValue, isStreaming, sendMessage]);
 
   // ── Retry last message ───────────────────────────────────────────────────
@@ -247,7 +333,16 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   const handleRetry = useCallback(() => {
     if (!lastUserText || isStreaming) return;
     setStreamError(null);
-    sendMessage({ text: lastUserText });
+    try {
+      sendMessage({ text: lastUserText });
+    } catch (err) {
+      console.error("[handleRetry] sendMessage threw:", err);
+      setStreamError(
+        err instanceof Error
+          ? err.message
+          : "Failed to retry. Please try again.",
+      );
+    }
   }, [lastUserText, isStreaming, sendMessage]);
 
   // ── Attach PDF ───────────────────────────────────────────────────────────
@@ -319,17 +414,24 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
 
   return (
     <TooltipProvider delayDuration={400}>
-      <div className={`chat-shell ${isMini ? 'mini' : ''}`}>
+      <div className={`chat-shell ${isMini ? 'mini' : ''} ${sidebarOpen ? 'sidebar-open' : ''}`}>
         {/* Sidebar */}
         <ChatSidebar
           collapsed={!sidebarOpen}
           sessions={sessions}
           activeSessionId={activeSessionId}
-          onSelectSession={handleSelectSession}
-          onNewChat={handleNewChat}
+          onSelectSession={(id) => { handleSelectSession(id); if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) setSidebarOpen(false); }}
+          onNewChat={() => { handleNewChat(); if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) setSidebarOpen(false); }}
           onDeleteSession={handleDeleteSession}
           loadingSessions={loadingSessions}
         />
+        {sidebarOpen && !isMini && (
+          <div
+            className="chat-sidebar-backdrop"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
 
         {/* Main area */}
         <main className="chat-main">
@@ -344,11 +446,23 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
             >
               <PanelLeftIcon size={15} />
             </Button>
-            {activeSession && (
+            {activeSession ? (
               <span className="chat-topbar__session-title">
                 {activeSession.title}
               </span>
+            ) : (
+              <span className="chat-topbar__spacer" />
             )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="chat-topbar__toggle"
+              onClick={toggleTheme}
+              title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? <MoonIcon size={14} /> : <SunIcon size={14} />}
+            </Button>
             {isMini && onClose && (
               <Button
                 variant="ghost"

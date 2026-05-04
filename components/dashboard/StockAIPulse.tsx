@@ -2,13 +2,26 @@
 
 import { useState, useEffect } from "react";
 
+interface DocumentInsights {
+  insights: string[];
+  keyFigures: Array<{ label: string; value: string; period: string | null }>;
+  trendNarrative: string | null;
+  sources: Array<{ filename: string; period: string | null }>;
+}
+
 interface StockAIPulseProps {
   symbol: string;
+  /**
+   * Optional insights extracted from ingested company reports.
+   * When present, an extra section is appended to the pulse card.
+   * Pass `null` while loading so the section is skipped silently.
+   */
+  documentInsights?: DocumentInsights | null;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
-export function StockAIPulse({ symbol }: StockAIPulseProps) {
+export function StockAIPulse({ symbol, documentInsights }: StockAIPulseProps) {
   const [summary, setSummary] = useState<string | null>(null);
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,8 +75,8 @@ export function StockAIPulse({ symbol }: StockAIPulseProps) {
     );
   }
 
-  // If both failed, show error
-  if (!summary && news.length === 0) {
+  // If everything's empty, show error
+  if (!summary && news.length === 0 && (!documentInsights || documentInsights.insights.length === 0)) {
     return (
       <div className="stock-ai-pulse error">
         <div className="pulse-header">
@@ -93,6 +106,31 @@ export function StockAIPulse({ symbol }: StockAIPulseProps) {
                 <p>{bullet.startsWith("- ") ? bullet.substring(2) : bullet}</p>
               </div>
             ))}
+          </div>
+        )}
+
+        {documentInsights && documentInsights.insights.length > 0 && (
+          <div className="pulse-news-section mt-6 pt-5 border-t border-slate-100">
+            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+              From the latest filed report
+            </h4>
+            <div className="pulse-bullets">
+              {documentInsights.insights.map((bullet, idx) => (
+                <div key={idx} className="pulse-bullet-item">
+                  <span className="bullet-dot" />
+                  <p>{bullet}</p>
+                </div>
+              ))}
+            </div>
+            {documentInsights.sources.length > 0 && (
+              <p className="text-[10px] text-slate-400 font-medium mt-2">
+                Source{documentInsights.sources.length > 1 ? "s" : ""}:{" "}
+                {documentInsights.sources
+                  .map((s) => (s.period ? `${s.filename} (${s.period})` : s.filename))
+                  .join(" · ")}
+              </p>
+            )}
           </div>
         )}
 

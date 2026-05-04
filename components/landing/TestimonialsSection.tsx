@@ -40,7 +40,7 @@ const TestimonialsSection = () => {
   return (
     <section
       id="testimonials"
-      className="relative w-full overflow-hidden bg-[#0D1F17] px-6 py-24 sm:px-8 lg:px-16"
+      className="relative w-full overflow-hidden bg-[#0D1F17] px-4 py-16 sm:px-8 sm:py-24 lg:px-16"
     >
       {/* Radial glow — top right corner */}
       <div
