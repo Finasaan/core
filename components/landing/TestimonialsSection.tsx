@@ -56,13 +56,14 @@ const TestimonialsSection = () => {
       <div className="relative mx-auto max-w-7xl">
 
         {/* Section header — left-aligned, editorial */}
-        <div className="mb-10 animate-slide-left delay-0 sm:mb-14">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#159F63] sm:text-xs">
+        <div className="mb-14 animate-slide-left delay-0 flex flex-col gap-3">
+          <span className="inline-flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#159F63]" />
             Early users
-          </p>
-          <h2 className="text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Don&apos;t take our<br />
-            word for it.
+          </span>
+          <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[3.75rem]">
+            Loved by early users<br />
+            across Pakistan.
           </h2>
         </div>
 
@@ -70,25 +71,22 @@ const TestimonialsSection = () => {
         <div className="hidden lg:grid lg:grid-cols-5 lg:gap-5">
 
           {/* LEFT — Featured hero quote (3 cols) */}
-          <div className="animate-fade-up delay-100 col-span-3 flex flex-col justify-between rounded-3xl bg-[#122B1E] p-10 ring-1 ring-white/[0.06] relative overflow-hidden">
-            {/* Giant decorative quote mark */}
+          <div className="animate-fade-up delay-100 col-span-3 relative flex flex-col justify-between overflow-hidden rounded-3xl bg-[#122B1E] p-10 ring-1 ring-white/[0.06]">
             <span
-              className="pointer-events-none absolute -top-6 -left-2 select-none font-serif text-[180px] leading-none text-[#159F63]/10 font-black"
+              className="absolute right-8 top-8 text-[11px] font-bold uppercase tracking-[0.2em] text-[#159F63]/70"
               aria-hidden="true"
             >
-              &ldquo;
+              01 / 03
             </span>
 
-            {/* Quote */}
-            <p className="relative z-10 text-xl font-medium leading-relaxed text-zinc-100 italic sm:text-2xl mt-8">
-              &ldquo;{featured.content}&rdquo;
+            <p className="relative z-10 mt-10 text-xl font-medium leading-relaxed text-zinc-100 sm:text-2xl">
+              {featured.content}
             </p>
 
-            {/* Author */}
             <div className="relative z-10 mt-10 flex items-center gap-4 border-t border-white/10 pt-8">
               <div>
-                <p className="font-bold text-white tracking-tight">{featured.author}</p>
-                <p className="text-xs font-medium text-zinc-500 mt-0.5">{featured.role}</p>
+                <p className="font-bold tracking-tight text-white">{featured.author}</p>
+                <p className="mt-0.5 text-xs font-medium text-zinc-500">{featured.role}</p>
               </div>
             </div>
           </div>
@@ -102,8 +100,8 @@ const TestimonialsSection = () => {
                   i === 0 ? "delay-200" : "delay-300"
                 }`}
               >
-                <p className="text-sm leading-relaxed text-zinc-300 font-medium">
-                  &ldquo;{t.content}&rdquo;
+                <p className="text-sm font-medium leading-relaxed text-zinc-300">
+                  {t.content}
                 </p>
                 <div className="mt-6 flex items-center gap-3 border-t border-white/[0.08] pt-6">
                   <div>
@@ -123,12 +121,8 @@ const TestimonialsSection = () => {
               {testimonials.map((t) => (
                 <CarouselItem key={t.author} className="pl-4 sm:basis-[85%] basis-full">
                   <div className="flex h-full flex-col justify-between rounded-2xl bg-[#122B1E] p-7 ring-1 ring-white/[0.08]">
-                    {/* Quote mark */}
-                    <span className="text-4xl font-serif font-black text-[#159F63]/30 leading-none select-none" aria-hidden>
-                      &ldquo;
-                    </span>
-                    <p className="mt-3 text-base font-medium leading-relaxed text-zinc-200 italic">
-                      &ldquo;{t.content}&rdquo;
+                    <p className="text-base font-medium leading-relaxed text-zinc-200">
+                      {t.content}
                     </p>
                     <div className="mt-6 flex items-center gap-3 border-t border-white/[0.08] pt-6">
                       <div>

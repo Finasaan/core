@@ -50,64 +50,58 @@ const faqs: FAQItem[] = [
 
 const FAQSection = () => {
   return (
-    <section className="w-full bg-white px-4 py-16 sm:px-8 sm:py-24 lg:px-16">
+    <section id="faq" className="w-full bg-zinc-50 px-6 py-28 sm:px-8 lg:px-16">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-[5fr_8fr] lg:gap-20">
-
-          {/* Left column — sticky editorial heading */}
-          <div className="lg:sticky lg:top-32 lg:self-start animate-slide-left delay-0">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#159F63] sm:mb-4 sm:text-xs">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[5fr_8fr] lg:gap-20">
+          <div className="animate-slide-left delay-0 lg:sticky lg:top-32 lg:self-start">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#159F63]" />
               FAQ
-            </p>
-            <h2 className="text-3xl font-extrabold leading-[1.1] tracking-tight text-zinc-900 sm:text-5xl">
-              Questions,<br />
-              Answered.
+            </span>
+            <h2 className="mt-3 text-4xl font-bold leading-[1.05] tracking-tight text-zinc-900 sm:text-5xl">
+              Got questions?
+              <br />
+              We&apos;ve got answers.
             </h2>
-            {/* Green accent underline */}
-            <div className="mt-5 h-1 w-10 rounded-full bg-[#159F63]" />
-            <p className="mt-6 text-base leading-relaxed text-zinc-500 max-w-xs">
+            <p className="mt-6 max-w-xs text-base leading-relaxed text-zinc-500">
               Can&apos;t find what you&apos;re looking for?{" "}
               <a
                 href="mailto:hello@finasaan.com"
-                className="font-semibold text-[#159F63] underline decoration-[#159F63]/40 underline-offset-4 hover:text-[#0A6C41] transition-colors"
+                className="font-semibold text-[#159F63] underline decoration-[#159F63]/40 underline-offset-4 transition-colors hover:text-[#0A6C41]"
               >
-                Reach out to us.
+                Contact us ↗
               </a>
             </p>
           </div>
 
-          {/* Right column — accordion */}
           <div className="animate-fade-up delay-150">
-            <Accordion type="single" collapsible className="w-full divide-y divide-zinc-200">
+            <Accordion type="single" collapsible className="flex w-full flex-col gap-3">
               {faqs.map((faq, index) => (
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="border-none py-1 group"
+                  className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white px-5 transition-colors data-[state=open]:border-[#159F63]/40 data-[state=open]:bg-white"
                 >
                   <AccordionTrigger
                     className={[
-                      "py-5 text-left text-base font-semibold text-zinc-800 hover:no-underline",
-                      "transition-all duration-200",
-                      // The chevron rotation is handled by shadcn's built-in [data-state=open] on the SVG
-                      // Open state: shift text color to brand green
-                      "[&[data-state=open]]:text-[#159F63]",
-                      // Add left padding + green left border when open via pl trick
-                      "pl-0 [&[data-state=open]]:pl-4",
-                      // Transition for the padding shift
-                      "transition-[padding] duration-200",
+                      "py-5 text-left text-base font-semibold text-zinc-900 hover:no-underline",
+                      "[&>svg]:text-[#159F63]",
                     ].join(" ")}
                   >
-                    {faq.question}
+                    <span className="flex items-center gap-4">
+                      <span className="text-xs font-bold tabular-nums text-[#159F63]">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>{faq.question}</span>
+                    </span>
                   </AccordionTrigger>
-                  <AccordionContent className="pl-0 pb-5 text-[15px] leading-relaxed text-zinc-500 [&[data-state=open]]:pl-4 transition-[padding] duration-200">
+                  <AccordionContent className="pb-5 pl-10 text-[15px] leading-relaxed text-zinc-600">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           </div>
-
         </div>
       </div>
     </section>
