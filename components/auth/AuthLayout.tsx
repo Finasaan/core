@@ -27,10 +27,10 @@ export function AuthLayout({
                 {/* Logo — links to home */}
                 <Link href="/" className="auth-logo-link" aria-label="Go to Finasaan home">
                     <Image
-                        src="/logo.png"
+                        src="/logodark.svg"
                         alt="Finasaan"
-                        width={130}
-                        height={40}
+                        width={152}
+                        height={32}
                         priority
                     />
                 </Link>
