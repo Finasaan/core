@@ -108,13 +108,40 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
 
   const { messages, sendMessage, status, stop, setMessages } = useChat({
     transport,
-    onFinish: () => {
-      setStreamError(null);
+    onFinish: ({ message }) => {
+      // Detect empty completions — sometimes Groq Llama returns 200 OK but
+      // streams nothing meaningful after a tool call. Surface that as an
+      // error so the user can retry instead of staring at a blank reply.
+      const hasContent = (message.parts ?? []).some((p) => {
+        if (p.type === "text") {
+          return ((p as { text?: string }).text ?? "").trim().length > 0;
+        }
+        return p.type.startsWith("tool-") || p.type === "dynamic-tool";
+      });
+      if (!hasContent) {
+        setStreamError(
+          "The model returned an empty response. This is a known issue with Groq Llama after tool calls — try again or switch models.",
+        );
+      } else {
+        setStreamError(null);
+      }
       // Re-fetch sessions to update the sidebar after each turn.
       fetchSessions();
     },
     onError: (error) => {
-      setStreamError(error?.message ?? "Stream failed. Please try again.");
+      const msg = error?.message ?? "Stream failed. Please try again.";
+      // Provide more actionable hints for common failure modes.
+      if (/missing tool result|tool[- ]call/i.test(msg)) {
+        setStreamError(
+          "Previous turn errored mid-tool-call. Start a new chat or retry — the next request will sanitize the broken state.",
+        );
+      } else if (/ECONNRESET|fetch failed|network/i.test(msg)) {
+        setStreamError(
+          "Network error reaching the model. Check your connection and retry.",
+        );
+      } else {
+        setStreamError(msg);
+      }
     },
   });
 
@@ -132,7 +159,11 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   useEffect(() => {
     if (status === "error") {
       setStreamError((prev) => prev ?? "Stream failed. Please try again.");
+      // Refresh the sessions list — if the backend persisted the partial
+      // turn, the sidebar will reflect it on next select.
+      fetchSessions();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   // ── Fetch models ────────────────────────────────────────────────────────
@@ -245,7 +276,20 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
     setInputValue("");
     setStreamError(null);
     setLastUserText(text);
-    sendMessage({ text });
+    try {
+      sendMessage({ text });
+    } catch (err) {
+      // sendMessage shouldn't throw, but if the underlying transport rejects
+      // synchronously we want to keep the user's input recoverable rather
+      // than silently dropping it.
+      console.error("[handleSend] sendMessage threw:", err);
+      setInputValue(text);
+      setStreamError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send. Please try again.",
+      );
+    }
   }, [inputValue, isStreaming, sendMessage]);
 
   // ── Retry last message ───────────────────────────────────────────────────
@@ -253,7 +297,16 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   const handleRetry = useCallback(() => {
     if (!lastUserText || isStreaming) return;
     setStreamError(null);
-    sendMessage({ text: lastUserText });
+    try {
+      sendMessage({ text: lastUserText });
+    } catch (err) {
+      console.error("[handleRetry] sendMessage threw:", err);
+      setStreamError(
+        err instanceof Error
+          ? err.message
+          : "Failed to retry. Please try again.",
+      );
+    }
   }, [lastUserText, isStreaming, sendMessage]);
 
   // ── Attach PDF ───────────────────────────────────────────────────────────
