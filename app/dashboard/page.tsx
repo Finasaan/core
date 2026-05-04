@@ -5,7 +5,6 @@ import { DashboardPanel, AssetList, AssetItem, NewsStrip } from "@/components/da
 import { MarketSummaryBar } from "@/components/dashboard/MarketSummaryBar";
 import { WatchlistQuickView } from "@/components/dashboard/WatchlistQuickView";
 import { PortfolioSnapshot } from "@/components/dashboard/PortfolioSnapshot";
-import { sortStocksByInterests } from "@/lib/personalization";
 import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
@@ -16,7 +15,6 @@ export default function DashboardPage() {
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingFunds, setLoadingFunds] = useState(true);
     const [userName, setUserName] = useState<string | null>(null);
-    const [interests, setInterests] = useState<string[]>([]);
     const [financialKnowledge, setFinancialKnowledge] = useState<string | null>(null);
 
     useEffect(() => {
@@ -51,20 +49,16 @@ export default function DashboardPage() {
                 });
 
                 if (response.ok) {
-                    const result = await response.json() as { 
-                        success: boolean; 
-                        data?: { 
+                    const result = await response.json() as {
+                        success: boolean;
+                        data?: {
                             display_name?: string;
-                            interests?: string[];
                             financial_knowledge?: string;
-                        } 
+                        }
                     };
                     if (result.success && result.data) {
                         if (result.data.display_name) {
                             setUserName(result.data.display_name.split(" ")[0]);
-                        }
-                        if (result.data.interests) {
-                            setInterests(result.data.interests);
                         }
                         if (result.data.financial_knowledge) {
                             setFinancialKnowledge(result.data.financial_knowledge);
@@ -77,9 +71,6 @@ export default function DashboardPage() {
         };
         fetchProfile();
     }, []);
-
-    // Re-sort stocks when interests or raw stock data changes
-    const personalizedStocks = sortStocksByInterests(stocks, interests);
 
     const today = new Date().toLocaleDateString("en-US", {
         weekday: "long",
@@ -145,7 +136,7 @@ export default function DashboardPage() {
             <div className="dashboard-grid">
                 <DashboardPanel title="Top Stocks">
                     <AssetList
-                        items={personalizedStocks}
+                        items={stocks}
                         type="stock"
                         loading={loadingStocks}
                         emptyMessage="No stock data available"
