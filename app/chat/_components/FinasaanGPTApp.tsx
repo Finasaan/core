@@ -12,7 +12,10 @@ import { ChatInput } from "./ChatInput";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { DocIngestModal } from "./DocIngestModal";
 import type { Model } from "./ModelPicker";
-import { PanelLeftIcon, X } from "lucide-react";
+import { MoonIcon, PanelLeftIcon, SunIcon, X } from "lucide-react";
+
+type ChatTheme = "light" | "dark";
+const THEME_STORAGE_KEY = "finasaan-chat-theme";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -59,7 +62,40 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
   const [streamError, setStreamError] = useState<string | null>(null);
   const [lastUserText, setLastUserText] = useState<string | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
+  const [theme, setTheme] = useState<ChatTheme>("light");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // ── Theme: load persisted preference, apply to <html>, restore on unmount ─
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "dark" || stored === "light") setTheme(stored);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-chat-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-chat-theme");
+    }
+    return () => {
+      // Clear the attribute when this component unmounts so the chat theme
+      // doesn't leak to other surfaces (e.g. dashboard, mini-gpt host page).
+      document.documentElement.removeAttribute("data-chat-theme");
+    };
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next: ChatTheme = prev === "light" ? "dark" : "light";
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(THEME_STORAGE_KEY, next);
+      }
+      return next;
+    });
+  }, []);
 
   // ── Refs for latest model + session (read at send-time) ───────────────────
 
@@ -410,11 +446,23 @@ export function FinasaanGPTApp({ isMini = false, pageContext, onClose }: Finasaa
             >
               <PanelLeftIcon size={15} />
             </Button>
-            {activeSession && (
+            {activeSession ? (
               <span className="chat-topbar__session-title">
                 {activeSession.title}
               </span>
+            ) : (
+              <span className="chat-topbar__spacer" />
             )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="chat-topbar__toggle"
+              onClick={toggleTheme}
+              title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? <MoonIcon size={14} /> : <SunIcon size={14} />}
+            </Button>
             {isMini && onClose && (
               <Button
                 variant="ghost"

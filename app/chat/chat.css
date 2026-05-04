@@ -7,33 +7,41 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap");
 
 /* ============================================
-   CSS Variables
+   CSS Variables — Light theme is the default.
+   Toggle dark by setting `data-chat-theme="dark"` on <html>.
    ============================================ */
 :root {
-  /* Background layers */
-  --chat-bg: #0a0a0b;
-  --chat-surface: #111113;
-  --chat-surface-2: #18181b;
-  --chat-border: #27272a;
-  --chat-border-subtle: #1c1c1f;
+  /* Background layers (light) */
+  --chat-bg: #fafafa;
+  --chat-surface: #ffffff;
+  --chat-surface-2: #f4f4f5;
+  --chat-border: #e4e4e7;
+  --chat-border-subtle: #f1f1f3;
 
   /* Brand */
   --chat-green: #159f63;
-  --chat-green-dim: rgba(21, 159, 99, 0.15);
-  --chat-green-glow: rgba(21, 159, 99, 0.08);
+  --chat-green-dim: rgba(21, 159, 99, 0.10);
+  --chat-green-glow: rgba(21, 159, 99, 0.06);
 
-  /* Text */
-  --chat-text: #e4e4e7;
-  --chat-text-muted: #71717a;
-  --chat-text-dim: #52525b;
-  --chat-text-bright: #fafafa;
+  /* Text (light) */
+  --chat-text: #18181b;
+  --chat-text-muted: #52525b;
+  --chat-text-dim: #a1a1aa;
+  --chat-text-bright: #09090b;
 
-  /* Accents */
-  --chat-amber: #f59e0b;
-  --chat-amber-dim: rgba(245, 158, 11, 0.15);
-  --chat-red: #ef4444;
-  --chat-blue: #3b82f6;
-  --chat-blue-dim: rgba(59, 130, 246, 0.12);
+  /* Accents (light tuned for contrast on white) */
+  --chat-amber: #b45309;
+  --chat-amber-dim: rgba(245, 158, 11, 0.18);
+  --chat-red: #dc2626;
+  --chat-blue: #2563eb;
+  --chat-blue-dim: rgba(37, 99, 235, 0.10);
+
+  /* Composed surfaces */
+  --chat-overlay: rgba(15, 23, 42, 0.35);
+  --chat-modal-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
+  --chat-sidebar-shadow: 4px 0 24px rgba(15, 23, 42, 0.12);
+  --chat-row-zebra: rgba(0, 0, 0, 0.025);
+  --chat-stat-tint: rgba(21, 159, 99, 0.06);
 
   /* Layout */
   --sidebar-width: 240px;
@@ -43,6 +51,34 @@
   /* Typography */
   --font-mono: "IBM Plex Mono", "Cascadia Code", "Fira Code", monospace;
   --font-ui: var(--font-geist-sans, "Inter", system-ui, sans-serif);
+}
+
+:root[data-chat-theme="dark"] {
+  --chat-bg: #0a0a0b;
+  --chat-surface: #111113;
+  --chat-surface-2: #18181b;
+  --chat-border: #27272a;
+  --chat-border-subtle: #1c1c1f;
+
+  --chat-green-dim: rgba(21, 159, 99, 0.15);
+  --chat-green-glow: rgba(21, 159, 99, 0.08);
+
+  --chat-text: #e4e4e7;
+  --chat-text-muted: #71717a;
+  --chat-text-dim: #52525b;
+  --chat-text-bright: #fafafa;
+
+  --chat-amber: #f59e0b;
+  --chat-amber-dim: rgba(245, 158, 11, 0.15);
+  --chat-red: #ef4444;
+  --chat-blue: #3b82f6;
+  --chat-blue-dim: rgba(59, 130, 246, 0.12);
+
+  --chat-overlay: rgba(0, 0, 0, 0.6);
+  --chat-modal-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --chat-sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  --chat-row-zebra: rgba(255, 255, 255, 0.02);
+  --chat-stat-tint: rgba(0, 0, 0, 0.2);
 }
 
 /* ============================================
@@ -322,6 +358,10 @@
   text-overflow: ellipsis;
 }
 
+.chat-topbar__spacer {
+  flex: 1;
+}
+
 /* ============================================
    Message List
    ============================================ */
@@ -451,7 +491,7 @@
   color: var(--chat-text);
 }
 .chat-msg--assistant .chat-msg__bubble tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.015);
+  background: var(--chat-row-zebra);
 }
 .chat-msg--assistant .chat-msg__bubble ul,
 .chat-msg--assistant .chat-msg__bubble ol {
@@ -863,7 +903,7 @@
   border-radius: 6px;
   padding: 4px;
   min-width: 200px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--chat-modal-shadow);
 }
 
 .model-picker__item {
@@ -1190,7 +1230,7 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--chat-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1207,7 +1247,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--chat-modal-shadow);
 }
 
 /* Header */
@@ -1495,7 +1535,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--chat-stat-tint);
   border-radius: 4px;
   padding: 6px 8px;
 }
@@ -1555,7 +1595,7 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--chat-overlay);
   z-index: 95;
   animation: chat-backdrop-fade 0.2s ease;
 }
@@ -1577,7 +1617,7 @@
     z-index: 100;
     transform: translateX(0);
     transition: transform 220ms ease;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--chat-sidebar-shadow);
   }
 
   .chat-shell:not(.mini) .chat-sidebar.collapsed {

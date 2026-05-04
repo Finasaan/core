@@ -326,21 +326,6 @@
     transform: scale(1.02);
 }
 
-/* Learning Progress */
-.topbar-progress {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.topbar-progress-count {
-    font-family: 'Satoshi', sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    color: #121212;
-    letter-spacing: -0.05em;
-}
-
 /* Notification Button */
 .topbar-notification {
     display: flex;
@@ -410,14 +395,6 @@
     font-size: 16px;
     font-weight: 500;
     color: #121212;
-    letter-spacing: -0.05em;
-}
-
-.topbar-profile-plan {
-    font-family: 'Satoshi', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #708090;
     letter-spacing: -0.05em;
 }
 
@@ -932,10 +909,6 @@
     }
 
     .topbar-avatar span {
-        font-size: 16px;
-    }
-
-    .topbar-progress-count {
         font-size: 16px;
     }
 

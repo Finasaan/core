@@ -142,16 +142,8 @@ export function TopBar({ userName = "User", isGuest = false, onMenuClick, onSear
                         </Link>
                     </div>
                 ) : (
-                    /* Authenticated — progress / notifications / profile */
+                    /* Authenticated — notifications / profile */
                     <>
-                        {/* Learning Progress */}
-                        <div className="topbar-progress">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#159F63">
-                                <path d="M11.1 2.55c.5-1.05 2-1.05 2.5 0l1.12 2.37 2.6.23c1.15.1 1.62 1.53.76 2.3l-1.98 1.77.58 2.54c.26 1.13-.97 2-2.01 1.44L12 11.83l-2.67 1.37c-1.04.54-2.27-.31-2.01-1.44l.58-2.54-1.98-1.77c-.86-.77-.39-2.2.76-2.3l2.6-.23 1.12-2.37z" />
-                            </svg>
-                            <span className="topbar-progress-count">25</span>
-                        </div>
-
                         {/* Notifications */}
                         <button className="topbar-notification" aria-label="Notifications">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000020" strokeWidth="1.5">
@@ -172,7 +164,6 @@ export function TopBar({ userName = "User", isGuest = false, onMenuClick, onSear
                                 </div>
                                 <div className="topbar-profile-info">
                                     <span className="topbar-profile-name">{userName}</span>
-                                    <span className="topbar-profile-plan">Basic Plan</span>
                                 </div>
                                 <svg
                                     className={`topbar-profile-arrow ${dropdownOpen ? "open" : ""}`}
