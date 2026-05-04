@@ -2,13 +2,13 @@
 
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { User, Lock, Sliders, Sparkles, LogOut } from "lucide-react";
+import { User, Lock, LogOut } from "lucide-react";
 import { getUser, logout } from "@/lib/auth/client";
 import "./settings.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
-type Tab = "profile" | "account" | "preferences";
+type Tab = "profile" | "account";
 
 const knowledgeOptions = [
     { value: "beginner", label: "Beginner" },
@@ -52,8 +52,7 @@ function SettingsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab") as Tab | null;
-    const activeTab: Tab =
-        tabParam === "account" || tabParam === "preferences" ? tabParam : "profile";
+    const activeTab: Tab = tabParam === "account" ? tabParam : "profile";
 
     const setTab = useCallback(
         (tab: Tab) => {
@@ -67,7 +66,7 @@ function SettingsContent() {
             <header className="settings-page-header">
                 <h1 className="settings-page-title">Settings</h1>
                 <p className="settings-page-subtitle">
-                    Manage your profile, account security, and preferences.
+                    Manage your profile and account security.
                 </p>
             </header>
 
@@ -92,21 +91,10 @@ function SettingsContent() {
                     <Lock size={16} />
                     Account
                 </button>
-                <button
-                    type="button"
-                    className={`settings-tab ${activeTab === "preferences" ? "is-active" : ""}`}
-                    onClick={() => setTab("preferences")}
-                    role="tab"
-                    aria-selected={activeTab === "preferences"}
-                >
-                    <Sliders size={16} />
-                    Preferences
-                </button>
             </nav>
 
             {activeTab === "profile" && <ProfileSection />}
             {activeTab === "account" && <AccountSection />}
-            {activeTab === "preferences" && <PreferencesSection />}
         </div>
     );
 }
@@ -584,25 +572,6 @@ function AccountSection() {
                 </div>
             </div>
         </>
-    );
-}
-
-/* ───────────────────────── Preferences placeholder ───────────────────────── */
-
-function PreferencesSection() {
-    return (
-        <div className="settings-card">
-            <div className="settings-placeholder">
-                <div className="settings-placeholder-icon">
-                    <Sparkles size={24} />
-                </div>
-                <h3 className="settings-placeholder-title">Preferences are on the way</h3>
-                <p className="settings-placeholder-text">
-                    Theme, notification, and display preferences will live here. We're
-                    finishing up the controls — check back soon.
-                </p>
-            </div>
-        </div>
     );
 }
 

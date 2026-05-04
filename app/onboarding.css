@@ -161,6 +161,8 @@
 }
 
 .loading-icon {
+    width: 100%;
+    height: 100%;
     animation: water-slosh 2.5s ease-in-out infinite;
 }
 
@@ -184,7 +186,7 @@
     font-family: 'Satoshi', 'Inter', sans-serif;
     font-weight: 700;
     font-size: 26px;
-    line-height: 20px;
+    line-height: 1.2;
     letter-spacing: -0.05em;
     color: #FFFFFF;
     text-align: center;
@@ -193,12 +195,8 @@
 
 /* Fact Card */
 .loading-fact-card {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
     width: 734px;
-    max-width: calc(100% - 80px);
+    max-width: 100%;
     padding: 38px 24px;
     background: #159F63;
     border-radius: 16px;
@@ -836,8 +834,6 @@
 
     /* Loading fact card */
     .loading-fact-card {
-        bottom: 32px;
-        max-width: calc(100% - 24px);
         padding: 20px 14px;
     }
 
