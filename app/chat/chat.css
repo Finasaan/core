@@ -204,6 +204,7 @@
   transition: background 100ms;
   position: relative;
   min-width: 0;
+  overflow: hidden;
 }
 
 .chat-session-item:hover {
@@ -227,11 +228,10 @@
   text-overflow: ellipsis;
   line-height: 1.4;
   min-width: 0;
-  max-width: calc(100% - 40px);
 }
 
 .chat-session-item__delete {
-  opacity: 0.3;
+  opacity: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,11 +253,11 @@
 }
 
 .chat-session-item:hover .chat-session-item__delete {
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .chat-session-item.active .chat-session-item__delete {
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .chat-session-item__delete:hover {
