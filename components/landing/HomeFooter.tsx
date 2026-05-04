@@ -1,13 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin, ArrowRight } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const footerLinks = [
   {
     title: "Product",
     links: [
-      { label: "Home", href: "/" },
+      { label: "Topics", href: "#topics" },
+      { label: "Features", href: "#features" },
+      { label: "Security", href: "#security" },
+      { label: "FAQ", href: "#faq" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "mailto:hello@finasaan.com" },
       { label: "Demo", href: "/demo" },
     ],
   },
@@ -30,54 +40,53 @@ const HomeFooter = () => {
   return (
     <>
       {/* ── Pre-footer CTA banner ── */}
-      <section className="relative w-full overflow-hidden bg-[#0D1F17] px-6 py-24 sm:px-8 lg:px-16">
-        {/* Radial glow */}
+      <section className="relative w-full overflow-hidden bg-[#0D1F17] px-6 py-28 sm:px-8 lg:px-16">
         <div
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
           aria-hidden
         >
           <div
-            className="h-[600px] w-[600px] rounded-full opacity-[0.14] blur-[130px]"
+            className="h-[600px] w-[600px] rounded-full opacity-[0.14] blur-[140px]"
             style={{ background: "#159F63" }}
           />
         </div>
 
         <div className="relative mx-auto max-w-7xl">
           <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
-            {/* Heading */}
-            <div className="animate-fade-up delay-0 max-w-xl">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+            <div className="animate-fade-up delay-0 max-w-2xl">
+              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#159F63]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#159F63]" />
                 Get started today
-              </p>
-              <h2 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">
-                Your financial future<br className="hidden sm:block" />
-                starts here.
+              </span>
+              <h2 className="mt-3 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[3.75rem]">
+                Ready to take control
+                <br className="hidden sm:block" />
+                of your finances?
               </h2>
-              <p className="mt-5 text-base font-medium text-zinc-400 max-w-md">
-                Join thousands of Pakistanis who are learning to invest smarter,
-                budget better, and build lasting wealth — for free.
+              <p className="mt-6 max-w-md text-base font-medium text-zinc-400">
+                Join early access to Finasaan and start making better money
+                decisions today — for free.
               </p>
             </div>
 
-            {/* CTA buttons */}
-            <div className="animate-fade-up delay-150 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
+            <div className="animate-fade-up delay-150 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center lg:w-auto">
               <Button
                 size="lg"
-                className="group rounded-full bg-[#159F63] px-9 py-6 text-[15px] font-semibold text-white shadow-xl shadow-[#159F63]/20 hover:bg-[#128a54] hover:scale-[1.03] hover:shadow-[#159F63]/40 transition-all duration-300"
+                className="group h-12 rounded-full bg-[#159F63] px-7 text-[15px] font-semibold text-white shadow-xl shadow-[#159F63]/20 transition-all duration-300 hover:scale-[1.02] hover:bg-[#128a54] hover:shadow-[#159F63]/40"
                 asChild
               >
                 <Link href="/signup">
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  Get started
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-full px-9 py-6 text-[15px] font-semibold text-white border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:scale-[1.02]"
+                className="h-12 rounded-full border-white/20 bg-white/5 px-7 text-[15px] font-semibold text-white transition-all duration-300 hover:border-white/30 hover:bg-white/10"
                 asChild
               >
-                <Link href="/demo">View Demo</Link>
+                <Link href="/login">Sign in</Link>
               </Button>
             </div>
           </div>
@@ -88,37 +97,35 @@ const HomeFooter = () => {
       <footer className="w-full border-t border-zinc-100 bg-white px-6 py-16 sm:px-8 lg:px-16">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-16">
-
-            {/* Brand column */}
-            <div className="flex flex-col gap-6 lg:max-w-xs">
+            <div className="flex flex-col gap-6 lg:max-w-sm">
               <Link href="/" className="inline-block w-fit">
                 <Image
-                  src="/logo.png"
+                  src="/logodark.svg"
                   alt="Finasaan"
-                  width={180}
-                  height={40}
-                  className="h-9 w-auto object-contain"
+                  width={424}
+                  height={161}
+                  className="h-7 w-auto object-contain"
                 />
               </Link>
               <p className="text-sm leading-relaxed text-zinc-500">
-                AI-powered financial literacy, built for Pakistan. Learn,
-                invest, and plan — at your own pace.
+                From budgeting to investing, Finasaan helps you understand where
+                your money goes — and how to make it work harder for you. Built
+                for Pakistan, designed for real life.
               </p>
               <a
                 href="mailto:hello@finasaan.com"
-                className="text-sm font-semibold text-[#159F63] hover:text-[#0A6C41] transition-colors w-fit"
+                className="w-fit text-sm font-semibold text-[#159F63] transition-colors hover:text-[#0A6C41]"
               >
                 hello@finasaan.com
               </a>
 
-              {/* Socials */}
-              <div className="flex items-center gap-3 mt-2">
+              <div className="mt-2 flex items-center gap-3">
                 {socialLinks.map((s) => (
                   <a
                     key={s.label}
                     href={s.href}
                     aria-label={s.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-500 transition-all duration-200 hover:border-[#159F63] hover:text-[#159F63] hover:scale-105"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-500 transition-all duration-200 hover:scale-105 hover:border-[#159F63] hover:text-[#159F63]"
                   >
                     {s.icon}
                   </a>
@@ -126,10 +133,9 @@ const HomeFooter = () => {
               </div>
             </div>
 
-            {/* Link columns */}
-            <div className="flex flex-wrap gap-12">
+            <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 sm:gap-14">
               {footerLinks.map((section) => (
-                <div key={section.title} className="flex min-w-[100px] flex-col gap-5">
+                <div key={section.title} className="flex flex-col gap-5">
                   <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400">
                     {section.title}
                   </p>
@@ -150,8 +156,7 @@ const HomeFooter = () => {
             </div>
           </div>
 
-          {/* Bottom bar */}
-          <div className="mt-14 border-t border-zinc-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-zinc-100 pt-8 sm:flex-row">
             <p className="text-sm text-zinc-400">
               © {new Date().getFullYear()} Finasaan. All rights reserved.
             </p>
